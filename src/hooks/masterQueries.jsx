@@ -20,7 +20,7 @@ export const useFetchYearRange = () => {
 // GET: Units
 const fetchUnits = () => {
   return request({
-    url: "/units",
+    url: "/unit",
     method: "get",
   });
 };

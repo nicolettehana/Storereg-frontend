@@ -12,11 +12,13 @@ import {
   Box,
 } from "@chakra-ui/react";
 import InputField from "../../components/core/formik/InputField";
-import { useCreateItem } from "../../hooks/itemQueries";
+import { useCreateItem, useFetchItemsList } from "../../hooks/itemQueries";
 import {
   useFetchCategories,
   useFetchYearRange,
+  useFetchUnits,
 } from "../../hooks/masterQueries";
+import { useCreateRate } from "../../hooks/ratesQueries";
 import SelectField from "../../components/core/formik/SelectField";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -30,18 +32,19 @@ const CreateRateForm = () => {
   const queryClient = useQueryClient();
   const categoryQuery = useFetchCategories();
   const yearRangeQuery = useFetchYearRange();
+  const unitQuery = useFetchUnits();
 
-  const createItem = useCreateItem(
+  const createRate = useCreateRate(
     (response) => {
-      queryClient.invalidateQueries({ queryKey: ["items"] });
-      navigate("/sad/items");
+      queryClient.invalidateQueries({ queryKey: ["rates"] });
+      navigate("/sad/rates");
       toast({
         isClosable: true,
         duration: 3000,
         position: "top-right",
         status: "success",
         title: "Success",
-        description: response.data.detail || "Item added",
+        description: response.data.detail || "Rate added",
       });
       return response;
     },
@@ -52,7 +55,7 @@ const CreateRateForm = () => {
         position: "top-right",
         status: "error",
         title: "Error",
-        description: error.response.data.detail || "Unable to add new item.",
+        description: error.response.data.detail || "Unable to add rate.",
       });
       return error;
     }
@@ -60,29 +63,34 @@ const CreateRateForm = () => {
 
   // Formik
   const initialValues = {
-    itemName: "",
-    category: "",
-    hasSubItems: false,
-    subItems: [],
-    yearRange: "",
+    categoryCode: "",
+    yearRangeId: "",
+    unitId: "",
+    rate: "",
+    itemId: "",
+    searchValue: "",
+    subItemId: "",
   };
 
   const validationSchema = yup.object({
-    itemName: yup.string().required("Item name is required"),
-    category: yup.string().required("Category is required"),
-    yearRange: yup.number().required("Year Range is required"),
-
-    hasSubItems: yup.boolean(), // optional validation
+    categoryCode: yup.string().required("Category is required"),
+    yearRangeId: yup.number().required("Year Range is required"),
+    unitId: yup.number().required("Unit is required"),
+    rate: yup
+      .number()
+      .typeError("Rate must be a number")
+      .required("Rate is required"),
+    subItemId: yup.number(),
   });
 
   const onSubmit = (values) => {
     //const formData = { ...values };
     const formData = {
       ...values,
-      subItems: values.subItems.map((item) => item.name), // <-- convert to List<String>
+      subItems: (values.subItems || []).map((item) => item.name),
     };
-
-    createItem.mutate(formData);
+    console.log(formData);
+    createRate.mutate(formData);
   };
 
   return (
@@ -93,11 +101,21 @@ const CreateRateForm = () => {
       onSubmit={onSubmit}
     >
       {(formik) => {
+        const itemsQuery = useFetchItemsList(
+          formik.values.categoryCode || "All",
+          formik.values.searchValue || ""
+        );
+        const items = itemsQuery?.data?.data || [];
+
+        const selectedItem = items.find(
+          (item) => item.id === Number(formik.values.itemId)
+        );
+
         return (
           <Stack as={Form} spacing={8}>
             <SimpleGrid columns={{ base: 1, md: 3 }} gap={4}>
               <SelectField
-                name="yearRange"
+                name="yearRangeId"
                 label="Year Range"
                 placeholder="Select year range"
               >
@@ -107,8 +125,9 @@ const CreateRateForm = () => {
                   </option>
                 ))}
               </SelectField>
+
               <SelectField
-                name="category"
+                name="categoryCode"
                 label="Item Category"
                 placeholder="Select category"
               >
@@ -119,46 +138,46 @@ const CreateRateForm = () => {
                 ))}
               </SelectField>
               <SelectField
-                name="category"
+                name="itemId"
                 label="Item"
-                placeholder="Select category"
+                placeholder="Select item"
+                disabled={!formik.values.categoryCode}
               >
-                {categoryQuery?.data?.data?.map((row) => (
-                  <option key={row?.code} value={row?.code}>
+                {itemsQuery?.data?.data?.map((row) => (
+                  <option key={row?.id} value={row?.id}>
                     {row?.name}
                   </option>
                 ))}
               </SelectField>
-              <SelectField
-                name="category"
-                label="Sub-Item"
-                placeholder="Select category"
-              >
-                {categoryQuery?.data?.data?.map((row) => (
-                  <option key={row?.code} value={row?.code}>
-                    {row?.name}
-                  </option>
-                ))}
-              </SelectField>
-              <SelectField
-                name="category"
-                label="Unit"
-                placeholder="Select category"
-              >
-                {categoryQuery?.data?.data?.map((row) => (
-                  <option key={row?.code} value={row?.code}>
-                    {row?.name}
+              {/** Render only if selected item has subItems */}
+              {selectedItem?.subItems?.length > 0 && (
+                <SelectField
+                  name="subItemId"
+                  label="Sub-Item"
+                  placeholder="Select Sub-Item"
+                >
+                  {selectedItem.subItems.map((sub) => (
+                    <option key={sub.id} value={sub.id}>
+                      {sub.name}
+                    </option>
+                  ))}
+                </SelectField>
+              )}
+              <SelectField name="unitId" label="Unit" placeholder="Select unit">
+                {unitQuery?.data?.data?.map((row) => (
+                  <option key={row?.id} value={row?.id}>
+                    {row?.unit}
                   </option>
                 ))}
               </SelectField>
               <InputField
-                name="itemName"
+                name="rate"
                 label="Rate"
-                placeholder="Enter the item name"
+                placeholder="Enter the rate"
                 onChange={(e) => {
-                  const itemName = e.target.value;
+                  const rate = e.target.value;
 
-                  formik.setFieldValue("itemName", itemName);
+                  formik.setFieldValue("rate", rate);
                 }}
               />
             </SimpleGrid>
@@ -170,10 +189,10 @@ const CreateRateForm = () => {
               <Button
                 type="submit"
                 variant="brand"
-                isLoading={createItem.isPending}
+                isLoading={createRate.isPending}
                 loadingText="Saving"
               >
-                Add Item
+                Add Rate
               </Button>
             </HStack>
           </Stack>

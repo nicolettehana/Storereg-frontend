@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { request } from "../components/utils/request";
 
-// GET: Fetch Quarters By Type
+// GET: Fetch Items Paged by category
 const fetchItemsByType = (category, search = "", pageNumber, pageSize) => {
   return request({
     url: `/items${
@@ -32,5 +32,20 @@ export const useCreateItem = (onSuccess, onError) => {
     mutationFn: createItem,
     onSuccess,
     onError,
+  });
+};
+
+// GET: Fetch Items List
+const fetchItemsList = (category, search = "") => {
+  return request({
+    url: `/items/list${category ? `/${category}` : ""}?search=${search}`,
+    method: "get",
+  });
+};
+
+export const useFetchItemsList = (category, search) => {
+  return useQuery({
+    queryKey: ["items-list", category, search],
+    queryFn: () => fetchItemsList(category, search),
   });
 };

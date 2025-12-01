@@ -24,3 +24,20 @@ export const useFetchRates = (
       fetchRates(category, search, pageNumber, pageSize, yearRange),
   });
 };
+
+// POST: Create Rate
+const createRate = (data) => {
+  return request({
+    url: "/rates",
+    method: "post",
+    data,
+  });
+};
+
+export const useCreateRate = (onSuccess, onError) => {
+  return useMutation({
+    mutationFn: createRate,
+    onSuccess,
+    onError,
+  });
+};

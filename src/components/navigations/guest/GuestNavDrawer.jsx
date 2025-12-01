@@ -35,7 +35,7 @@ const GuestNavDrawer = ({ isOpen, onClose }) => {
       <DrawerContent>
         <DrawerCloseButton />
         <DrawerHeader>
-          <Heading size="md">GAD Quarters</Heading>
+          <Heading size="md">Stock Mgt. | SAD</Heading>
         </DrawerHeader>
 
         <DrawerBody as="nav">

@@ -43,6 +43,8 @@ import ItemsPage from "./pages/sad/items/ItemsPage";
 import FirmsPage from "./pages/sad/firms/FirmsPage";
 import CreateFirmsPage from "./pages/sad/firms/CreateFirmsPage";
 import CreateItemsPage from "./pages/sad/items/CreateItemsPage";
+import RatesPage from "./pages/sad/rates/RatesPage";
+import CreateRatesPage from "./pages/sad/rates/CreateRatesPage";
 
 const App = () => {
   return (
@@ -94,6 +96,8 @@ const App = () => {
         <Route path="firms" element={<FirmsPage />} />
         <Route path="firms/create" element={<CreateFirmsPage />} />
         <Route path="items/create" element={<CreateItemsPage />} />
+        <Route path="rates" element={<RatesPage />} />
+        <Route path="rates/create" element={<CreateRatesPage />} />
         <Route
           path="dashboard/details"
           element={<ApplicationDetailsPage role="CH" />}

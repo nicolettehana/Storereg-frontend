@@ -52,7 +52,7 @@ const UsersSidebar = ({ profile }) => {
                 : ""
             }
           >
-            <Heading size="md">GAD Quarters</Heading>
+            <Heading size="md">Stock Mgt. | SAD</Heading>
           </Link>
         </Box>
 

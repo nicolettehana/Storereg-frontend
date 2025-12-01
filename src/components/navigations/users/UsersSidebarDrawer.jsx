@@ -42,7 +42,7 @@ const UsersSidebarDrawer = ({ isOpen, onClose }) => {
       <DrawerContent bg={useColorModeValue("white", "zinc.950")}>
         <DrawerCloseButton />
         <DrawerHeader>
-          <Heading size="md">GAD Quarters</Heading>
+          <Heading size="md">Stock Mgt. | SAD</Heading>
         </DrawerHeader>
 
         <DrawerBody as="nav">

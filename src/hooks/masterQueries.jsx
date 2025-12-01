@@ -17,6 +17,22 @@ export const useFetchYearRange = () => {
   });
 };
 
+// GET: Units
+const fetchUnits = () => {
+  return request({
+    url: "/units",
+    method: "get",
+  });
+};
+
+export const useFetchUnits = () => {
+  return useQuery({
+    queryKey: ["fetch-units"],
+    queryFn: fetchUnits,
+    retry: 0,
+  });
+};
+
 // GET: Category List
 const fetchCategories = () => {
   return request({

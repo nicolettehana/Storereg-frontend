@@ -12,13 +12,13 @@ import {
   Box,
 } from "@chakra-ui/react";
 import InputField from "../../components/core/formik/InputField";
-import { useCreateQuarter } from "../../hooks/quartersQueries";
-import { useCreateFirm } from "../../hooks/firmQueries";
 import { useCreateItem } from "../../hooks/itemQueries";
-import { useFetchCategories } from "../../hooks/masterQueries";
+import {
+  useFetchCategories,
+  useFetchYearRange,
+} from "../../hooks/masterQueries";
 import SelectField from "../../components/core/formik/SelectField";
 import { useQueryClient } from "@tanstack/react-query";
-import { useCreateQuarterAndAddOccupants } from "../../hooks/occpantsQueries";
 import { useNavigate } from "react-router-dom";
 
 const CreateRateForm = () => {
@@ -29,6 +29,7 @@ const CreateRateForm = () => {
   // Queries
   const queryClient = useQueryClient();
   const categoryQuery = useFetchCategories();
+  const yearRangeQuery = useFetchYearRange();
 
   const createItem = useCreateItem(
     (response) => {
@@ -40,7 +41,7 @@ const CreateRateForm = () => {
         position: "top-right",
         status: "success",
         title: "Success",
-        description: response.data.detail || "Rate added",
+        description: response.data.detail || "Item added",
       });
       return response;
     },
@@ -51,66 +52,7 @@ const CreateRateForm = () => {
         position: "top-right",
         status: "error",
         title: "Error",
-        description: error.response.data.detail || "Unable to add rate.",
-      });
-      return error;
-    }
-  );
-
-  const createQuery = useCreateQuarter(
-    (response) => {
-      queryClient.invalidateQueries({ queryKey: ["fetch-quarters-by-type"] });
-      navigate("/est/quarters");
-      toast({
-        isClosable: true,
-        duration: 3000,
-        position: "top-right",
-        status: "success",
-        title: "Success",
-        description: response.data.detail || "Quarter created successfully",
-      });
-      return response;
-    },
-    (error) => {
-      toast({
-        isClosable: true,
-        duration: 3000,
-        position: "top-right",
-        status: "error",
-        title: "Error",
-        description:
-          error.response.data.detail ||
-          "Oops! Something went wrong. Couldn't create quarter.",
-      });
-      return error;
-    }
-  );
-
-  const createAndAddOccupantQuery = useCreateQuarterAndAddOccupants(
-    (response) => {
-      queryClient.invalidateQueries({ queryKey: ["fetch-quarters-by-type"] });
-      navigate("/est/quarters");
-      toast({
-        isClosable: true,
-        duration: 3000,
-        position: "top-right",
-        status: "success",
-        title: "Success",
-        description:
-          response.data.detail || "Quarter and occupants added successfully",
-      });
-      return response;
-    },
-    (error) => {
-      toast({
-        isClosable: true,
-        duration: 3000,
-        position: "top-right",
-        status: "error",
-        title: "Error",
-        description:
-          error.response.data.detail ||
-          "Oops! Something went wrong. Couldn't add quarter and occupants.",
+        description: error.response.data.detail || "Unable to add new item.",
       });
       return error;
     }
@@ -122,21 +64,13 @@ const CreateRateForm = () => {
     category: "",
     hasSubItems: false,
     subItems: [],
+    yearRange: "",
   };
 
   const validationSchema = yup.object({
     itemName: yup.string().required("Item name is required"),
     category: yup.string().required("Category is required"),
-    // only validate sub-items if hasSubItems is true
-    // subItems: yup.array().when("hasSubItems", (hasSubItems, schema) => {
-    //   return hasSubItems
-    //     ? schema.of(
-    //         yup.object({
-    //           name: yup.string().required("Sub-item name is required"),
-    //         })
-    //       )
-    //     : schema.of(yup.object());
-    // }),
+    yearRange: yup.number().required("Year Range is required"),
 
     hasSubItems: yup.boolean(), // optional validation
   });
@@ -161,17 +95,18 @@ const CreateRateForm = () => {
       {(formik) => {
         return (
           <Stack as={Form} spacing={8}>
-            <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
-              <InputField
-                name="itemName"
-                label="Item Name"
-                placeholder="Enter the item name"
-                onChange={(e) => {
-                  const itemName = e.target.value;
-
-                  formik.setFieldValue("itemName", itemName);
-                }}
-              />
+            <SimpleGrid columns={{ base: 1, md: 3 }} gap={4}>
+              <SelectField
+                name="yearRange"
+                label="Year Range"
+                placeholder="Select year range"
+              >
+                {yearRangeQuery?.data?.data?.map((row) => (
+                  <option key={row?.id} value={row?.id}>
+                    {row?.startYear}-{row?.endYear}
+                  </option>
+                ))}
+              </SelectField>
               <SelectField
                 name="category"
                 label="Item Category"
@@ -183,80 +118,50 @@ const CreateRateForm = () => {
                   </option>
                 ))}
               </SelectField>
-            </SimpleGrid>
-
-            <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
-              {/* Checkbox group */}
-
-              <Checkbox
-                isChecked={formik.values.hasSubItems}
-                onChange={(e) => {
-                  const checked = e.target.checked;
-                  formik.setFieldValue("hasSubItems", checked);
-
-                  if (checked && formik.values.subItems.length === 0) {
-                    formik.setFieldValue("subItems", [{ name: "" }]); // <-- create first row
-                  }
-
-                  if (!checked) {
-                    formik.setFieldValue("subItems", []); // <-- clear when unchecked
-                  }
-                }}
+              <SelectField
+                name="category"
+                label="Item"
+                placeholder="Select category"
               >
-                Does this item have sub-items?
-              </Checkbox>
-            </SimpleGrid>
+                {categoryQuery?.data?.data?.map((row) => (
+                  <option key={row?.code} value={row?.code}>
+                    {row?.name}
+                  </option>
+                ))}
+              </SelectField>
+              <SelectField
+                name="category"
+                label="Sub-Item"
+                placeholder="Select category"
+              >
+                {categoryQuery?.data?.data?.map((row) => (
+                  <option key={row?.code} value={row?.code}>
+                    {row?.name}
+                  </option>
+                ))}
+              </SelectField>
+              <SelectField
+                name="category"
+                label="Unit"
+                placeholder="Select category"
+              >
+                {categoryQuery?.data?.data?.map((row) => (
+                  <option key={row?.code} value={row?.code}>
+                    {row?.name}
+                  </option>
+                ))}
+              </SelectField>
+              <InputField
+                name="itemName"
+                label="Rate"
+                placeholder="Enter the item name"
+                onChange={(e) => {
+                  const itemName = e.target.value;
 
-            {formik.values.hasSubItems && (
-              <FieldArray name="subItems">
-                {(arrayHelpers) => (
-                  <>
-                    <SimpleGrid columns={{ base: 1, md: 1 }} gap={4}>
-                      {formik.values.subItems.map((subItem, index) => (
-                        <Box
-                          key={index}
-                          display="flex"
-                          alignItems="center"
-                          gap={2}
-                        >
-                          <HStack>
-                            <InputField
-                              name={`subItems.${index}.name`}
-                              value={subItem.name}
-                              placeholder="Sub-item Name"
-                              label=""
-                              onChange={(e) =>
-                                formik.setFieldValue(
-                                  `subItems.${index}.name`,
-                                  e.target.value
-                                )
-                              }
-                            />
-                            <Button
-                              type="button"
-                              variant="outline"
-                              onClick={() => arrayHelpers.remove(index)}
-                            >
-                              Remove
-                            </Button>
-                          </HStack>
-                        </Box>
-                      ))}
-                    </SimpleGrid>
-                    <SimpleGrid columns={{ base: 1, md: 6 }} gap={4}>
-                      <Button
-                        type="button"
-                        variant="brand"
-                        mt={2}
-                        onClick={() => arrayHelpers.push({ name: "" })}
-                      >
-                        + Add Sub-Item
-                      </Button>
-                    </SimpleGrid>
-                  </>
-                )}
-              </FieldArray>
-            )}
+                  formik.setFieldValue("itemName", itemName);
+                }}
+              />
+            </SimpleGrid>
 
             <HStack justifyContent="end">
               <Button variant="outline" onClick={() => navigate(-1)}>

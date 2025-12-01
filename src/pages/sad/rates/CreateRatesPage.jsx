@@ -1,7 +1,7 @@
 import { Container, Heading } from "@chakra-ui/react";
 import Main from "../../../components/core/semantics/Main";
 import Section from "../../../components/core/semantics/Section";
-import CreateItemForm from "../../../forms/items/CreateItemForm";
+import CreateRateForm from "../../../forms/rates/CreateRateForm";
 
 const CreateRatesPage = () => {
   return (
@@ -14,7 +14,7 @@ const CreateRatesPage = () => {
 
       <Section>
         <Container maxW="container.xl">
-          <CreateItemForm />
+          <CreateRateForm />
         </Container>
       </Section>
     </Main>

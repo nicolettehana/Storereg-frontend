@@ -5,21 +5,23 @@ import { Button, Container, HStack, Stack } from "@chakra-ui/react";
 import {
   useFetchQuartersByType,
   useFetchQuarterStats,
-  useFetchQuarterTypes,
 } from "../../../hooks/quartersQueries";
-import { useFetchCategories } from "../../../hooks/masterQueries";
-import { useFetchItemCategoryStats } from "../../../hooks/masterQueries";
-import { useFetchItemsByType } from "../../../hooks/itemQueries";
+import {
+  useFetchCategories,
+  useFetchCategoryStats,
+} from "../../../hooks/masterQueries";
+import { useFetchFirmsByType } from "../../../hooks/firmQueries";
 import { MdOutlineHome } from "react-icons/md";
-import ItemsTableWrapper from "./ItemsTableWrapper";
+import FirmsTableWrapper from "./FirmsTableWrapper";
 import CategoriesFilter from "../../../components/filter/CategoriesFilter";
 import SearchInput from "../../../components/core/SearchInput";
 import { useDebounce } from "use-debounce";
 import { PageSizing } from "../../../components/core/Table";
+import QuarterStats from "../../../components/quarterStats/QuarterStats";
 import FirmCategoryStats from "../../../components/stats/FirmCategoryStats";
 import { useNavigate } from "react-router-dom";
 
-const ItemsPage = () => {
+const FirmsPage = () => {
   // States
   const [quarterCode, setQuarterCode] = useState("");
   const [searchText, setSearchText] = useState("");
@@ -34,13 +36,14 @@ const ItemsPage = () => {
 
   // Queries
   const categoryQuery = useFetchCategories();
-  const itemCategoryStatsQuery = useFetchItemCategoryStats();
-  const itemsByTypeQuery = useFetchItemsByType(
+  const firmsByTypeQuery = useFetchFirmsByType(
     categoryCode === "" ? null : categoryCode,
     searchValue,
     pageNumber,
     pageSize
   );
+
+  const categoryStatsQuery = useFetchCategoryStats();
 
   return (
     <>
@@ -49,8 +52,8 @@ const ItemsPage = () => {
         <Section>
           <Container maxW="container.lg">
             <FirmCategoryStats
-              data={itemCategoryStatsQuery?.data?.data}
-              isPending={itemCategoryStatsQuery.isPending}
+              data={categoryStatsQuery?.data?.data}
+              isPending={categoryStatsQuery.isPending}
             />
           </Container>
         </Section>
@@ -73,10 +76,10 @@ const ItemsPage = () => {
                   variant="brand"
                   leftIcon={<MdOutlineHome />}
                   onClick={() => {
-                    navigate("/sad/items/create");
+                    navigate("/sad/firms/create");
                   }}
                 >
-                  Add New Item
+                  Add New Firm
                 </Button>
               </HStack>
 
@@ -96,8 +99,8 @@ const ItemsPage = () => {
               </HStack>
 
               {/* Table */}
-              <ItemsTableWrapper
-                query={itemsByTypeQuery}
+              <FirmsTableWrapper
+                query={firmsByTypeQuery}
                 searchText={searchText}
                 pageNumber={pageNumber}
                 setPageNumber={setPageNumber}
@@ -117,4 +120,4 @@ const ItemsPage = () => {
   );
 };
 
-export default ItemsPage;
+export default FirmsPage;

@@ -103,12 +103,12 @@ const QuarterStats = ({ data, isPending }) => {
         justifyContent="space-between"
         gap={4}
       >
-        <Text>Overall Total: {data?.at(-1)?.total}</Text>
-        <Text color="red.600">Occupied: {data?.at(-1)?.occupied}</Text>
-        <Text color="green.600">Vacant: {data?.at(-1)?.vacant}</Text>
-        <Text color="yellow.600">Reserved: {data?.at(-1)?.reserved}</Text>
-        <Text color="orange.600">Unusable: {data?.at(-1)?.unusable}</Text>
-        <Text color="brand.600">Major Repair: {data?.at(-1)?.majorRepair}</Text>
+        <Text>Total: {data?.at(-1)?.total}</Text>
+        <Text color="green.600">
+          Paper & Stationery: {data?.at(-1)?.occupied}
+        </Text>
+        <Text color="red.600">Electricals: {data?.at(-1)?.vacant}</Text>
+        <Text color="yellow.600">Missecllaneous: {data?.at(-1)?.reserved}</Text>
       </HStack>
     </Stack>
   );

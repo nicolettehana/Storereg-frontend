@@ -40,6 +40,9 @@ import ForgotPasswordPage from "./pages/auth/forgotPassword/ForgotPasswordPage";
 import VerifyFPOtpPage from "./pages/auth/forgotPassword/verify-otp/VerifyFPOtpPage";
 import YearRangePage from "./pages/sad/YearRangePage";
 import ItemsPage from "./pages/sad/items/ItemsPage";
+import FirmsPage from "./pages/sad/firms/FirmsPage";
+import CreateFirmsPage from "./pages/sad/firms/CreateFirmsPage";
+import CreateItemsPage from "./pages/sad/items/CreateItemsPage";
 
 const App = () => {
   return (
@@ -88,6 +91,9 @@ const App = () => {
         <Route path="dashboard" element={<CHDashboardPage />} />
         <Route path="year-range" element={<YearRangePage />} />
         <Route path="items" element={<ItemsPage />} />
+        <Route path="firms" element={<FirmsPage />} />
+        <Route path="firms/create" element={<CreateFirmsPage />} />
+        <Route path="items/create" element={<CreateItemsPage />} />
         <Route
           path="dashboard/details"
           element={<ApplicationDetailsPage role="CH" />}

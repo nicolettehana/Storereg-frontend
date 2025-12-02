@@ -275,7 +275,19 @@ const FirmsTableWrapper = ({
                       Edit
                     </Button>
                   </Td>
-                  <Td borderRight="1px solid #ccc">2023-2026</Td>
+                  <Td borderRight="1px solid #ccc">
+                    <SkeletonText
+                      noOfLines={row?.yearRanges.length || 1}
+                      isLoaded={!query.isPending}
+                      fadeDuration={index}
+                    >
+                      {row?.yearRanges?.map((item, i) => (
+                        <Box key={i} mb={1}>
+                          {item.startYear}-{item.endYear}
+                        </Box>
+                      ))}
+                    </SkeletonText>
+                  </Td>
                 </Tr>
               );
             })}

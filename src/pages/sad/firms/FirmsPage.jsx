@@ -11,6 +11,7 @@ import {
   useFetchCategoryStats,
 } from "../../../hooks/masterQueries";
 import { useFetchFirmsByType } from "../../../hooks/firmQueries";
+import { useFetchYearRange } from "../../../hooks/masterQueries";
 import { MdOutlineHome } from "react-icons/md";
 import FirmsTableWrapper from "./FirmsTableWrapper";
 import CategoriesFilter from "../../../components/filter/CategoriesFilter";
@@ -20,6 +21,7 @@ import { PageSizing } from "../../../components/core/Table";
 import QuarterStats from "../../../components/quarterStats/QuarterStats";
 import FirmCategoryStats from "../../../components/stats/FirmCategoryStats";
 import { useNavigate } from "react-router-dom";
+import YearRangeFilter from "../../../components/filter/YearRangeFilter";
 
 const FirmsPage = () => {
   // States
@@ -29,18 +31,21 @@ const FirmsPage = () => {
   const [pageSize, setPageSize] = useState(10);
   const [status, setStatus] = useState("all");
   const [categoryCode, setCategoryCode] = useState("");
+  const [yearRangeId, setYearRangeId] = useState("");
 
   // Hooks
   const [searchValue] = useDebounce(searchText, 300);
   const navigate = useNavigate();
 
   // Queries
+  const yearRangeQuery = useFetchYearRange();
   const categoryQuery = useFetchCategories();
   const firmsByTypeQuery = useFetchFirmsByType(
     categoryCode === "" ? null : categoryCode,
     searchValue,
     pageNumber,
-    pageSize
+    pageSize,
+    yearRangeId
   );
 
   const categoryStatsQuery = useFetchCategoryStats();
@@ -64,6 +69,12 @@ const FirmsPage = () => {
               {/* Filter */}
               <HStack justifyContent="space-between" spacing={2}>
                 <HStack>
+                  <YearRangeFilter
+                    yearRangeId={yearRangeId}
+                    setYearRangeId={setYearRangeId}
+                    setPageNumber={setPageNumber}
+                    query={yearRangeQuery}
+                  />
                   <CategoriesFilter
                     categoryCode={categoryCode}
                     setCategoryCode={setCategoryCode}
@@ -71,16 +82,27 @@ const FirmsPage = () => {
                     query={categoryQuery}
                   />
                 </HStack>
+                <HStack justifyContent="space-between" spacing={2}>
+                  <Button
+                    variant="brand"
+                    leftIcon={<MdOutlineHome />}
+                    onClick={() => {
+                      navigate("/sad/firms/add-approved-firm");
+                    }}
+                  >
+                    Update Approved Firm
+                  </Button>
 
-                <Button
-                  variant="brand"
-                  leftIcon={<MdOutlineHome />}
-                  onClick={() => {
-                    navigate("/sad/firms/create");
-                  }}
-                >
-                  Add New Firm
-                </Button>
+                  <Button
+                    variant="brand"
+                    leftIcon={<MdOutlineHome />}
+                    onClick={() => {
+                      navigate("/sad/firms/create");
+                    }}
+                  >
+                    Add New Firm
+                  </Button>
+                </HStack>
               </HStack>
 
               {/* Filters */}
@@ -105,13 +127,6 @@ const FirmsPage = () => {
                 pageNumber={pageNumber}
                 setPageNumber={setPageNumber}
               />
-              {/* Table */}
-              {/* <QuartersTableWrapper
-                query={quarterByTypeQuery}
-                searchText={searchText}
-                pageNumber={pageNumber}
-                setPageNumber={setPageNumber}
-              /> */}
             </Stack>
           </Container>
         </Section>

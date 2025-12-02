@@ -22,6 +22,7 @@ import { useCreateRate } from "../../hooks/ratesQueries";
 import SelectField from "../../components/core/formik/SelectField";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import SelectFieldSearchable from "../../components/core/formik/SelectFieldSearchable";
 
 const CreateRateForm = () => {
   // Hooks
@@ -163,13 +164,25 @@ const CreateRateForm = () => {
                   ))}
                 </SelectField>
               )}
-              <SelectField name="unitId" label="Unit" placeholder="Select unit">
+              {/* <SelectField name="unitId" label="Unit" placeholder="Select unit">
                 {unitQuery?.data?.data?.map((row) => (
                   <option key={row?.id} value={row?.id}>
                     {row?.unit}
                   </option>
                 ))}
-              </SelectField>
+              </SelectField> */}
+              <SelectFieldSearchable
+                name="unitId"
+                label="Unit"
+                placeholder="Search unit"
+                options={
+                  unitQuery?.data?.data?.map((row) => ({
+                    value: row.id,
+                    label: row.unit,
+                  })) || []
+                }
+              />
+
               <InputField
                 name="rate"
                 label="Rate"

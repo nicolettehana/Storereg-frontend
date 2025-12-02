@@ -46,6 +46,8 @@ import CreateItemsPage from "./pages/sad/items/CreateItemsPage";
 import RatesPage from "./pages/sad/rates/RatesPage";
 import CreateRatesPage from "./pages/sad/rates/CreateRatesPage";
 import AddApprovedFirmsPage from "./pages/sad/firms/AddApprovedFirmsPage";
+import PurchasePage from "./pages/sad/purchase/PurchasePage";
+import CreatePurchasePage from "./pages/sad/purchase/CreatePurchasePage";
 
 const App = () => {
   return (
@@ -99,6 +101,8 @@ const App = () => {
         <Route path="items/create" element={<CreateItemsPage />} />
         <Route path="rates" element={<RatesPage />} />
         <Route path="rates/create" element={<CreateRatesPage />} />
+        <Route path="purchase" element={<PurchasePage />} />
+        <Route path="purchase/create" element={<CreatePurchasePage />} />
         <Route
           path="firms/add-approved-firm"
           element={<AddApprovedFirmsPage />}

@@ -164,13 +164,6 @@ const CreateRateForm = () => {
                   ))}
                 </SelectField>
               )}
-              {/* <SelectField name="unitId" label="Unit" placeholder="Select unit">
-                {unitQuery?.data?.data?.map((row) => (
-                  <option key={row?.id} value={row?.id}>
-                    {row?.unit}
-                  </option>
-                ))}
-              </SelectField> */}
               <SelectFieldSearchable
                 name="unitId"
                 label="Unit"

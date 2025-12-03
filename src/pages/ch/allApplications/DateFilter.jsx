@@ -25,7 +25,7 @@ const DateFilter = ({
     <Popover>
       <PopoverTrigger>
         <Button variant="outline" leftIcon={<MdOutlineFilterList size={20} />}>
-          Filter
+          Date Filter
         </Button>
       </PopoverTrigger>
       <PopoverContent>

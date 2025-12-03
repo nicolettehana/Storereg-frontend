@@ -15,6 +15,7 @@ import CategoriesFilter from "../../../components/filter/CategoriesFilter";
 import YearRangeFilter from "../../../components/filter/YearRangeFilter";
 import PurchaseTableWrapper from "./PurchaseTableWrapper";
 import dayjs from "dayjs";
+import DateFilter from "../../ch/allApplications/DateFilter";
 
 const PurchasePage = () => {
   // States
@@ -63,11 +64,12 @@ const PurchasePage = () => {
               {/* Filter */}
               <HStack justifyContent="space-between" spacing={2}>
                 <HStack>
-                  <YearRangeFilter
-                    yearRangeId={yearRangeId}
-                    setYearRangeId={setYearRangeId}
+                  <DateFilter
+                    fromDate={startDate}
+                    setFromDate={setStartDate}
+                    toDate={endDate}
+                    setToDate={setEndDate}
                     setPageNumber={setPageNumber}
-                    query={yearRangeQuery}
                   />
                   <CategoriesFilter
                     categoryCode={categoryCode}
@@ -105,7 +107,7 @@ const PurchasePage = () => {
 
               {/* Table */}
               <PurchaseTableWrapper
-                query={ratesQuery}
+                query={purchasesQuery}
                 searchText={searchText}
                 pageNumber={pageNumber}
                 setPageNumber={setPageNumber}

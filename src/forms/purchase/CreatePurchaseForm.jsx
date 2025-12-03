@@ -1,4 +1,5 @@
 import { Form, Formik, FieldArray } from "formik";
+import { useState } from "react";
 import * as yup from "yup";
 import {
   Button,
@@ -10,6 +11,7 @@ import {
   useToast,
   Checkbox,
   Box,
+  Input,
 } from "@chakra-ui/react";
 import InputField from "../../components/core/formik/InputField";
 import { useCreateItem, useFetchItemsList } from "../../hooks/itemQueries";
@@ -18,13 +20,17 @@ import {
   useFetchYearRange,
   useFetchUnits,
 } from "../../hooks/masterQueries";
+import { useFetchFirmsList } from "../../hooks/firmQueries";
 import { useCreateRate } from "../../hooks/ratesQueries";
 import SelectField from "../../components/core/formik/SelectField";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import SelectFieldSearchable from "../../components/core/formik/SelectFieldSearchable";
+import dayjs from "dayjs";
 
 const CreatePurchaseForm = () => {
+  //States
+  const [purchaseDate, setPurchaseDate] = useState("");
   // Hooks
   const toast = useToast();
   const navigate = useNavigate();
@@ -34,6 +40,7 @@ const CreatePurchaseForm = () => {
   const categoryQuery = useFetchCategories();
   const yearRangeQuery = useFetchYearRange();
   const unitQuery = useFetchUnits();
+  const firmsListQuery = useFetchFirmsList();
 
   const createRate = useCreateRate(
     (response) => {
@@ -68,19 +75,19 @@ const CreatePurchaseForm = () => {
     yearRangeId: "",
     unitId: "",
     rate: "",
+    remarks: "",
     itemId: "",
     searchValue: "",
     subItemId: "",
+    purchaseDate: "",
+    firmId: "",
   };
 
   const validationSchema = yup.object({
     categoryCode: yup.string().required("Category is required"),
     yearRangeId: yup.number().required("Year Range is required"),
     unitId: yup.number().required("Unit is required"),
-    rate: yup
-      .number()
-      .typeError("Rate must be a number")
-      .required("Rate is required"),
+    remarks: yup.string(),
     subItemId: yup.number(),
   });
 
@@ -115,6 +122,23 @@ const CreatePurchaseForm = () => {
         return (
           <Stack as={Form} spacing={8}>
             <SimpleGrid columns={{ base: 1, md: 3 }} gap={4}>
+              <InputField
+                type="date"
+                name="purchaseDate"
+                max={dayjs().format("YYYY-MM-DD")}
+                label="Purchase Date"
+              />
+              <SelectFieldSearchable
+                name="firmId"
+                label="Firm"
+                placeholder="Select Firm"
+                options={
+                  firmsListQuery?.data?.data?.map((row) => ({
+                    value: row.id,
+                    label: row.firm,
+                  })) || []
+                }
+              />
               <SelectField
                 name="yearRangeId"
                 label="Year Range"
@@ -177,13 +201,13 @@ const CreatePurchaseForm = () => {
               />
 
               <InputField
-                name="rate"
-                label="Rate"
-                placeholder="Enter the rate"
+                name="remarks"
+                label="Remarks"
+                placeholder="Enter remarks"
                 onChange={(e) => {
-                  const rate = e.target.value;
+                  const remarks = e.target.value;
 
-                  formik.setFieldValue("rate", rate);
+                  formik.setFieldValue("remarks", remarks);
                 }}
               />
             </SimpleGrid>

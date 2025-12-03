@@ -130,7 +130,7 @@ const PurchaseTableWrapper = ({
           <VStack>
             <Heading size="md">No results</Heading>
             <Text color="body" textAlign="center">
-              Coulnd't find search item. {searchText}
+              Coulnd't find search value. {searchText}
             </Text>
           </VStack>
         </VStack>
@@ -155,9 +155,9 @@ const PurchaseTableWrapper = ({
           </Box>
 
           <VStack>
-            <Heading size="md">No Rates added</Heading>
+            <Heading size="md">No Purchases</Heading>
             <Text color="body" textAlign="center">
-              It seems you haven't added any rates yet.
+              There are no purchases in the selected date range/category.
             </Text>
           </VStack>
         </VStack>
@@ -193,10 +193,12 @@ const PurchaseTableWrapper = ({
             <Tr>
               <Th>Sl. No.</Th>
               <Th>Date of Purchase</Th>
-              <Th>Category</Th>
               <Th>Firm</Th>
+              <Th>Category</Th>
               <Th>Item</Th>
               <Th>Quantity</Th>
+              <Th>Rate (₹)</Th>
+              <Th>Amount (₹)</Th>
               <Th>Remarks</Th>
             </Tr>
           </Thead>
@@ -224,7 +226,141 @@ const PurchaseTableWrapper = ({
                       isLoaded={!query.isPending}
                       fadeDuration={index}
                     >
-                      {row?.startYear}-{row?.endYear}
+                      {row?.date}
+                    </SkeletonText>
+                  </Td>
+
+                  <Td>
+                    <SkeletonText
+                      noOfLines={1}
+                      isLoaded={!query.isPending}
+                      fadeDuration={index}
+                    >
+                      <Box whiteSpace="normal">{row?.firmName}</Box>
+                    </SkeletonText>
+                  </Td>
+                  <Td>
+                    <SkeletonText
+                      noOfLines={row?.items?.length || 1}
+                      isLoaded={!query.isPending}
+                      fadeDuration={index}
+                    >
+                      {row?.items?.map((item, i) => (
+                        <Box key={i} mb={1}>
+                          {item.category === "Paper & Stationery" ? (
+                            <Badge colorScheme="green">{item.category}</Badge>
+                          ) : item.category === "Miscellaneous" ? (
+                            <Badge colorScheme="yellow">{item.category}</Badge>
+                          ) : (
+                            <Badge colorScheme="red">{item.category}</Badge>
+                          )}
+                          {item?.subItems
+                            ?.filter((s) => s) // <-- removes null values
+                            .map((subItem, i) => (
+                              <Box key={i} mb={1}>
+                                {"\u00A0"}
+                              </Box>
+                            ))}
+                        </Box>
+                      ))}
+                    </SkeletonText>
+                  </Td>
+
+                  <Td>
+                    <SkeletonText
+                      noOfLines={row?.items?.length || 1}
+                      isLoaded={!query.isPending}
+                      fadeDuration={index}
+                    >
+                      {row?.items?.map((item, i) => (
+                        <Box key={i} mb={1}>
+                          <b>{i + 1})</b> {item.itemName}
+                          {item?.subItems
+                            ?.filter((s) => s) // <-- removes null values
+                            .map((subItem, i) => (
+                              <Box key={i} mb={1}>
+                                &nbsp;&nbsp;
+                                <Badge
+                                  textTransform="none"
+                                  fontSize="sm"
+                                  fontWeight="normal"
+                                >
+                                  <b>({String.fromCharCode(97 + i)}) </b>
+                                  {subItem.subItemName}
+                                </Badge>
+                              </Box>
+                            ))}
+                        </Box>
+                      ))}
+                    </SkeletonText>
+                  </Td>
+                  <Td>
+                    <SkeletonText
+                      noOfLines={row?.items?.length || 1}
+                      isLoaded={!query.isPending}
+                      fadeDuration={index}
+                    >
+                      {row?.items?.map((item, i) => (
+                        <Box key={i} mb={1}>
+                          {item.subItems?.every((s) => s == null)
+                            ? item.quantity
+                            : "\u00A0"}
+                          {item?.subItems?.map(
+                            (subItem, i) =>
+                              subItem?.subItemName && (
+                                <Box key={i} mb={1}>
+                                  {subItem.quantity}
+                                </Box>
+                              )
+                          )}
+                        </Box>
+                      ))}
+                    </SkeletonText>
+                  </Td>
+                  <Td>
+                    <SkeletonText
+                      noOfLines={row?.items?.length || 1}
+                      isLoaded={!query.isPending}
+                      fadeDuration={index}
+                    >
+                      {row?.items?.map((item, i) => (
+                        <Box key={i} mb={1}>
+                          {item.subItems?.every((s) => s == null)
+                            ? `${item.rate} ${item.unit}`
+                            : "\u00A0"}
+                          {item?.subItems?.map(
+                            (subItem, i) =>
+                              subItem?.subItemName && (
+                                <Box key={i} mb={1}>
+                                  {subItem.rate} {subItem.unit}
+                                </Box>
+                              )
+                          )}
+                        </Box>
+                      ))}
+                    </SkeletonText>
+                  </Td>
+                  <Td>
+                    <SkeletonText
+                      noOfLines={row?.items?.length || 1}
+                      isLoaded={!query.isPending}
+                      fadeDuration={index}
+                    >
+                      {row?.items?.map((item, i) => (
+                        <Box key={i} mb={1}>
+                          {item.subItems?.every((s) => s == null)
+                            ? item.amount
+                            : "\u00A0"}
+                          {item?.subItems?.map(
+                            (subItem, i) =>
+                              subItem?.subItemName && (
+                                <Box key={i} mb={1}>
+                                  {subItem.amount}
+                                </Box>
+                              )
+                          )}
+                        </Box>
+                      ))}
                     </SkeletonText>
                   </Td>
                   <Td>
@@ -233,72 +369,8 @@ const PurchaseTableWrapper = ({
                       isLoaded={!query.isPending}
                       fadeDuration={index}
                     >
-                      {row?.category === "Paper & Stationery" ? (
-                        <Badge colorScheme="green">{row?.category}</Badge>
-                      ) : row?.category === "Miscellaneous" ? (
-                        <Badge colorScheme="yellow">{row?.category}</Badge>
-                      ) : (
-                        <Badge colorScheme="red">{row?.category}</Badge>
-                      )}
+                      {row?.remarks}
                     </SkeletonText>
-                  </Td>
-                  <Td>
-                    <SkeletonText
-                      noOfLines={row?.subItems.length || 1}
-                      isLoaded={!query.isPending}
-                      fadeDuration={index}
-                    >
-                      {row?.name}
-                      {row?.subItems.map((subItem, i) => (
-                        <Box key={i} mb={1}>
-                          ({String.fromCharCode(97 + i)}) {subItem.name}
-                        </Box>
-                      ))}
-                    </SkeletonText>
-                  </Td>
-
-                  <Td>
-                    <SkeletonText
-                      noOfLines={row?.subItems.length || 1}
-                      isLoaded={!query.isPending}
-                      fadeDuration={index}
-                    >
-                      {row?.unit}
-                      {row?.subItems.map((subItem, i) => (
-                        <Box key={i} mb={1}>
-                          ({String.fromCharCode(97 + i)}) {subItem.unit || "-"}
-                        </Box>
-                      ))}
-                    </SkeletonText>
-                  </Td>
-                  <Td>
-                    <SkeletonText
-                      noOfLines={row?.subItems.length || 1}
-                      isLoaded={!query.isPending}
-                      fadeDuration={index}
-                    >
-                      {row?.rate}
-                      {row?.subItems.map((subItem, i) => (
-                        <Box key={i} mb={1}>
-                          ({String.fromCharCode(97 + i)}) {subItem.rate || "-"}
-                        </Box>
-                      ))}
-                    </SkeletonText>
-                  </Td>
-                  <Td>
-                    <ButtonGroup variant="outline" isAttached={true}>
-                      {isEstate && (
-                        <Button
-                          onClick={() => {
-                            navigate("/est/quarters/update", {
-                              state: { rowState: row },
-                            });
-                          }}
-                        >
-                          Edit
-                        </Button>
-                      )}
-                    </ButtonGroup>
                   </Td>
                 </Tr>
               );

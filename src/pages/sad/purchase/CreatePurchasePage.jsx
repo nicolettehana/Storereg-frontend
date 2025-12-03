@@ -8,7 +8,7 @@ const CreatePurchasePage = () => {
     <Main>
       <Section>
         <Container maxW="container.xl">
-          <Heading size="md">Add Rate</Heading>
+          <Heading size="md">Add new purchase</Heading>
         </Container>
       </Section>
 

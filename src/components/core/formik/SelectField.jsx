@@ -13,6 +13,7 @@ const SelectField = ({
   isRequired = true,
   placeholder,
   children,
+  onValueChange, // optional prop
   ...others
 }) => {
   return (
@@ -23,7 +24,16 @@ const SelectField = ({
           isInvalid={meta.error && meta.touched}
         >
           <FormLabel htmlFor={name}>{label}</FormLabel>
-          <Select id={name} placeholder={placeholder} {...field} {...others}>
+          <Select
+            id={name}
+            placeholder={placeholder}
+            {...field}
+            {...others}
+            onChange={(e) => {
+              field.onChange(e); // keeps Formik state
+              if (onValueChange) onValueChange(e.target.value); // notify parent
+            }}
+          >
             {children}
           </Select>
           <FormErrorMessage>{meta.error}</FormErrorMessage>

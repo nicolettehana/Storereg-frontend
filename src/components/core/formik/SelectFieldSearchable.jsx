@@ -8,6 +8,7 @@ const SelectFieldSearchable = ({
   label,
   isRequired = true,
   placeholder,
+  disabled = false, // add this
   options = [],
 }) => {
   return (
@@ -30,6 +31,7 @@ const SelectFieldSearchable = ({
               value={selectedOption}
               placeholder={placeholder}
               isSearchable // 🔥 enables typing + searching
+              isDisabled={disabled} // 🔥 use the prop here
               onChange={(option) =>
                 form.setFieldValue(name, option ? option.value : "")
               }

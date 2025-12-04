@@ -80,3 +80,20 @@ export const useFetchItemCategoryStats = () => {
     retry: 0,
   });
 };
+
+// POST: Get Unit-Rate List based on purchase date and item/sub-item
+const fetchUnitsRates = (data) => {
+  return request({
+    url: "/unit/rates",
+    method: "post",
+    data,
+  });
+};
+
+export const useFetchUnitsRates = (onSuccess, onError) => {
+  return useMutation({
+    mutationFn: fetchUnitsRates,
+    onSuccess,
+    onError,
+  });
+};

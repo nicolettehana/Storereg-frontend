@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import InputField from "../../components/core/formik/InputField";
 import { useFetchItemsList } from "../../hooks/itemQueries";
-import { useFetchCategories, useFetchUnits } from "../../hooks/masterQueries";
+import { useFetchCategories, useFetchUnits, useFetchUnitsRates } from "../../hooks/masterQueries";
 import { useFetchFirmsList } from "../../hooks/firmQueries";
 import { useCreateRate } from "../../hooks/ratesQueries";
 import SelectField from "../../components/core/formik/SelectField";

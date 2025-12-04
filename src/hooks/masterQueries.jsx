@@ -81,19 +81,17 @@ export const useFetchItemCategoryStats = () => {
   });
 };
 
-// POST: Get Unit-Rate List based on purchase date and item/sub-item
-const fetchUnitsRates = (data) => {
+// GET: Fetch Unit-Rate List based on purchaseDate means year Range
+const fetchUnitsRates = (purchaseDate) => {
   return request({
-    url: "/unit/rates",
-    method: "post",
-    data,
+    url: `/unit/rates?purchaseDate=${purchaseDate}`,
+    method: "get",
   });
 };
 
-export const useFetchUnitsRates = (onSuccess, onError) => {
-  return useMutation({
-    mutationFn: fetchUnitsRates,
-    onSuccess,
-    onError,
+export const useFetchUnitsRates = (purchaseDate) => {
+  return useQuery({
+    queryKey: ["fetchUnitsRates", purchaseDate],
+    queryFn: () => fetchUnitsRates(purchaseDate),
   });
 };

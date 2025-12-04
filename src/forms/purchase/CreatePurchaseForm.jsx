@@ -4,12 +4,15 @@ import * as yup from "yup";
 import {
   Button,
   HStack,
+  VStack,
   SimpleGrid,
   Stack,
   useToast,
   Box,
   FormLabel,
   Text,
+  Flex,
+  Spacer,
 } from "@chakra-ui/react";
 import InputField from "../../components/core/formik/InputField";
 import { useFetchItemsList } from "../../hooks/itemQueries";
@@ -36,6 +39,9 @@ const CreatePurchaseForm = () => {
   const firmsListQuery = useFetchFirmsList();
   const itemsQuery = useFetchItemsList(selectedCategoryCode);
   const items = itemsQuery?.data?.data || [];
+
+  const allItemsQuery = useFetchItemsList("All");
+  const allItems = allItemsQuery?.data?.data || [];
 
   const createRate = useCreateRate(
     (response) => {
@@ -136,131 +142,164 @@ const CreatePurchaseForm = () => {
             />
           </SimpleGrid>
 
-          <MdHorizontalRule />
+          <Text fontWeight="bold" fontSize="lg">
+            Items List
+          </Text>
+          <Box border="1px solid #ddd" p={4} borderRadius="md">
+            {/* Items Field Array */}
+            <FieldArray name="items">
+              {({ push, remove }) => (
+                <Stack spacing={8}>
+                  {formik.values.items.map((row, index) => {
+                    const filteredItems = allItems.filter(
+                      (item) => item.category.code === row.categoryCode
+                    );
+                    const selectedItem = allItems.find(
+                      (item) => item.id === Number(row.itemId)
+                    );
 
-          {/* Items Field Array */}
-          <FieldArray name="items">
-            {({ push, remove }) => (
-              <Stack spacing={8}>
-                {formik.values.items.map((row, index) => {
-                  const selectedItem = items.find(
-                    (item) => item.id === Number(row.itemId)
-                  );
+                    return (
+                      <Box
+                        key={index}
+                        p={4}
+                        //border="1px solid #ddd"
+                        borderRadius="md"
+                      >
+                        <SimpleGrid columns={{ base: 1, md: 6 }} gap={4}>
+                          <Flex align="center" gap={2}>
+                            <FormLabel m={0} w="30px" textAlign="center">
+                              <b>
+                                {index + 1}
+                                {". "}
+                              </b>
+                            </FormLabel>
+                            <SelectField
+                              name={`items[${index}].categoryCode`}
+                              label="Category"
+                              placeholder="Select category"
+                              onValueChange={(value) =>
+                                setSelectedCategoryCode(value)
+                              }
+                            >
+                              {categoryQuery?.data?.data?.map((row) => (
+                                <option key={row.code} value={row.code}>
+                                  {row.name}
+                                </option>
+                              ))}
+                            </SelectField>
+                          </Flex>
 
-                  return (
-                    <Box
-                      key={index}
-                      p={4}
-                      border="1px solid #ddd"
-                      borderRadius="md"
+                          <SelectFieldSearchable
+                            name={`items[${index}].itemId`}
+                            label="Item"
+                            placeholder="Select Item"
+                            disabled={!row.categoryCode}
+                            options={
+                              filteredItems.map((row) => ({
+                                value: row.id,
+                                label: row.name,
+                              })) || []
+                            }
+                          />
+
+                          {selectedItem?.subItems?.length > 0 && (
+                            <SelectField
+                              name={`items[${index}].subItemId`}
+                              label="Sub-Item"
+                              placeholder="Select Sub-Item"
+                            >
+                              {selectedItem.subItems.map((sub) => (
+                                <option key={sub.id} value={sub.id}>
+                                  {sub.name}
+                                </option>
+                              ))}
+                            </SelectField>
+                          )}
+
+                          <InputField
+                            name="quantity"
+                            label="Quantity"
+                            placeholder="Enter quantity"
+                          />
+
+                          <SelectFieldSearchable
+                            name={`items[${index}].unitId`}
+                            label="Unit"
+                            placeholder="Search unit"
+                            options={
+                              unitQuery?.data?.data?.map((row) => ({
+                                value: row.id,
+                                label: row.unit,
+                              })) || []
+                            }
+                          />
+                          {selectedItem?.subItems?.length > 0 ? (
+                            ""
+                          ) : (
+                            <Box /> // empty placeholder to keep grid column
+                          )}
+
+                          <HStack justifyContent="start" w="100%">
+                            {/* Remove Button */}
+                            <Button
+                              mt={8}
+                              colorScheme="red"
+                              variant="outline"
+                              onClick={() => remove(index)}
+                            >
+                              -
+                            </Button>
+
+                            <Spacer />
+
+                            {/* Rate + Amount Vertical Stack */}
+                            <VStack align="flex-end" spacing={0} mt={4}>
+                              <HStack spacing={2}>
+                                <FormLabel m={0}>Rate:</FormLabel>
+                                <Text fontWeight="bold">{row.rate || 0}</Text>
+                              </HStack>
+
+                              <HStack spacing={2}>
+                                <FormLabel m={0}>Amount:</FormLabel>
+                                <Text fontWeight="bold">{row.amount || 0}</Text>
+                              </HStack>
+                            </VStack>
+                          </HStack>
+                        </SimpleGrid>
+                      </Box>
+                    );
+                  })}
+
+                  {/* Single Add Item Button */}
+                  <HStack justifyContent="end">
+                    <Button
+                      mt={4}
+                      variant="outline"
+                      colorScheme="green"
+                      onClick={() =>
+                        push({
+                          categoryCode: "",
+                          itemId: "",
+                          subItemId: "",
+                          unitId: "",
+                          quantity: "",
+                          rate: "",
+                          amount: "",
+                        })
+                      }
                     >
-                      <SimpleGrid columns={{ base: 1, md: 5 }} gap={4}>
-                        <SelectField
-                          name={`items[${index}].categoryCode`}
-                          label="Category"
-                          placeholder="Select category"
-                          onValueChange={(value) =>
-                            setSelectedCategoryCode(value)
-                          }
-                        >
-                          {categoryQuery?.data?.data?.map((row) => (
-                            <option key={row.code} value={row.code}>
-                              {row.name}
-                            </option>
-                          ))}
-                        </SelectField>
-
-                        <SelectFieldSearchable
-                          name={`items[${index}].itemId`}
-                          label="Item"
-                          placeholder="Select Item"
-                          disabled={!row.categoryCode}
-                          options={
-                            itemsQuery?.data?.data.map((row) => ({
-                              value: row.id,
-                              label: row.name,
-                            })) || []
-                          }
-                        />
-
-                        {selectedItem?.subItems?.length > 0 && (
-                          <SelectField
-                            name={`items[${index}].subItemId`}
-                            label="Sub-Item"
-                            placeholder="Select Sub-Item"
-                          >
-                            {selectedItem.subItems.map((sub) => (
-                              <option key={sub.id} value={sub.id}>
-                                {sub.name}
-                              </option>
-                            ))}
-                          </SelectField>
-                        )}
-
-                        <SelectFieldSearchable
-                          name={`items[${index}].unitId`}
-                          label="Unit"
-                          placeholder="Search unit"
-                          options={
-                            unitQuery?.data?.data?.map((row) => ({
-                              value: row.id,
-                              label: row.unit,
-                            })) || []
-                          }
-                        />
-
-                        <HStack justifyContent="start">
-                          <Button
-                            mt={8}
-                            colorScheme="red"
-                            variant="outline"
-                            onClick={() => remove(index)}
-                          >
-                            -
-                          </Button>
-                          <FormLabel mt={8}>Rate: </FormLabel>
-                          <Text fontWeight="bold" mt={8}>
-                            {totalCost}
-                          </Text>
-                          <FormLabel mt={8}>Amount: </FormLabel>
-                          <Text fontWeight="bold" mt={8}>
-                            {totalCost}
-                          </Text>
-                        </HStack>
-                      </SimpleGrid>
-                    </Box>
-                  );
-                })}
-
-                {/* Single Add Item Button */}
-                <HStack justifyContent="end">
-                  <Button
-                    mt={4}
-                    variant="outline"
-                    colorScheme="green"
-                    onClick={() =>
-                      push({
-                        categoryCode: "",
-                        itemId: "",
-                        subItemId: "",
-                        unitId: "",
-                        quantity: "",
-                        rate: "",
-                        amount: "",
-                      })
-                    }
-                  >
-                    + Add Item
-                  </Button>
-                </HStack>
-              </Stack>
-            )}
-          </FieldArray>
+                      + Add Item
+                    </Button>
+                  </HStack>
+                </Stack>
+              )}
+            </FieldArray>
+          </Box>
 
           {/* Total Cost */}
-          <HStack justifyContent="end">
-            <FormLabel>Total</FormLabel>
-            <Text fontWeight="bold">{totalCost}</Text>
+          <HStack spacing={2} justifyContent="end">
+            <FormLabel m={0}>Total:</FormLabel>
+            <Text fontWeight="bold">{totalCost || 0}</Text>
           </HStack>
 
           {/* Submit Buttons */}

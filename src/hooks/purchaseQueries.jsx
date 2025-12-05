@@ -47,3 +47,20 @@ export const useFetchPurchases = (
       ),
   });
 };
+
+// POST: Create Purchase
+const createPurchase = (data) => {
+  return request({
+    url: "/purchase/create",
+    method: "post",
+    data,
+  });
+};
+
+export const useCreatePurchase = (onSuccess, onError) => {
+  return useMutation({
+    mutationFn: createPurchase,
+    onSuccess,
+    onError,
+  });
+};

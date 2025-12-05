@@ -23,6 +23,7 @@ import {
 } from "../../hooks/masterQueries";
 import { useFetchFirmsList } from "../../hooks/firmQueries";
 import { useCreateRate } from "../../hooks/ratesQueries";
+import { useCreatePurchase } from "../../hooks/purchaseQueries";
 import SelectField from "../../components/core/formik/SelectField";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -33,6 +34,7 @@ import { MdHorizontalRule } from "react-icons/md";
 const CreatePurchaseForm = () => {
   const [totalCost, setTotalCost] = useState(0);
   const [selectedCategoryCode, setSelectedCategoryCode] = useState("All");
+  const [purchaseDate, setPurchaseDate] = useState("");
 
   const toast = useToast();
   const navigate = useNavigate();
@@ -40,7 +42,7 @@ const CreatePurchaseForm = () => {
 
   const categoryQuery = useFetchCategories();
   const unitQuery = useFetchUnits();
-  const firmsListQuery = useFetchFirmsList();
+  const firmsListQuery = useFetchFirmsList(purchaseDate);
   const itemsQuery = useFetchItemsList(selectedCategoryCode);
   const items = itemsQuery?.data?.data || [];
 
@@ -70,6 +72,31 @@ const CreatePurchaseForm = () => {
         status: "error",
         title: "Error",
         description: error.response.data.detail || "Unable to add rate.",
+      });
+    }
+  );
+
+  const createPurchase = useCreatePurchase(
+    (response) => {
+      queryClient.invalidateQueries({ queryKey: ["purchase"] });
+      navigate("/sad/purchase");
+      toast({
+        isClosable: true,
+        duration: 3000,
+        position: "top-right",
+        status: "success",
+        title: "Success",
+        description: response.data.detail || "New Purchase added",
+      });
+    },
+    (error) => {
+      toast({
+        isClosable: true,
+        duration: 3000,
+        position: "top-right",
+        status: "error",
+        title: "Error",
+        description: error.response.data.detail || "Unable to add purchase.",
       });
     }
   );
@@ -110,6 +137,7 @@ const CreatePurchaseForm = () => {
   const onSubmit = (values) => {
     const formData = { ...values };
     console.log(formData);
+    createPurchase.mutate(formData);
     //createRate.mutate(formData);
   };
 
@@ -121,6 +149,26 @@ const CreatePurchaseForm = () => {
       onSubmit={onSubmit}
     >
       {(formik) => {
+        useEffect(() => {
+          if (!formik.values.firmId) return;
+
+          // Reset items to a single empty row
+          formik.setFieldValue("items", [
+            {
+              categoryCode: "",
+              itemId: "",
+              subItemId: "",
+              unitId: "",
+              quantity: "",
+              rate: "",
+              amount: "",
+            },
+          ]);
+
+          // Reset your category filter (if applicable)
+          setSelectedCategoryCode("All");
+        }, [formik.values.firmId]);
+
         useEffect(() => {
           let total = 0;
 
@@ -161,14 +209,19 @@ const CreatePurchaseForm = () => {
                 name="purchaseDate"
                 max={dayjs().format("YYYY-MM-DD")}
                 label="Purchase Date"
+                onChange={(e) => {
+                  formik.setFieldValue("purchaseDate", e.target.value);
+                  setPurchaseDate(e.target.value);
+                }}
               />
 
               <SelectFieldSearchable
                 name="firmId"
                 label="Firm"
                 placeholder="Select Firm"
+                disabled={!formik.values.purchaseDate}
                 options={
-                  firmsListQuery?.data?.data?.map((row) => ({
+                  firmsListQuery?.data?.data?.map((row, index) => ({
                     value: row.id,
                     label: row.firm,
                   })) || []
@@ -213,11 +266,31 @@ const CreatePurchaseForm = () => {
                       const selectedUnit = unitsRatesFilteredList?.find(
                         (item) => item?.unitId === row?.unitId
                       );
-                      // if (!!selectedUnit?.unitId && row?.quantity)
-                      //   setTotalCost(
-                      //     12
-                      //     //totalCost + selectedUnit?.rate * row?.quantity
-                      //   );
+
+                      const filteredCategories =
+                        categoryQuery?.data?.data.filter((item) => {
+                          const matchingFirm = firmsListQuery?.data?.data.find(
+                            (firm) =>
+                              Number(formik.values?.firmId) === Number(firm.id)
+                          );
+                          if (!matchingFirm) return false;
+
+                          // Check if ANY of the firm's categories matches item.code
+                          return matchingFirm.categories?.some(
+                            (cat) => cat.code === item.code
+                          );
+                        });
+
+                      // const filteredCategories =
+                      //   categoryQuery?.data?.data.filter((item) => {
+                      //     return (
+                      //       Number(item?.code) === (
+                      //         firmsListQuery?.data?.data?.filter(firm)=>{
+                      //           return(Number(formik.values?.firmId)===Number(firm.id));
+                      //         }
+                      //       ))
+                      //     );
+                      //   });
 
                       return (
                         <Box
@@ -238,6 +311,7 @@ const CreatePurchaseForm = () => {
                                 name={`items[${index}].categoryCode`}
                                 label="Category"
                                 placeholder="Select category"
+                                disabled={!formik.values.firmId}
                                 onValueChange={(value) => {
                                   setSelectedCategoryCode(value);
                                   formik.setFieldValue(
@@ -250,11 +324,16 @@ const CreatePurchaseForm = () => {
                                   );
                                 }}
                               >
-                                {categoryQuery?.data?.data?.map((row) => (
+                                {filteredCategories.map((row, index) => (
                                   <option key={row.code} value={row.code}>
                                     {row.name}
                                   </option>
                                 ))}
+                                {/* {categoryQuery?.data?.data?.map((row) => (
+                                  <option key={row.code} value={row.code}>
+                                    {row.name}
+                                  </option>
+                                ))} */}
                               </SelectField>
                             </Flex>
 
@@ -276,7 +355,7 @@ const CreatePurchaseForm = () => {
                                 );
                               }}
                               options={
-                                filteredItems.map((row) => ({
+                                filteredItems.map((row, index) => ({
                                   value: row.id,
                                   label: row.name,
                                 })) || []
@@ -289,7 +368,7 @@ const CreatePurchaseForm = () => {
                                 label="Sub-Item"
                                 placeholder="Select Sub-Item"
                               >
-                                {selectedItem.subItems.map((sub) => (
+                                {selectedItem.subItems.map((sub, index) => (
                                   <option key={sub.id} value={sub.id}>
                                     {sub.name}
                                   </option>
@@ -309,7 +388,7 @@ const CreatePurchaseForm = () => {
                               placeholder="Search unit"
                               options={
                                 //unitsRatesFilteredListQuery?.data?.data?.map((row) => ({
-                                unitsRatesFilteredList?.map((row) => ({
+                                unitsRatesFilteredList?.map((row, index) => ({
                                   value: row.unitId,
                                   label: row.unitName,
                                 })) || []

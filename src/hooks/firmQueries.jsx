@@ -49,17 +49,17 @@ export const useCreateFirm = (onSuccess, onError) => {
 };
 
 // GET: Firms List
-const fetchFirmsList = () => {
+const fetchFirmsList = (date) => {
   return request({
-    url: "/firms/list",
+    url: `/firms/list?date=${date}`,
     method: "get",
   });
 };
 
-export const useFetchFirmsList = () => {
+export const useFetchFirmsList = (date) => {
   return useQuery({
-    queryKey: ["fetch-firms-list"],
-    queryFn: fetchFirmsList,
+    queryKey: ["fetch-firms-list", date],
+    queryFn: () => fetchFirmsList(date),
     retry: 0,
   });
 };

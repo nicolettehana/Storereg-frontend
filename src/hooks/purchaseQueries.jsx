@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { request } from "../components/utils/request";
 
-// GET: Fetch Items List
+// GET: Fetch Purchases List
 const fetchPurchases = (
   categoryCode,
   searchValue = "",

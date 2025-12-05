@@ -31,10 +31,10 @@ import SelectFieldSearchable from "../../components/core/formik/SelectFieldSearc
 import dayjs from "dayjs";
 import { MdHorizontalRule } from "react-icons/md";
 
-const CreatePurchaseForm = () => {
+const CreateIssueForm = () => {
   const [totalCost, setTotalCost] = useState(0);
   const [selectedCategoryCode, setSelectedCategoryCode] = useState("All");
-  const [purchaseDate, setPurchaseDate] = useState("");
+  const [issueDate, setIssueDate] = useState("");
 
   const toast = useToast();
   const navigate = useNavigate();
@@ -42,7 +42,7 @@ const CreatePurchaseForm = () => {
 
   const categoryQuery = useFetchCategories();
   const unitQuery = useFetchUnits();
-  const firmsListQuery = useFetchFirmsList(purchaseDate);
+  const firmsListQuery = useFetchFirmsList(issueDate);
   const itemsQuery = useFetchItemsList(selectedCategoryCode);
   const items = itemsQuery?.data?.data || [];
 
@@ -103,8 +103,8 @@ const CreatePurchaseForm = () => {
 
   const initialValues = {
     remarks: "",
-    purchaseDate: "",
-    firmId: "",
+    issueDate: "",
+    issueTo: "",
     totalCost: "",
     items: [
       {
@@ -120,11 +120,12 @@ const CreatePurchaseForm = () => {
   };
 
   const validationSchema = yup.object({
-    firmId: yup.number().required("Firm is required"),
+    issueTo: yup.string().required("Please enter who item is issued to"),
     remarks: yup.string(),
     totalCost: yup.number(),
     items: yup.array().of(
       yup.object({
+        issueDate: yup.date().required("Please select issue date"),
         categoryCode: yup.string().required("Please  select category"),
         itemId: yup.number().required("Please select item"),
         unitId: yup.number().required("Please select a unit"),
@@ -150,7 +151,7 @@ const CreatePurchaseForm = () => {
     >
       {(formik) => {
         useEffect(() => {
-          if (!formik.values.firmId) return;
+          if (!formik.values.issueTo) return;
 
           // Reset items to a single empty row
           formik.setFieldValue("items", [
@@ -167,7 +168,7 @@ const CreatePurchaseForm = () => {
 
           // Reset your category filter (if applicable)
           setSelectedCategoryCode("All");
-        }, [formik.values.firmId]);
+        }, [formik.values.issueTo]);
 
         useEffect(() => {
           let total = 0;
@@ -206,27 +207,20 @@ const CreatePurchaseForm = () => {
             <SimpleGrid columns={{ base: 1, md: 3 }} gap={4}>
               <InputField
                 type="date"
-                name="purchaseDate"
+                name="issueDate"
                 max={dayjs().format("YYYY-MM-DD")}
-                label="Purchase Date"
+                label="Issue Date"
                 onChange={(e) => {
-                  formik.setFieldValue("purchaseDate", e.target.value);
-                  setPurchaseDate(e.target.value);
+                  formik.setFieldValue("issueDate", e.target.value);
+                  setIssueDate(e.target.value);
                 }}
               />
-
-              <SelectFieldSearchable
-                name="firmId"
-                label="Firm"
-                placeholder="Select Firm"
-                disabled={!formik.values.purchaseDate}
-                options={
-                  firmsListQuery?.data?.data?.map((row, index) => ({
-                    value: row.id,
-                    label: row.firm,
-                  })) || []
-                }
+              <InputField
+                name="issueTo"
+                label="Issue To"
+                placeholder="Enter to whom issued"
               />
+
               <InputField
                 name="remarks"
                 label="Remarks"
@@ -267,19 +261,19 @@ const CreatePurchaseForm = () => {
                         (item) => item?.unitId === row?.unitId
                       );
 
-                      const filteredCategories =
-                        categoryQuery?.data?.data.filter((item) => {
-                          const matchingFirm = firmsListQuery?.data?.data.find(
-                            (firm) =>
-                              Number(formik.values?.firmId) === Number(firm.id)
-                          );
-                          if (!matchingFirm) return false;
+                      // const filteredCategories =
+                      //   categoryQuery?.data?.data.filter((item) => {
+                      //     const matchingFirm = firmsListQuery?.data?.data.find(
+                      //       (firm) =>
+                      //         Number(formik.values?.firmId) === Number(firm.id)
+                      //     );
+                      //     if (!matchingFirm) return false;
 
-                          // Check if ANY of the firm's categories matches item.code
-                          return matchingFirm.categories?.some(
-                            (cat) => cat.code === item.code
-                          );
-                        });
+                      //     // Check if ANY of the firm's categories matches item.code
+                      //     return matchingFirm.categories?.some(
+                      //       (cat) => cat.code === item.code
+                      //     );
+                      //   });
 
                       // const filteredCategories =
                       //   categoryQuery?.data?.data.filter((item) => {
@@ -311,7 +305,6 @@ const CreatePurchaseForm = () => {
                                 name={`items[${index}].categoryCode`}
                                 label="Category"
                                 placeholder="Select category"
-                                disabled={!formik.values.firmId}
                                 onValueChange={(value) => {
                                   setSelectedCategoryCode(value);
                                   formik.setFieldValue(
@@ -324,11 +317,13 @@ const CreatePurchaseForm = () => {
                                   );
                                 }}
                               >
-                                {filteredCategories.map((row, index) => (
-                                  <option key={row.code} value={row.code}>
-                                    {row.name}
-                                  </option>
-                                ))}
+                                {categoryQuery?.data?.data?.map(
+                                  (row, index) => (
+                                    <option key={row.code} value={row.code}>
+                                      {row.name}
+                                    </option>
+                                  )
+                                )}
                                 {/* {categoryQuery?.data?.data?.map((row) => (
                                   <option key={row.code} value={row.code}>
                                     {row.name}
@@ -390,7 +385,7 @@ const CreatePurchaseForm = () => {
                                 //unitsRatesFilteredListQuery?.data?.data?.map((row) => ({
                                 unitsRatesFilteredList?.map((row, index) => ({
                                   value: row.unitId,
-                                  label: row.unit,
+                                  label: row.unitName,
                                 })) || []
                               }
                             />
@@ -416,19 +411,10 @@ const CreatePurchaseForm = () => {
                               {/* Rate + Amount Vertical Stack */}
                               <VStack align="flex-end" spacing={0} mt={4}>
                                 <HStack spacing={2}>
-                                  <FormLabel m={0}>Rate:</FormLabel>
+                                  <FormLabel m={0}>Balance:</FormLabel>
                                   <Text fontWeight="bold">
                                     {selectedUnit?.rate
                                       ? "₹" + selectedUnit.rate
-                                      : "-"}
-                                  </Text>
-                                </HStack>
-
-                                <HStack spacing={2}>
-                                  <FormLabel m={0}>Amount:</FormLabel>
-                                  <Text fontWeight="bold">
-                                    {selectedUnit?.rate
-                                      ? "₹" + selectedUnit.rate * row?.quantity
                                       : "-"}
                                   </Text>
                                 </HStack>
@@ -465,13 +451,6 @@ const CreatePurchaseForm = () => {
               </FieldArray>
             </Box>
 
-            {/* Total Cost */}
-            <HStack spacing={2} justifyContent="end">
-              <FormLabel m={0}>Total:</FormLabel>
-              <Text fontWeight="bold">{"₹" + totalCost}</Text>
-              <Text fontWeight="bold"></Text>
-            </HStack>
-
             {/* Submit Buttons */}
             <HStack justifyContent="end">
               <Button variant="outline" onClick={() => navigate(-1)}>
@@ -493,4 +472,4 @@ const CreatePurchaseForm = () => {
   );
 };
 
-export default CreatePurchaseForm;
+export default CreateIssueForm;

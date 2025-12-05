@@ -1,0 +1,49 @@
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { request } from "../components/utils/request";
+
+// GET: Fetch Issue List
+const fetchIssues = (
+  categoryCode,
+  searchValue = "",
+  pageNumber,
+  pageSize,
+  startDate,
+  endDate
+) => {
+  return request({
+    url: `/issue${
+      categoryCode ? `/${categoryCode}` : ""
+    }?page=${pageNumber}&size=${pageSize}&search=${searchValue}&startDate=${startDate}&endDate=${endDate}`,
+    method: "get",
+  });
+};
+
+export const useFetchIssues = (
+  categoryCode,
+  searchValue,
+  pageNumber,
+  pageSize,
+  startDate,
+  endDate
+) => {
+  return useQuery({
+    queryKey: [
+      "issue",
+      categoryCode,
+      searchValue,
+      pageNumber,
+      pageSize,
+      startDate,
+      endDate,
+    ],
+    queryFn: () =>
+      fetchIssues(
+        categoryCode,
+        searchValue,
+        pageNumber,
+        pageSize,
+        startDate,
+        endDate
+      ),
+  });
+};

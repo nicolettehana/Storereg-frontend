@@ -41,7 +41,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import DisableQuarterModal from "../../est/quarters/DisableQuarterModal";
 import { useNavigate } from "react-router-dom";
 
-const PurchaseTableWrapper = ({
+const IssueTableWrapper = ({
   isEstate = true,
   query,
   searchText,
@@ -155,9 +155,9 @@ const PurchaseTableWrapper = ({
           </Box>
 
           <VStack>
-            <Heading size="md">No Purchases</Heading>
+            <Heading size="md">No Issues</Heading>
             <Text color="body" textAlign="center">
-              There are no purchases in the selected date range/category.
+              There are no issues made in the selected date range/category.
             </Text>
           </VStack>
         </VStack>
@@ -192,14 +192,11 @@ const PurchaseTableWrapper = ({
           <Thead>
             <Tr>
               <Th>Sl. No.</Th>
-              <Th>Date of Purchase</Th>
-              <Th>Firm</Th>
+              <Th>Date of Issue</Th>
+              <Th>Issued to</Th>
               <Th>Category</Th>
               <Th>Item</Th>
               <Th>Quantity</Th>
-              <Th>Rate (₹)</Th>
-              <Th>Amount (₹)</Th>
-              <Th>Total (₹)</Th>
               <Th>Remarks</Th>
             </Tr>
           </Thead>
@@ -241,7 +238,7 @@ const PurchaseTableWrapper = ({
                       isLoaded={!query.isPending}
                       fadeDuration={index}
                     >
-                      <Box whiteSpace="normal">{row?.firmName}</Box>
+                      <Box whiteSpace="normal">{row?.issuedTo}</Box>
                     </SkeletonText>
                   </Td>
                   <Td>
@@ -322,61 +319,7 @@ const PurchaseTableWrapper = ({
                       ))}
                     </SkeletonText>
                   </Td>
-                  <Td>
-                    <SkeletonText
-                      noOfLines={row?.items?.length || 1}
-                      isLoaded={!query.isPending}
-                      fadeDuration={index}
-                    >
-                      {row?.items?.map((item, i) => (
-                        <Box key={i} mb={1}>
-                          {item.subItems?.every((s) => s == null)
-                            ? `${item.rate} ${item.unit}`
-                            : "\u00A0"}
-                          {item?.subItems?.map(
-                            (subItem, i) =>
-                              subItem?.subItemName && (
-                                <Box key={i} mb={1}>
-                                  {subItem.rate} {subItem.unit}
-                                </Box>
-                              )
-                          )}
-                        </Box>
-                      ))}
-                    </SkeletonText>
-                  </Td>
-                  <Td>
-                    <SkeletonText
-                      noOfLines={row?.items?.length || 1}
-                      isLoaded={!query.isPending}
-                      fadeDuration={index}
-                    >
-                      {row?.items?.map((item, i) => (
-                        <Box key={i} mb={1}>
-                          {item.subItems?.every((s) => s == null)
-                            ? item.amount
-                            : "\u00A0"}
-                          {item?.subItems?.map(
-                            (subItem, i) =>
-                              subItem?.subItemName && (
-                                <Box key={i} mb={1}>
-                                  {subItem.amount}
-                                </Box>
-                              )
-                          )}
-                        </Box>
-                      ))}
-                    </SkeletonText>
-                  </Td>
-                  <Td>
-                    <SkeletonText
-                      noOfLines={1}
-                      isLoaded={!query.isPending}
-                      fadeDuration={index}
-                    >
-                      {row?.totalCost}
-                    </SkeletonText>
-                  </Td>
+
                   <Td>
                     <SkeletonText
                       noOfLines={1}
@@ -403,4 +346,4 @@ const PurchaseTableWrapper = ({
   );
 };
 
-export default PurchaseTableWrapper;
+export default IssueTableWrapper;

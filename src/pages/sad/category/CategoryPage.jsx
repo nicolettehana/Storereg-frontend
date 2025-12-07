@@ -1,5 +1,5 @@
-import Main from "../../components/core/semantics/Main";
-import Section from "../../components/core/semantics/Section";
+import Main from "../../../components/core/semantics/Main";
+import Section from "../../../components/core/semantics/Section";
 import {
   Avatar,
   AvatarBadge,
@@ -25,19 +25,21 @@ import {
   Th,
   Thead,
   Tr,
-} from "../../components/core/Table";
-import { useFetchUsersProfile } from "../../hooks/userQueries";
-import { useFetchYearRange } from "../../hooks/masterQueries";
-import { encodeEmail } from "../../components/utils/emailFormatter";
-import ChangeMobileForm from "../../forms/profile/ChangeMobileForm";
+} from "../../../components/core/Table";
+import { useFetchUsersProfile } from "../../../hooks/userQueries";
+import {
+  useFetchYearRange,
+  useFetchCategories,
+} from "../../../hooks/masterQueries";
+import ChangeMobileForm from "../../../forms/profile/ChangeMobileForm";
 import { useState } from "react";
-import VerifyChangeMobileOTPForm from "../../forms/profile/VerifyChangeMobileOTPForm";
+import VerifyChangeMobileOTPForm from "../../../forms/profile/VerifyChangeMobileOTPForm";
 
-const YearRangePage = () => {
+const CategoryPage = () => {
   // Queries
   const profileQuery = useFetchUsersProfile();
   const yearRangeQuery = useFetchYearRange();
-  console.log(yearRangeQuery.data);
+  const categoryQuery = useFetchCategories();
 
   // States
   const [otpToken, setOtpToken] = useState("");
@@ -49,29 +51,13 @@ const YearRangePage = () => {
 
   return (
     <Main>
-      {/* Modals */}
-      <ChangeMobileForm
-        isOpen={mobileDisclosure.isOpen}
-        onClose={mobileDisclosure.onClose}
-        verifyOtpOnOpen={verifyOtpDisclosure.onOpen}
-        setOtpToken={setOtpToken}
-        setMobileno={setMobileno}
-      />
-
-      <VerifyChangeMobileOTPForm
-        isOpen={verifyOtpDisclosure.isOpen}
-        onClose={verifyOtpDisclosure.onClose}
-        otpToken={otpToken}
-        mobileno={mobileno}
-      />
-
       <Section>
         <Container maxW="container.xl">
           {/* User Info */}
           <Stack spacing={8} p={6}>
             <VStack spacing={4}>
               <HStack w="100%" justify="flex-end">
-                <Button variant="brand">Add New Year Range</Button>
+                <Button variant="brand">Add New Category</Button>
               </HStack>
 
               <TableContainer>
@@ -79,15 +65,15 @@ const YearRangePage = () => {
                   <Thead>
                     <Tr>
                       <Th>Sl. No.</Th>
-                      <Th>Start Year</Th>
-                      <Th>End Year</Th>
+                      <Th>Category Code</Th>
+                      <Th>Category</Th>
                     </Tr>
                   </Thead>
 
                   <Tbody>
-                    {(yearRangeQuery.isPending
+                    {(categoryQuery.isPending
                       ? new Array(10).fill(null)
-                      : yearRangeQuery?.data?.data
+                      : categoryQuery?.data?.data
                     )?.map((row, index) => {
                       return (
                         <Tr key={index}>
@@ -95,7 +81,7 @@ const YearRangePage = () => {
                             <SkeletonText
                               w="8"
                               noOfLines={1}
-                              isLoaded={!yearRangeQuery.isPending}
+                              isLoaded={!categoryQuery.isPending}
                               fadeDuration={index}
                             >
                               {elementCounter(index)}
@@ -104,19 +90,19 @@ const YearRangePage = () => {
                           <Td>
                             <SkeletonText
                               noOfLines={1}
-                              isLoaded={!yearRangeQuery.isPending}
+                              isLoaded={!categoryQuery.isPending}
                               fadeDuration={index}
                             >
-                              {row?.startYear}
+                              {row?.code}
                             </SkeletonText>
                           </Td>
                           <Td>
                             <SkeletonText
                               noOfLines={1}
-                              isLoaded={!yearRangeQuery.isPending}
+                              isLoaded={!categoryQuery.isPending}
                               fadeDuration={index}
                             >
-                              {row?.endYear}
+                              {row?.name}
                             </SkeletonText>
                           </Td>
                         </Tr>
@@ -133,4 +119,4 @@ const YearRangePage = () => {
   );
 };
 
-export default YearRangePage;
+export default CategoryPage;

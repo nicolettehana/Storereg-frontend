@@ -2,11 +2,6 @@ import { useState } from "react";
 import Main from "../../../components/core/semantics/Main";
 import Section from "../../../components/core/semantics/Section";
 import { Button, Container, HStack, Stack } from "@chakra-ui/react";
-import {
-  useFetchQuartersByType,
-  useFetchQuarterStats,
-  useFetchQuarterTypes,
-} from "../../../hooks/quartersQueries";
 import { useFetchCategories } from "../../../hooks/masterQueries";
 import { useFetchItemCategoryStats } from "../../../hooks/masterQueries";
 import { useFetchItemsByType } from "../../../hooks/itemQueries";
@@ -21,7 +16,6 @@ import { useNavigate } from "react-router-dom";
 
 const ItemsPage = () => {
   // States
-  const [quarterCode, setQuarterCode] = useState("");
   const [searchText, setSearchText] = useState("");
   const [pageNumber, setPageNumber] = useState(0);
   const [pageSize, setPageSize] = useState(10);
@@ -102,13 +96,6 @@ const ItemsPage = () => {
                 pageNumber={pageNumber}
                 setPageNumber={setPageNumber}
               />
-              {/* Table */}
-              {/* <QuartersTableWrapper
-                query={quarterByTypeQuery}
-                searchText={searchText}
-                pageNumber={pageNumber}
-                setPageNumber={setPageNumber}
-              /> */}
             </Stack>
           </Container>
         </Section>

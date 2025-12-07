@@ -50,6 +50,7 @@ import PurchasePage from "./pages/sad/purchase/PurchasePage";
 import CreatePurchasePage from "./pages/sad/purchase/CreatePurchasePage";
 import IssuePage from "./pages/sad/issue/IssuePage";
 import CreateIssuePage from "./pages/sad/issue/CreateIssuePage";
+import DashboardPage from "./pages/sad/DashboardPage";
 
 const App = () => {
   return (
@@ -95,7 +96,7 @@ const App = () => {
       {/* SAD ROUTES *******************************************************/}
       <Route path="/sad" element={<SADRoutes />}>
         {/* Dashboard */}
-        <Route path="dashboard" element={<CHDashboardPage />} />
+        <Route path="dashboard" element={<DashboardPage />} />
         <Route path="year-range" element={<YearRangePage />} />
         <Route path="items" element={<ItemsPage />} />
         <Route path="firms" element={<FirmsPage />} />

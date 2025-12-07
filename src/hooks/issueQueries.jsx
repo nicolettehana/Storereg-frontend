@@ -47,3 +47,20 @@ export const useFetchIssues = (
       ),
   });
 };
+
+// POST: Create Issue
+const createIssue = (data) => {
+  return request({
+    url: "/issue/create",
+    method: "post",
+    data,
+  });
+};
+
+export const useCreateIssue = (onSuccess, onError) => {
+  return useMutation({
+    mutationFn: createIssue,
+    onSuccess,
+    onError,
+  });
+};

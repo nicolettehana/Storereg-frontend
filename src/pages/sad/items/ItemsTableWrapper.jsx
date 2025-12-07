@@ -40,6 +40,7 @@ import { useEnableDisableQuarter } from "../../../hooks/quartersQueries";
 import { useQueryClient } from "@tanstack/react-query";
 import DisableQuarterModal from "../../est/quarters/DisableQuarterModal";
 import { useNavigate } from "react-router-dom";
+import { Label } from "recharts";
 
 const ItemsTableWrapper = ({
   isEstate = true,
@@ -194,6 +195,7 @@ const ItemsTableWrapper = ({
               <Th>Sl. No.</Th>
               <Th>Item</Th>
               <Th>Category</Th>
+              <Th>Balance</Th>
               <Th>Actions</Th>
             </Tr>
           </Thead>
@@ -241,6 +243,22 @@ const ItemsTableWrapper = ({
                       ) : (
                         <Badge colorScheme="red">{row?.category.name}</Badge>
                       )}
+                    </SkeletonText>
+                  </Td>
+                  <Td>
+                    <SkeletonText
+                      noOfLines={1}
+                      isLoaded={!query.isPending}
+                      fadeDuration={index}
+                    >
+                      {row?.subItems?.length == 0 && (row?.balance || 0)}
+                      {row?.subItems?.length > 0 && "\u00A0"}
+                      {row?.subItems.map((subItem, i) => (
+                        <Box key={i} mb={1}>
+                          {subItem.balance || 0}
+                          {/* ({String.fromCharCode(97 + i)}) */}
+                        </Box>
+                      ))}
                     </SkeletonText>
                   </Td>
 

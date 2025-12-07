@@ -95,3 +95,18 @@ export const useFetchUnitsRates = (purchaseDate) => {
     queryFn: () => fetchUnitsRates(purchaseDate),
   });
 };
+
+// GET: Fetch Unit-Balance
+const fetchUnitsBalance = () => {
+  return request({
+    url: `/unit/balance`,
+    method: "get",
+  });
+};
+
+export const useFetchUnitsBalance = () => {
+  return useQuery({
+    queryKey: ["fetchUnitsBalance"],
+    queryFn: () => fetchUnitsBalance(),
+  });
+};

@@ -13,6 +13,7 @@ import {
   Text,
   Flex,
   Spacer,
+  Badge,
 } from "@chakra-ui/react";
 import InputField from "../../components/core/formik/InputField";
 import { useFetchItemsList } from "../../hooks/itemQueries";
@@ -20,10 +21,12 @@ import {
   useFetchCategories,
   useFetchUnits,
   useFetchUnitsRates,
+  useFetchUnitsBalance,
 } from "../../hooks/masterQueries";
 import { useFetchFirmsList } from "../../hooks/firmQueries";
 import { useCreateRate } from "../../hooks/ratesQueries";
 import { useCreatePurchase } from "../../hooks/purchaseQueries";
+import { useCreateIssue } from "../../hooks/issueQueries";
 import SelectField from "../../components/core/formik/SelectField";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -49,7 +52,8 @@ const CreateIssueForm = () => {
   const allItemsQuery = useFetchItemsList("All");
   const allItems = allItemsQuery?.data?.data || [];
 
-  const unitsRatesQuery = useFetchUnitsRates("2025-01-01");
+  const unitsRatesQuery = useFetchUnitsRates(issueDate || "2025-12-05");
+  const unitsBalanceQuery = useFetchUnitsBalance();
 
   const createRate = useCreateRate(
     (response) => {
@@ -76,17 +80,17 @@ const CreateIssueForm = () => {
     }
   );
 
-  const createPurchase = useCreatePurchase(
+  const createIssue = useCreateIssue(
     (response) => {
-      queryClient.invalidateQueries({ queryKey: ["purchase"] });
-      navigate("/sad/purchase");
+      queryClient.invalidateQueries({ queryKey: ["issue"] });
+      navigate("/sad/issue");
       toast({
         isClosable: true,
         duration: 3000,
         position: "top-right",
         status: "success",
         title: "Success",
-        description: response.data.detail || "New Purchase added",
+        description: response.data.detail || "Issue saved",
       });
     },
     (error) => {
@@ -96,7 +100,7 @@ const CreateIssueForm = () => {
         position: "top-right",
         status: "error",
         title: "Error",
-        description: error.response.data.detail || "Unable to add purchase.",
+        description: error.response.data.detail || "Unable to save issue.",
       });
     }
   );
@@ -115,31 +119,73 @@ const CreateIssueForm = () => {
         quantity: "",
         rate: "",
         amount: "",
+        balance: 0,
       },
     ],
   };
 
   const validationSchema = yup.object({
+    issueDate: yup.date().required("Please select issue date"),
     issueTo: yup.string().required("Please enter who item is issued to"),
     remarks: yup.string(),
     totalCost: yup.number(),
-    items: yup.array().of(
-      yup.object({
-        issueDate: yup.date().required("Please select issue date"),
-        categoryCode: yup.string().required("Please  select category"),
-        itemId: yup.number().required("Please select item"),
-        unitId: yup.number().required("Please select a unit"),
-        quantity: yup.number().min(1).required("Quantity is required"),
-        subItemId: yup.number(),
-      })
-    ),
+    items: yup
+      .array()
+      .of(
+        yup.object({
+          categoryCode: yup.string().required("Please  select category"),
+          itemId: yup.number().required("Please select item"),
+          subItemId: yup.number(),
+          unitId: yup.number().required("Please select a unit"),
+          quantity: yup
+            .number()
+            .required("Quantity is required")
+            .min(1, "Quantity must be at least 1")
+            .test(
+              "does-not-exceed-balance",
+              "Quantity cannot exceed available balance",
+              function (value) {
+                const { balance } = this.parent; // <-- get balance from row
+                if (!value || balance == null) return true;
+                return Number(value) <= Number(balance);
+              }
+            ),
+        })
+      )
+      .test(
+        "unique-item-subitem-unit",
+        "Duplicate item + sub-item + unit is not allowed",
+        function (rows) {
+          if (!rows) return true;
+
+          const seen = new Set();
+
+          for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+
+            const key = `${row.itemId || 0}-${row.subItemId || 0}-${
+              row.unitId || 0
+            }`;
+
+            if (seen.has(key)) {
+              return this.createError({
+                path: `items[${i}].itemId`, // attach error to the row
+                message: "This item  + unit selection is already added",
+              });
+            }
+
+            seen.add(key);
+          }
+
+          return true;
+        }
+      ),
   });
 
   const onSubmit = (values) => {
     const formData = { ...values };
     console.log(formData);
-    createPurchase.mutate(formData);
-    //createRate.mutate(formData);
+    createIssue.mutate(formData);
   };
 
   return (
@@ -151,46 +197,29 @@ const CreateIssueForm = () => {
     >
       {(formik) => {
         useEffect(() => {
-          if (!formik.values.issueTo) return;
-
-          // Reset items to a single empty row
-          formik.setFieldValue("items", [
-            {
-              categoryCode: "",
-              itemId: "",
-              subItemId: "",
-              unitId: "",
-              quantity: "",
-              rate: "",
-              amount: "",
-            },
-          ]);
-
-          // Reset your category filter (if applicable)
-          setSelectedCategoryCode("All");
-        }, [formik.values.issueTo]);
-
-        useEffect(() => {
           let total = 0;
 
-          formik.values.items.forEach((row) => {
+          formik.values.items.forEach((row, index) => {
             const selectedItem = allItems.find(
               (item) => item.id === Number(row.itemId)
             );
 
-            const unitsRatesFilteredList = unitsRatesQuery?.data?.data.filter(
-              (item) => {
+            const unitsBalanceFilteredList =
+              unitsBalanceQuery?.data?.data.filter((item) => {
                 const hasSubItems = selectedItem?.subItems?.length > 0;
                 const rowHasSubItem = !!row?.subItemId;
                 if (hasSubItems && rowHasSubItem) {
                   return Number(item?.subItemId) === Number(row?.subItemId);
                 }
                 if (!hasSubItems) return item.itemId === row.itemId;
-              }
-            );
+              });
 
-            const selectedUnit = unitsRatesFilteredList?.find(
+            const selectedUnit = unitsBalanceFilteredList?.find(
               (item) => item?.unitId === row?.unitId
+            );
+            formik.setFieldValue(
+              `items[${index}].balance`,
+              selectedUnit?.balance || 0
             );
 
             if (selectedUnit && row.quantity) {
@@ -199,7 +228,18 @@ const CreateIssueForm = () => {
           });
 
           setTotalCost(total);
-        }, [formik.values.items, unitsRatesQuery.data]);
+        }, [formik.values.items, unitsBalanceQuery.data]);
+
+        // useEffect(() => {
+        //   formik.values.items.forEach((row, index) => {
+        //     if (selectedUnit) {
+        //       formik.setFieldValue(
+        //         `items[${index}].balance`,
+        //         selectedUnit.balance
+        //       );
+        //     }
+        //   });
+        // }, [formik.values.items, unitsBalanceQuery.data]);
 
         return (
           <Stack as={Form} spacing={8}>
@@ -244,8 +284,8 @@ const CreateIssueForm = () => {
                         (item) => item.id === Number(row.itemId)
                       );
 
-                      const unitsRatesFilteredList =
-                        unitsRatesQuery?.data?.data.filter((item) => {
+                      const unitsBalanceFilteredList =
+                        unitsBalanceQuery?.data?.data.filter((item) => {
                           const hasSubItems =
                             selectedItem?.subItems?.length > 0;
                           const rowHasSubItem = !!row?.subItemId;
@@ -257,34 +297,9 @@ const CreateIssueForm = () => {
                           if (!hasSubItems) return item.itemId === row.itemId;
                         });
 
-                      const selectedUnit = unitsRatesFilteredList?.find(
+                      const selectedUnit = unitsBalanceFilteredList?.find(
                         (item) => item?.unitId === row?.unitId
                       );
-
-                      // const filteredCategories =
-                      //   categoryQuery?.data?.data.filter((item) => {
-                      //     const matchingFirm = firmsListQuery?.data?.data.find(
-                      //       (firm) =>
-                      //         Number(formik.values?.firmId) === Number(firm.id)
-                      //     );
-                      //     if (!matchingFirm) return false;
-
-                      //     // Check if ANY of the firm's categories matches item.code
-                      //     return matchingFirm.categories?.some(
-                      //       (cat) => cat.code === item.code
-                      //     );
-                      //   });
-
-                      // const filteredCategories =
-                      //   categoryQuery?.data?.data.filter((item) => {
-                      //     return (
-                      //       Number(item?.code) === (
-                      //         firmsListQuery?.data?.data?.filter(firm)=>{
-                      //           return(Number(formik.values?.firmId)===Number(firm.id));
-                      //         }
-                      //       ))
-                      //     );
-                      //   });
 
                       return (
                         <Box
@@ -324,11 +339,6 @@ const CreateIssueForm = () => {
                                     </option>
                                   )
                                 )}
-                                {/* {categoryQuery?.data?.data?.map((row) => (
-                                  <option key={row.code} value={row.code}>
-                                    {row.name}
-                                  </option>
-                                ))} */}
                               </SelectField>
                             </Flex>
 
@@ -371,24 +381,23 @@ const CreateIssueForm = () => {
                               </SelectField>
                             )}
 
+                            <SelectFieldSearchable
+                              name={`items[${index}].unitId`}
+                              label="Unit"
+                              placeholder="Search unit"
+                              options={
+                                unitsBalanceFilteredList?.map((row, index) => ({
+                                  value: row.unitId,
+                                  label: row.unit,
+                                })) || []
+                              }
+                            />
                             <InputField
                               name={`items[${index}].quantity`}
                               label="Quantity"
                               placeholder="Enter quantity"
                             />
 
-                            <SelectFieldSearchable
-                              name={`items[${index}].unitId`}
-                              label="Unit"
-                              placeholder="Search unit"
-                              options={
-                                //unitsRatesFilteredListQuery?.data?.data?.map((row) => ({
-                                unitsRatesFilteredList?.map((row, index) => ({
-                                  value: row.unitId,
-                                  label: row.unitName,
-                                })) || []
-                              }
-                            />
                             {selectedItem?.subItems?.length > 0 ? (
                               ""
                             ) : (
@@ -408,14 +417,19 @@ const CreateIssueForm = () => {
 
                               <Spacer />
 
-                              {/* Rate + Amount Vertical Stack */}
+                              {/* Balance */}
                               <VStack align="flex-end" spacing={0} mt={4}>
                                 <HStack spacing={2}>
-                                  <FormLabel m={0}>Balance:</FormLabel>
                                   <Text fontWeight="bold">
-                                    {selectedUnit?.rate
-                                      ? "₹" + selectedUnit.rate
-                                      : "-"}
+                                    {selectedUnit?.balance ? (
+                                      <Badge colorScheme="green" fontSize="sm">
+                                        {"Balance: " + selectedUnit.balance}
+                                      </Badge>
+                                    ) : (
+                                      <Badge colorScheme="red" fontSize="sm">
+                                        {"Balance: " + 0}
+                                      </Badge>
+                                    )}
                                   </Text>
                                 </HStack>
                               </VStack>
@@ -440,6 +454,7 @@ const CreateIssueForm = () => {
                             quantity: "",
                             rate: "",
                             amount: "",
+                            balance: 0,
                           })
                         }
                       >
@@ -462,7 +477,7 @@ const CreateIssueForm = () => {
                 isLoading={createRate.isPending}
                 loadingText="Saving"
               >
-                Add Purchase
+                Add Issue
               </Button>
             </HStack>
           </Stack>

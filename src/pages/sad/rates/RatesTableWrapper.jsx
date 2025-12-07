@@ -40,6 +40,7 @@ import { useEnableDisableQuarter } from "../../../hooks/quartersQueries";
 import { useQueryClient } from "@tanstack/react-query";
 import DisableQuarterModal from "../../est/quarters/DisableQuarterModal";
 import { useNavigate } from "react-router-dom";
+import { getCategoryColorScheme } from "../../../components/core/CategoryColors";
 
 const RatesTableWrapper = ({
   isEstate = true,
@@ -233,13 +234,11 @@ const RatesTableWrapper = ({
                       isLoaded={!query.isPending}
                       fadeDuration={index}
                     >
-                      {row?.category === "Paper & Stationery" ? (
-                        <Badge colorScheme="green">{row?.category}</Badge>
-                      ) : row?.category === "Miscellaneous" ? (
-                        <Badge colorScheme="yellow">{row?.category}</Badge>
-                      ) : (
-                        <Badge colorScheme="red">{row?.category}</Badge>
-                      )}
+                      <Badge
+                        colorScheme={getCategoryColorScheme(row?.categoryCode)}
+                      >
+                        {row?.category}
+                      </Badge>
                     </SkeletonText>
                   </Td>
                   <Td>

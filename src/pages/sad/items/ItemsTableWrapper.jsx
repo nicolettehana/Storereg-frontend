@@ -41,6 +41,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import DisableQuarterModal from "../../est/quarters/DisableQuarterModal";
 import { useNavigate } from "react-router-dom";
 import { Label } from "recharts";
+import { getCategoryColorScheme } from "../../../components/core/CategoryColors";
 
 const ItemsTableWrapper = ({
   isEstate = true,
@@ -236,13 +237,11 @@ const ItemsTableWrapper = ({
                       isLoaded={!query.isPending}
                       fadeDuration={index}
                     >
-                      {row?.category.code === "S" ? (
-                        <Badge colorScheme="green">{row?.category.name}</Badge>
-                      ) : row?.category.code === "M" ? (
-                        <Badge colorScheme="yellow">{row?.category.name}</Badge>
-                      ) : (
-                        <Badge colorScheme="red">{row?.category.name}</Badge>
-                      )}
+                      <Badge
+                        colorScheme={getCategoryColorScheme(row?.category.code)}
+                      >
+                        {row?.category.name}
+                      </Badge>
                     </SkeletonText>
                   </Td>
                   <Td>

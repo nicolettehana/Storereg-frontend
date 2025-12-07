@@ -40,6 +40,7 @@ import { useEnableDisableQuarter } from "../../../hooks/quartersQueries";
 import { useQueryClient } from "@tanstack/react-query";
 import DisableQuarterModal from "../../est/quarters/DisableQuarterModal";
 import { useNavigate } from "react-router-dom";
+import { getCategoryColorScheme } from "../../../components/core/CategoryColors";
 
 const PurchaseTableWrapper = ({
   isEstate = true,
@@ -252,13 +253,13 @@ const PurchaseTableWrapper = ({
                     >
                       {row?.items?.map((item, i) => (
                         <Box key={i} mb={1}>
-                          {item.category === "Paper & Stationery" ? (
-                            <Badge colorScheme="green">{item.category}</Badge>
-                          ) : item.category === "Miscellaneous" ? (
-                            <Badge colorScheme="yellow">{item.category}</Badge>
-                          ) : (
-                            <Badge colorScheme="red">{item.category}</Badge>
-                          )}
+                          <Badge
+                            colorScheme={getCategoryColorScheme(
+                              item?.categoryCode
+                            )}
+                          >
+                            {item.category}
+                          </Badge>
                           {item?.subItems
                             ?.filter((s) => s) // <-- removes null values
                             .map((subItem, i) => (

@@ -40,6 +40,7 @@ import { useEnableDisableQuarter } from "../../../hooks/quartersQueries";
 import { useQueryClient } from "@tanstack/react-query";
 import DisableQuarterModal from "../../est/quarters/DisableQuarterModal";
 import { useNavigate } from "react-router-dom";
+import { getCategoryColorScheme } from "../../../components/core/CategoryColors";
 
 const FirmsTableWrapper = ({
   isEstate = true,
@@ -248,15 +249,9 @@ const FirmsTableWrapper = ({
                       {row?.categories.map((cat, i) => (
                         <Box key={i} mb={1}>
                           <Badge
-                            colorScheme={
-                              cat.name === "Electricals"
-                                ? "red"
-                                : cat.name === "Miscellaneous"
-                                ? "yellow"
-                                : "green"
-                            }
+                            colorScheme={getCategoryColorScheme(cat?.code)}
                           >
-                            {cat.name}
+                            {cat?.name}
                           </Badge>
                         </Box>
                       ))}

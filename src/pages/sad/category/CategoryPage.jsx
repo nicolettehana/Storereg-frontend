@@ -14,6 +14,7 @@ import {
   useDisclosure,
   VStack,
   SkeletonText,
+  Badge,
 } from "@chakra-ui/react";
 import {
   elementCounter,
@@ -34,6 +35,10 @@ import {
 import ChangeMobileForm from "../../../forms/profile/ChangeMobileForm";
 import { useState } from "react";
 import VerifyChangeMobileOTPForm from "../../../forms/profile/VerifyChangeMobileOTPForm";
+import {
+  getCategoryColor,
+  getCategoryColorScheme,
+} from "../../../components/core/CategoryColors";
 
 const CategoryPage = () => {
   // Queries
@@ -93,7 +98,11 @@ const CategoryPage = () => {
                               isLoaded={!categoryQuery.isPending}
                               fadeDuration={index}
                             >
-                              {row?.code}
+                              <Badge
+                                colorScheme={getCategoryColorScheme(row?.code)}
+                              >
+                                {row?.code}
+                              </Badge>
                             </SkeletonText>
                           </Td>
                           <Td>
@@ -102,7 +111,11 @@ const CategoryPage = () => {
                               isLoaded={!categoryQuery.isPending}
                               fadeDuration={index}
                             >
-                              {row?.name}
+                              <Badge
+                                colorScheme={getCategoryColorScheme(row?.code)}
+                              >
+                                {row?.name}
+                              </Badge>
                             </SkeletonText>
                           </Td>
                         </Tr>

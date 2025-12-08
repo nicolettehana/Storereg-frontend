@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Main from "../../../components/core/semantics/Main";
 import Section from "../../../components/core/semantics/Section";
-import { Button, Container, HStack, Stack } from "@chakra-ui/react";
+import { Button, Container, HStack, Stack, SimpleGrid } from "@chakra-ui/react";
 import { useFetchCategories } from "../../../hooks/masterQueries";
 import { useFetchItemCategoryStats } from "../../../hooks/masterQueries";
 import { useFetchItemsByType } from "../../../hooks/itemQueries";
@@ -13,6 +13,7 @@ import { useDebounce } from "use-debounce";
 import { PageSizing } from "../../../components/core/Table";
 import FirmCategoryStats from "../../../components/stats/FirmCategoryStats";
 import { useNavigate } from "react-router-dom";
+import StatCard2 from "../../../components/core/theme/StatCard2";
 
 const ItemsPage = () => {
   // States
@@ -41,11 +42,23 @@ const ItemsPage = () => {
       {/* Main */}
       <Main>
         <Section>
-          <Container maxW="container.lg">
-            <FirmCategoryStats
-              data={itemCategoryStatsQuery?.data?.data}
-              isPending={itemCategoryStatsQuery.isPending}
-            />
+          <Container maxW="100%" pl={10} pr={10}>
+            <SimpleGrid minChildWidth="130px" spacing={4}>
+              {itemCategoryStatsQuery?.data?.data.byCategory.map((c) => (
+                <StatCard2
+                  key={c.categoryCode}
+                  title={c.category}
+                  value={c.totalFirms}
+                  categoryCode={c.categoryCode}
+                />
+              ))}
+              <StatCard2
+                key={"total"}
+                title={"Total"}
+                value={itemCategoryStatsQuery?.data?.data.total}
+                categoryCode={""}
+              />
+            </SimpleGrid>
           </Container>
         </Section>
 

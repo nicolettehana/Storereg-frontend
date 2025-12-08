@@ -10,7 +10,7 @@ export const CATEGORY_COLORS = [
   "pink.400",
   "green.400",
   "lime.400",
-  "indigo.400",
+  "cyan.400",
   "facebook.400",
   "messenger.400",
   "whatsapp.400",
@@ -22,7 +22,7 @@ export const CATEGORY_COLORS = [
   "red.500",
   "purple.500",
   "orange.500",
-  "blue.500",
+  "indigo.500",
   "pink.500",
   "cyan.500",
 ];

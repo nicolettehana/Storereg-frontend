@@ -1,11 +1,8 @@
 import { useState } from "react";
 import Main from "../../../components/core/semantics/Main";
 import Section from "../../../components/core/semantics/Section";
-import { Button, Container, HStack, Stack } from "@chakra-ui/react";
-import {
-  useFetchQuartersByType,
-  useFetchQuarterStats,
-} from "../../../hooks/quartersQueries";
+import { Button, Container, HStack, Stack, SimpleGrid } from "@chakra-ui/react";
+
 import {
   useFetchCategories,
   useFetchCategoryStats,
@@ -22,6 +19,7 @@ import QuarterStats from "../../../components/quarterStats/QuarterStats";
 import FirmCategoryStats from "../../../components/stats/FirmCategoryStats";
 import { useNavigate } from "react-router-dom";
 import YearRangeFilter from "../../../components/filter/YearRangeFilter";
+import StatCard2 from "../../../components/core/theme/StatCard2";
 
 const FirmsPage = () => {
   // States
@@ -55,11 +53,23 @@ const FirmsPage = () => {
       {/* Main */}
       <Main>
         <Section>
-          <Container maxW="container.lg">
-            <FirmCategoryStats
-              data={categoryStatsQuery?.data?.data}
-              isPending={categoryStatsQuery.isPending}
-            />
+          <Container maxW="100%" pl={10} pr={10}>
+            <SimpleGrid minChildWidth="130px" spacing={4}>
+              {categoryStatsQuery?.data?.data.byCategory.map((c) => (
+                <StatCard2
+                  key={c.categoryCode}
+                  title={c.category}
+                  value={c.totalFirms}
+                  categoryCode={c.categoryCode}
+                />
+              ))}
+              <StatCard2
+                key={"total"}
+                title={"Total"}
+                value={categoryStatsQuery?.data?.data.total}
+                categoryCode={""}
+              />
+            </SimpleGrid>
           </Container>
         </Section>
 

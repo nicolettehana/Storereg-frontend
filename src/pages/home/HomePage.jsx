@@ -43,7 +43,7 @@ const HomePage = () => {
                     backgroundPosition="center"
                   >
                     <Stack spacing={4} color="brand.600">
-                      <Heading size="xl">Store Register</Heading>
+                      <Heading size="xl">Stock Management</Heading>
                       <Text fontSize="2xl">
                         <strong>Secretariat Administration Department</strong>{" "}
                         <br />

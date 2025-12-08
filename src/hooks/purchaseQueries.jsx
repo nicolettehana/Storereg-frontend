@@ -64,3 +64,19 @@ export const useCreatePurchase = (onSuccess, onError) => {
     onError,
   });
 };
+
+// GET: Get amount by fin-year
+const fetchAmount = (year) => {
+  return request({
+    url: `/purchase/year/${year}`,
+    method: "get",
+  });
+};
+
+export const useFetchAmount = (year) => {
+  return useQuery({
+    queryKey: ["fetch-amount", year],
+    queryFn: () => fetchAmount(year),
+    retry: 0,
+  });
+};

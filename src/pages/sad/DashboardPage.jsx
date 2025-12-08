@@ -4,6 +4,8 @@ import { AiFillWarning } from "react-icons/ai";
 import { FaExclamationTriangle } from "react-icons/fa";
 import { HiOutlineExclamationTriangle } from "react-icons/hi2";
 import { MdWarningAmber } from "react-icons/md";
+import InventoryCard from "../../components/stats/InventoryCard";
+import ExpensePieChart from "../../components/charts/ExpensePieChart";
 
 import {
   Box,
@@ -23,27 +25,31 @@ import {
   useFetchCategoryStats,
   useFetchItemCategoryStats,
 } from "../../hooks/masterQueries";
+import { useFetchItemsLevelList } from "../../hooks/balanceQueries";
+import { useFetchAmount } from "../../hooks/purchaseQueries";
 import StatSummaryCard from "../../components/core/theme/StatSummaryCard";
+import { useState } from "react";
 //import { MdWarningAmber } from "react-icons/md";
 
 const YearRangePage = () => {
+  const [year, setYear] = useState(new Date().getFullYear());
+
   // Queries
   const yearRangeQuery = useFetchYearRange();
   const itemsStatsQuery = useFetchItemCategoryStats();
   const firmsStatsQuery = useFetchCategoryStats();
+  const outOfStockQuery = useFetchItemsLevelList(0);
+  const lowStockQuery = useFetchItemsLevelList(10);
+  const amountQuery = useFetchAmount(year);
 
   return (
     <Main>
-      <Container maxW="7xl" py={2}>
+      <Container maxW="8xl" py={2}>
         <Grid templateColumns={{ base: "1fr", lg: "3fr 1fr" }} gap={6}>
           {/* LEFT SECTION */}
           <VStack align="stretch" spacing={6}>
             {/* TOP KPI CARDS */}
             <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
-              <AiFillWarning size={28} color="orange" />
-              <FaExclamationTriangle size={26} color="orange" />
-              <HiOutlineExclamationTriangle size={28} color="orange" />
-              <Icon as={MdWarningAmber} boxSize={5} color="yellow.500" />
               <StatSummaryCard
                 title="In Stock"
                 total={firmsStatsQuery?.data?.data.total}
@@ -63,50 +69,37 @@ const YearRangePage = () => {
 
             {/* STOCK LIST SECTION */}
             <Box bg="gray.50" p={6} borderRadius="lg" boxShadow="md">
-              <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
-                <Flex align="center" mb={2} gap={2}>
+              <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+                {/* <Flex align="center" mb={2} gap={2}>
                   <AiFillWarning size={28} color="red" />
                   <Icon as={MdWarningAmber} boxSize={6} color="red.500" />
                   <MdWarningAmber size={22} color="red" />
+                  <FaExclamationTriangle size={26} color="orange" />
+                  <HiOutlineExclamationTriangle size={28} color="orange" />
+                  <Icon as={MdWarningAmber} boxSize={5} color="yellow.500" />
                   <Heading size="md">Out of Stock</Heading>
-                </Flex>
-                <Flex align="center" mb={2} gap={2}>
+                </Flex> */}
+                {/* <Flex align="center" mb={2} gap={2}>
                   <Icon as={MdWarningAmber} boxSize={6} color="yellow.500" />
                   <MdWarningAmber size={22} color="yellow" />
                   <Heading size="md">Low Stock</Heading>
-                </Flex>
+                </Flex> */}
 
-                <StockList
-                  title="Out of Stock"
-                  value="n"
-                  items={[
-                    {
-                      name: "Parent Item 1",
-                      children: ["Sub Item 1", "Sub Item 2"],
-                    },
-                    {
-                      name: "Parent Item 2",
-                      children: ["Sub Item A", "Sub Item B"],
-                    },
-                  ]}
-                />
+                <div style={{ padding: "20px" }}>
+                  <InventoryCard
+                    title="Out of Stock"
+                    data={outOfStockQuery?.data?.data}
+                    iconColor="red"
+                  />
+                </div>
 
-                <StockList
-                  title="Low Stock (less than 10)"
-                  value="5"
-                  items={[
-                    {
-                      name: "Parent Item 1",
-                      children: ["Sub Item 1", "Sub Item 2"],
-                    },
-                  ]}
-                />
-
-                <StockList
-                  title="High Stock"
-                  value="45"
-                  items={[{ name: "Parent Item 1", children: ["Sub Item 1"] }]}
-                />
+                <div style={{ padding: "20px" }}>
+                  <InventoryCard
+                    title="Low Stock"
+                    data={lowStockQuery?.data?.data}
+                    iconColor="orange"
+                  />
+                </div>
               </SimpleGrid>
             </Box>
           </VStack>
@@ -117,11 +110,7 @@ const YearRangePage = () => {
               Sidebar
             </Heading>
 
-            <SimpleGrid columns={1} spacing={4}>
-              <StatCard title="Stock" value={110} />
-              <StatCard title="Card 2" value="More text" />
-              <StatCard title="Card 3" value="More content" />
-            </SimpleGrid>
+            <ExpensePieChart data={amountQuery?.data?.data} />
           </Box>
         </Grid>
       </Container>

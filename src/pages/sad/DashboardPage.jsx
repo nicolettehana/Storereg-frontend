@@ -29,18 +29,34 @@ import { useFetchItemsLevelList } from "../../hooks/balanceQueries";
 import { useFetchAmount } from "../../hooks/purchaseQueries";
 import StatSummaryCard from "../../components/core/theme/StatSummaryCard";
 import { useState } from "react";
+import SelectField from "../../components/core/formik/SelectField";
+import { Form, Formik } from "formik";
 //import { MdWarningAmber } from "react-icons/md";
 
 const YearRangePage = () => {
-  const [year, setYear] = useState(new Date().getFullYear());
+  const today = new Date();
+  const currentYear = today.getFullYear();
+
+  const isBeforeApril = today.getMonth() < 3;
+  const [year, setYear] = useState(
+    isBeforeApril ? currentYear - 1 : currentYear
+  );
 
   // Queries
-  const yearRangeQuery = useFetchYearRange();
   const itemsStatsQuery = useFetchItemCategoryStats();
   const firmsStatsQuery = useFetchCategoryStats();
   const outOfStockQuery = useFetchItemsLevelList(0);
   const lowStockQuery = useFetchItemsLevelList(10);
   const amountQuery = useFetchAmount(year);
+
+  const finalStartYear = isBeforeApril ? currentYear - 1 : currentYear;
+  const finalEndYear = finalStartYear + 1;
+  const baseStartYear = 2024;
+
+  const yearOptions = [];
+  for (let y = baseStartYear; y <= finalStartYear; y++) {
+    yearOptions.push(`${y}-${y + 1}`);
+  }
 
   return (
     <Main>
@@ -85,7 +101,7 @@ const YearRangePage = () => {
                   <Heading size="md">Low Stock</Heading>
                 </Flex> */}
 
-                <div style={{ padding: "20px" }}>
+                <div style={{ padding: "2%" }}>
                   <InventoryCard
                     title="Out of Stock"
                     data={outOfStockQuery?.data?.data}
@@ -93,7 +109,7 @@ const YearRangePage = () => {
                   />
                 </div>
 
-                <div style={{ padding: "20px" }}>
+                <div style={{ padding: "2%" }}>
                   <InventoryCard
                     title="Low Stock"
                     data={lowStockQuery?.data?.data}
@@ -105,13 +121,42 @@ const YearRangePage = () => {
           </VStack>
 
           {/* RIGHT SIDEBAR */}
-          <Box bg="gray.50" p={6} borderRadius="lg" boxShadow="md" h="100%">
-            <Heading size="md" mb={4}>
-              Sidebar
-            </Heading>
+          <Formik
+            enableReinitialize={true}
+            initialValues={{ year: year + "-" + (year + 1) }} // <-- Add your initial values here
+            onSubmit={(values) => {
+              console.log("Form Submitted:", values);
+            }}
+          >
+            {(formik) => (
+              <Form>
+                <Box
+                  bg="gray.50"
+                  p={6}
+                  borderRadius="lg"
+                  boxShadow="md"
+                  h="100%"
+                >
+                  <Heading size="md" mb={4}>
+                    <SelectField
+                      name="year"
+                      label="Financial Year"
+                      placeholder="Select financial year"
+                    >
+                      {yearOptions?.map((year) => (
+                        <option key={year} value={year}>
+                          {year}
+                        </option>
+                      ))}
+                    </SelectField>
+                  </Heading>
 
-            <ExpensePieChart data={amountQuery?.data?.data} />
-          </Box>
+                  {/* Example: Use formik.values.year to drive your chart */}
+                  <ExpensePieChart data={amountQuery?.data?.data} />
+                </Box>
+              </Form>
+            )}
+          </Formik>
         </Grid>
       </Container>
     </Main>

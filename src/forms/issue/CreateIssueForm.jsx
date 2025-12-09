@@ -230,17 +230,6 @@ const CreateIssueForm = () => {
           setTotalCost(total);
         }, [formik.values.items, unitsBalanceQuery.data]);
 
-        // useEffect(() => {
-        //   formik.values.items.forEach((row, index) => {
-        //     if (selectedUnit) {
-        //       formik.setFieldValue(
-        //         `items[${index}].balance`,
-        //         selectedUnit.balance
-        //       );
-        //     }
-        //   });
-        // }, [formik.values.items, unitsBalanceQuery.data]);
-
         return (
           <Stack as={Form} spacing={8}>
             {/* Top Form Fields */}

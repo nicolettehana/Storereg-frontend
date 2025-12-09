@@ -71,12 +71,12 @@ const PurchasePage = () => {
                     setToDate={setEndDate}
                     setPageNumber={setPageNumber}
                   />
-                  <CategoriesFilter
+                  {/* <CategoriesFilter
                     categoryCode={categoryCode}
                     setCategoryCode={setCategoryCode}
                     setPageNumber={setPageNumber}
                     query={categoryQuery}
-                  />
+                  /> */}
                 </HStack>
 
                 <Button

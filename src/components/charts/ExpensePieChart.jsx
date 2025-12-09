@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Heading, useToken } from "@chakra-ui/react";
+import { Box, Heading, useToken, Text } from "@chakra-ui/react";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 
 // data will be passed as a prop
@@ -55,6 +55,9 @@ export default function ExpensePieChart({ data }) {
           }}
         />
       </PieChart>
+      <Text pt={1} fontWeight="bold">
+        Total: ₹{data?.total}
+      </Text>
     </Box>
   );
 }

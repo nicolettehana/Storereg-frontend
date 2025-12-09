@@ -52,6 +52,7 @@ import IssuePage from "./pages/sad/issue/IssuePage";
 import CreateIssuePage from "./pages/sad/issue/CreateIssuePage";
 import DashboardPage from "./pages/sad/DashboardPage";
 import CategoryPage from "./pages/sad/category/CategoryPage";
+import LedgerPage from "./pages/sad/ledger/LedgerPage";
 
 const App = () => {
   return (
@@ -110,6 +111,7 @@ const App = () => {
         <Route path="issue" element={<IssuePage />} />
         <Route path="issue/create" element={<CreateIssuePage />} />
         <Route path="category" element={<CategoryPage />} />
+        <Route path="ledger" element={<LedgerPage />} />
         <Route
           path="firms/add-approved-firm"
           element={<AddApprovedFirmsPage />}

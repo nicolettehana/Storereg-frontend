@@ -16,6 +16,7 @@ import YearRangeFilter from "../../../components/filter/YearRangeFilter";
 import PurchaseTableWrapper from "./PurchaseTableWrapper";
 import dayjs from "dayjs";
 import DateFilter from "../../ch/allApplications/DateFilter";
+import { FaFileExport } from "react-icons/fa";
 
 const PurchasePage = () => {
   // States
@@ -79,15 +80,26 @@ const PurchasePage = () => {
                   /> */}
                 </HStack>
 
-                <Button
-                  variant="brand"
-                  leftIcon={<MdOutlineAddCircleOutline />}
-                  onClick={() => {
-                    navigate("/sad/purchase/create");
-                  }}
-                >
-                  Add New Purchase
-                </Button>
+                <HStack>
+                  <Button
+                    variant="brand"
+                    leftIcon={<MdOutlineAddCircleOutline />}
+                    onClick={() => {
+                      navigate("/sad/purchase/create");
+                    }}
+                  >
+                    Add New Purchase
+                  </Button>
+                  <Button
+                    variant="brand"
+                    leftIcon={<FaFileExport />}
+                    onClick={() => {
+                      //navigate("/sad/issue/create");
+                    }}
+                  >
+                    Export to PDF
+                  </Button>
+                </HStack>
               </HStack>
 
               {/* Filters */}

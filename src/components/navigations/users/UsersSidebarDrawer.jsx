@@ -39,13 +39,15 @@ const UsersSidebarDrawer = ({ isOpen, onClose }) => {
         backdropBlur="18px"
         backdropSaturate="180%"
       />
-      <DrawerContent bg={useColorModeValue("white", "zinc.950")}>
+      <DrawerContent bg="black">
         <DrawerCloseButton />
-        <DrawerHeader>
-          <Heading size="md">Stock Mgt. | SAD</Heading>
+        <DrawerHeader bg="gray.800">
+          <Heading size="md" color="white">
+            Stock Mgt. | SAD
+          </Heading>
         </DrawerHeader>
 
-        <DrawerBody as="nav">
+        <DrawerBody as="nav" bg="gray.800">
           <Stack spacing={1}>
             <Text fontSize="2xs" mb={2} letterSpacing="wider">
               MENU

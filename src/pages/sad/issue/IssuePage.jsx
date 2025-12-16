@@ -17,6 +17,7 @@ import PurchaseTableWrapper from "./IssueTableWrapper";
 import dayjs from "dayjs";
 import DateFilter from "../../ch/allApplications/DateFilter";
 import IssueTableWrapper from "./IssueTableWrapper";
+import { FaFileExport } from "react-icons/fa";
 
 const IssuePage = () => {
   // States
@@ -88,15 +89,26 @@ const IssuePage = () => {
                   />
                 </HStack>
 
-                <Button
-                  variant="brand"
-                  leftIcon={<MdOutlineAddCircleOutline />}
-                  onClick={() => {
-                    navigate("/sad/issue/create");
-                  }}
-                >
-                  New Issue
-                </Button>
+                <HStack>
+                  <Button
+                    variant="brand"
+                    leftIcon={<MdOutlineAddCircleOutline />}
+                    onClick={() => {
+                      navigate("/sad/issue/create");
+                    }}
+                  >
+                    New Issue
+                  </Button>
+                  <Button
+                    variant="brand"
+                    leftIcon={<FaFileExport />}
+                    onClick={() => {
+                      //navigate("/sad/issue/create");
+                    }}
+                  >
+                    Export to PDF
+                  </Button>
+                </HStack>
               </HStack>
 
               {/* Filters */}

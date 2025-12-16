@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import CategoriesFilter from "../../../components/filter/CategoriesFilter";
 import YearRangeFilter from "../../../components/filter/YearRangeFilter";
 import RatesTableWrapper from "./RatesTableWrapper";
+import { FaFileExport } from "react-icons/fa";
 
 const RatesPage = () => {
   // States
@@ -63,15 +64,26 @@ const RatesPage = () => {
                   />
                 </HStack>
 
-                <Button
-                  variant="brand"
-                  leftIcon={<MdOutlineAddCircleOutline />}
-                  onClick={() => {
-                    navigate("/sad/rates/create");
-                  }}
-                >
-                  Add New Rate
-                </Button>
+                <HStack>
+                  <Button
+                    variant="brand"
+                    leftIcon={<MdOutlineAddCircleOutline />}
+                    onClick={() => {
+                      navigate("/sad/rates/create");
+                    }}
+                  >
+                    Add New Rate
+                  </Button>
+                  <Button
+                    variant="brand"
+                    leftIcon={<FaFileExport />}
+                    onClick={() => {
+                      //navigate("/sad/issue/create");
+                    }}
+                  >
+                    Export to PDF
+                  </Button>
+                </HStack>
               </HStack>
 
               {/* Filters */}

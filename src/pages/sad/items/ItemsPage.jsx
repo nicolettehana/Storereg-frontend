@@ -14,6 +14,7 @@ import { PageSizing } from "../../../components/core/Table";
 import FirmCategoryStats from "../../../components/stats/FirmCategoryStats";
 import { useNavigate } from "react-router-dom";
 import StatCard2 from "../../../components/core/theme/StatCard2";
+import { FaFileExport } from "react-icons/fa";
 
 const ItemsPage = () => {
   // States
@@ -76,15 +77,26 @@ const ItemsPage = () => {
                   />
                 </HStack>
 
-                <Button
-                  variant="brand"
-                  leftIcon={<MdOutlineAddCircleOutline />}
-                  onClick={() => {
-                    navigate("/sad/items/create");
-                  }}
-                >
-                  Add New Item
-                </Button>
+                <HStack>
+                  <Button
+                    variant="brand"
+                    leftIcon={<MdOutlineAddCircleOutline />}
+                    onClick={() => {
+                      navigate("/sad/items/create");
+                    }}
+                  >
+                    Add New Item
+                  </Button>
+                  <Button
+                    variant="brand"
+                    leftIcon={<FaFileExport />}
+                    onClick={() => {
+                      //navigate("/sad/issue/create");
+                    }}
+                  >
+                    Export to PDF
+                  </Button>
+                </HStack>
               </HStack>
 
               {/* Filters */}

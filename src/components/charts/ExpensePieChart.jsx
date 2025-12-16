@@ -24,7 +24,13 @@ export default function ExpensePieChart({ data }) {
       <Heading mb={4} size="md">
         Expense Breakdown
       </Heading>
-      <Box bg="brand.50" pb={4} border="1px solid" borderColor="gray.300">
+      <Box
+        bg="#F3F5F8"
+        pb={4}
+        border="1px solid"
+        borderColor="gray.300"
+        borderRadius="md"
+      >
         <PieChart width={350} height={350}>
           <Pie
             data={data?.categories}

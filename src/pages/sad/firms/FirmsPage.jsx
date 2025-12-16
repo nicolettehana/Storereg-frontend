@@ -21,6 +21,7 @@ import FirmCategoryStats from "../../../components/stats/FirmCategoryStats";
 import { useNavigate } from "react-router-dom";
 import YearRangeFilter from "../../../components/filter/YearRangeFilter";
 import StatCard2 from "../../../components/core/theme/StatCard2";
+import { FaFileExport } from "react-icons/fa";
 
 const FirmsPage = () => {
   // States
@@ -112,6 +113,15 @@ const FirmsPage = () => {
                     }}
                   >
                     Add New Firm
+                  </Button>
+                  <Button
+                    variant="brand"
+                    leftIcon={<FaFileExport />}
+                    onClick={() => {
+                      //navigate("/sad/issue/create");
+                    }}
+                  >
+                    Export to PDF
                   </Button>
                 </HStack>
               </HStack>

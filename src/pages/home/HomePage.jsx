@@ -20,7 +20,7 @@ import {
 import { Link } from "react-router-dom";
 import SignInForm from "../../forms/auth/SignInForm";
 import quartersImg from "../../assets/quarters6.png";
-import inventoryImg from "../../assets/inventory3.png";
+import inventoryImg from "../../assets/inventory4.png";
 //import inventoryImg from "../../assets/inventoryy.jpg";
 import MdIcon from "../../components/core/MdIcon";
 import { useGetXsrfToken } from "../../hooks/authQueries";
@@ -40,7 +40,7 @@ const HomePage = () => {
                 spacing={4}
                 //mt={16}
                 backgroundImage={`url(${inventoryImg})`}
-                minW="100%"
+                minH="100%"
                 backgroundSize="cover"
                 backgroundPosition="center"
               >

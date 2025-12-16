@@ -137,6 +137,10 @@ const YearRangePage = () => {
                       name="year"
                       label="Financial Year"
                       placeholder="Select financial year"
+                      onValueChange={(value) => {
+                        const startYear = value.split("-")[0];
+                        setYear(Number(startYear));
+                      }}
                     >
                       {yearOptions?.map((year) => (
                         <option key={year} value={year}>

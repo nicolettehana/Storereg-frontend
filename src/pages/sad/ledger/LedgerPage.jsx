@@ -18,6 +18,7 @@ import PurchaseTableWrapper from "./LedgerTableWrapper";
 import dayjs from "dayjs";
 import DateFilter from "../../ch/allApplications/DateFilter";
 import LedgerTableWrapper from "./LedgerTableWrapper";
+import { FaFileExport } from "react-icons/fa";
 
 const LedgerPage = () => {
   // States
@@ -100,12 +101,12 @@ const LedgerPage = () => {
 
                 <Button
                   variant="brand"
-                  leftIcon={<MdOutlineHome />}
+                  leftIcon={<FaFileExport />}
                   onClick={() => {
                     //navigate("/sad/issue/create");
                   }}
                 >
-                  Export
+                  Export to PDF
                 </Button>
               </HStack>
 

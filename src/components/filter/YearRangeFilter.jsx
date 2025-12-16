@@ -41,7 +41,6 @@ const YearRangeFilter = ({
           //defaultValue={yearRangeId}
           value={yearRangeId ?? ""}
           onChange={(value) => {
-            console.log("You clicked");
             setYearRangeId(value); // keep as STRING
             setPageNumber(0);
           }}

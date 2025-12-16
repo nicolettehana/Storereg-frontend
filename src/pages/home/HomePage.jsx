@@ -21,6 +21,7 @@ import { Link } from "react-router-dom";
 import SignInForm from "../../forms/auth/SignInForm";
 import quartersImg from "../../assets/quarters6.png";
 import inventoryImg from "../../assets/inventory1.png";
+//import inventoryImg from "../../assets/inventoryy.jpg";
 import MdIcon from "../../components/core/MdIcon";
 import { useGetXsrfToken } from "../../hooks/authQueries";
 

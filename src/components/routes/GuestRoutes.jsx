@@ -19,8 +19,10 @@ const GuestRoutes = () => {
   const drawer = useDisclosure();
 
   // Hooks
-  const contianerBg = useColorModeValue("brand.300", "brand.700");
-  const stackBg = useColorModeValue("brand.50", "brand.950");
+  //const contianerBg = useColorModeValue("brand.300", "brand.700");
+  const contianerBg = useColorModeValue("white", "white");
+  //const stackBg = useColorModeValue("brand.50", "brand.950");
+  const stackBg = useColorModeValue("white", "white");
 
   // Queries
   const profileQuery = useFetchUsersProfile();

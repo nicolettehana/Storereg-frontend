@@ -159,8 +159,7 @@ const SignInForm = () => {
         {(formik) => (
           <Stack as={Form} spacing={4}>
             <Stack>
-              <Heading size="md">Govt. Employee Login</Heading>
-              <Text color="body">Sign into your account</Text>
+              <Heading size="md">Login</Heading>
             </Stack>
 
             <InputField
@@ -178,7 +177,7 @@ const SignInForm = () => {
                 placeholder="Minimum 8 characters"
               />
 
-              <Link
+              {/* <Link
                 as={RouterLink}
                 to="/auth/forgot-password"
                 pos="absolute"
@@ -186,7 +185,7 @@ const SignInForm = () => {
                 right={0}
               >
                 Forgot Password?
-              </Link>
+              </Link> */}
             </Box>
 
             <CaptchaImage query={captchaQuery} />
@@ -208,13 +207,13 @@ const SignInForm = () => {
 
             <Divider />
 
-            <Text>
+            {/* <Text>
               Don't have an account?{" "}
               <Link as={RouterLink} to="/auth/register">
                 Register
               </Link>{" "}
               now.
-            </Text>
+            </Text> */}
           </Stack>
         )}
       </Formik>

@@ -203,8 +203,8 @@ const LedgerTableWrapper = ({
                 Opening Balance <br /> as on{" "}
                 {new Date(startDate).toLocaleDateString("en-GB")}
               </Th>
-              <Th>Purchase</Th>
-              <Th>Issue</Th>
+              <Th>#Purchases</Th>
+              <Th>#Issues</Th>
               <Th>
                 Closing Balance <br /> as on{" "}
                 {new Date(endDate).toLocaleDateString("en-GB")}
@@ -230,115 +230,182 @@ const LedgerTableWrapper = ({
                   </Td>
                   <Td>
                     <SkeletonText
-                      w="8"
-                      noOfLines={1}
+                      noOfLines={row?.length || 1}
                       isLoaded={!query.isPending}
                       fadeDuration={index}
                     >
-                      {row?.date
-                        ? new Date(row.date)
-                            .toLocaleDateString("en-GB")
-                            .replace(/\//g, "-") // dd-mm-yyyy
-                        : ""}
-                    </SkeletonText>
-                  </Td>
-
-                  <Td>
-                    <SkeletonText
-                      noOfLines={1}
-                      isLoaded={!query.isPending}
-                      fadeDuration={index}
-                    >
-                      <Box whiteSpace="normal">{row?.issuedTo}</Box>
-                    </SkeletonText>
-                  </Td>
-                  <Td>
-                    <SkeletonText
-                      noOfLines={row?.items?.length || 1}
-                      isLoaded={!query.isPending}
-                      fadeDuration={index}
-                    >
-                      {row?.items?.map((item, i) => (
-                        <Box key={i} mb={1}>
-                          <Badge
-                            colorScheme={getCategoryColorScheme(
-                              item?.categoryCode
-                            )}
-                          >
-                            {item.category}
-                          </Badge>
-
-                          {item?.subItems
-                            ?.filter((s) => s) // <-- removes null values
-                            .map((subItem, i) => (
-                              <Box key={i} mb={1}>
-                                {"\u00A0"}
-                              </Box>
-                            ))}
-                        </Box>
-                      ))}
-                    </SkeletonText>
-                  </Td>
-
-                  <Td>
-                    <SkeletonText
-                      noOfLines={row?.items?.length || 1}
-                      isLoaded={!query.isPending}
-                      fadeDuration={index}
-                    >
-                      {row?.items?.map((item, i) => (
-                        <Box key={i} mb={1}>
-                          <b>{i + 1})</b> {item.itemName}
-                          {item?.subItems
-                            ?.filter((s) => s) // <-- removes null values
-                            .map((subItem, i) => (
-                              <Box key={i} mb={1}>
-                                &nbsp;&nbsp;
-                                <Badge
-                                  textTransform="none"
-                                  fontSize="sm"
-                                  fontWeight="normal"
-                                >
-                                  <b>({String.fromCharCode(97 + i)}) </b>
-                                  {subItem.subItemName}
-                                </Badge>
-                              </Box>
-                            ))}
-                        </Box>
-                      ))}
-                    </SkeletonText>
-                  </Td>
-                  <Td>
-                    <SkeletonText
-                      noOfLines={row?.items?.length || 1}
-                      isLoaded={!query.isPending}
-                      fadeDuration={index}
-                    >
-                      {row?.items?.map((item, i) => (
-                        <Box key={i} mb={1}>
-                          {item.subItems?.every((s) => s == null)
-                            ? item.quantity
-                            : "\u00A0"}
-                          {item?.subItems?.map(
-                            (subItem, i) =>
-                              subItem?.subItemName && (
-                                <Box key={i} mb={1}>
-                                  {subItem.quantity}
-                                </Box>
-                              )
+                      <Box>
+                        <Badge
+                          colorScheme={getCategoryColorScheme(
+                            row?.categoryCode
                           )}
-                        </Box>
+                        >
+                          {row?.category}
+                        </Badge>
+                      </Box>
+                    </SkeletonText>
+                  </Td>
+                  <Td>
+                    <SkeletonText
+                      noOfLines={row?.length || 1}
+                      isLoaded={!query.isPending}
+                      fadeDuration={index}
+                    >
+                      {row?.itemName}
+                      {row?.subItems?.map((subItem, i) =>
+                        subItem?.units?.map((unit, j) => (
+                          <Box key={`${i}-${j}`} mb={1}>
+                            <Badge
+                              textTransform="none"
+                              fontSize="sm"
+                              fontWeight="normal"
+                            >
+                              <b>({String.fromCharCode(97 + i)}) </b>
+                              {subItem.subItemName}
+                            </Badge>
+                          </Box>
+                        ))
+                      )}
+                    </SkeletonText>
+                  </Td>
+
+                  <Td>
+                    <SkeletonText
+                      noOfLines={row?.length || 1}
+                      isLoaded={!query.isPending}
+                      fadeDuration={index}
+                    >
+                      {row?.units?.length === 0 ? (
+                        <Box mb={1}>&nbsp;</Box> // empty space
+                      ) : (
+                        row?.units?.map((unit, i) => (
+                          <Box key={i} mb={1}>
+                            {unit.unitName}
+                          </Box>
+                        ))
+                      )}
+
+                      {row?.subItems?.map((subItem, i) => (
+                        <div key={i}>
+                          {subItem?.units?.map((unit, j) => (
+                            <Box key={j} mb={1}>
+                              {unit.unitName}
+                            </Box>
+                          ))}
+                        </div>
                       ))}
                     </SkeletonText>
                   </Td>
 
                   <Td>
                     <SkeletonText
-                      noOfLines={1}
+                      noOfLines={row?.length || 1}
                       isLoaded={!query.isPending}
                       fadeDuration={index}
                     >
-                      {row?.remarks}
+                      {row?.units?.length === 0 ? (
+                        <Box mb={1}>&nbsp;</Box> // empty space
+                      ) : (
+                        row?.units?.map((unit, i) => (
+                          <Box key={i} mb={1}>
+                            {unit.openingBalance}
+                          </Box>
+                        ))
+                      )}
+
+                      {row?.subItems?.map((subItem, i) => (
+                        <div key={i}>
+                          {subItem?.units?.map((unit, j) => (
+                            <Box key={j} mb={1}>
+                              {unit.openingBalance}
+                            </Box>
+                          ))}
+                        </div>
+                      ))}
+                    </SkeletonText>
+                  </Td>
+
+                  <Td>
+                    <SkeletonText
+                      noOfLines={row?.length || 1}
+                      isLoaded={!query.isPending}
+                      fadeDuration={index}
+                    >
+                      {row?.units?.length === 0 ? (
+                        <Box mb={1}>&nbsp;</Box> // empty space
+                      ) : (
+                        row?.units?.map((unit, i) => (
+                          <Box key={i} mb={1}>
+                            {unit.noOfPurchases}
+                          </Box>
+                        ))
+                      )}
+
+                      {row?.subItems?.map((subItem, i) => (
+                        <div key={i}>
+                          {subItem?.units?.map((unit, j) => (
+                            <Box key={j} mb={1}>
+                              {unit.noOfPurchases}
+                            </Box>
+                          ))}
+                        </div>
+                      ))}
+                    </SkeletonText>
+                  </Td>
+
+                  <Td>
+                    <SkeletonText
+                      noOfLines={row?.length || 1}
+                      isLoaded={!query.isPending}
+                      fadeDuration={index}
+                    >
+                      {row?.units?.length === 0 ? (
+                        <Box mb={1}>&nbsp;</Box> // empty space
+                      ) : (
+                        row?.units?.map((unit, i) => (
+                          <Box key={i} mb={1}>
+                            {unit.noOfIssues}
+                          </Box>
+                        ))
+                      )}
+
+                      {row?.subItems?.map((subItem, i) => (
+                        <div key={i}>
+                          {subItem?.units?.map((unit, j) => (
+                            <Box key={j} mb={1}>
+                              {unit.noOfIssues}
+                            </Box>
+                          ))}
+                        </div>
+                      ))}
+                    </SkeletonText>
+                  </Td>
+
+                  <Td>
+                    <SkeletonText
+                      noOfLines={row?.length || 1}
+                      isLoaded={!query.isPending}
+                      fadeDuration={index}
+                    >
+                      {row?.units?.length === 0 ? (
+                        <Box mb={1}>&nbsp;</Box> // empty space
+                      ) : (
+                        row?.units?.map((unit, i) => (
+                          <Box key={i} mb={1}>
+                            {unit.closingBalance}
+                          </Box>
+                        ))
+                      )}
+
+                      {row?.subItems?.map((subItem, i) => (
+                        <div key={i}>
+                          {subItem?.units?.map((unit, j) => (
+                            <Box key={j} mb={1}>
+                              {unit.closingBalance}
+                            </Box>
+                          ))}
+                        </div>
+                      ))}
                     </SkeletonText>
                   </Td>
                 </Tr>

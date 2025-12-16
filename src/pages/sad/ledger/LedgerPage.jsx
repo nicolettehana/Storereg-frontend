@@ -126,7 +126,7 @@ const LedgerPage = () => {
 
               {/* Table */}
               <LedgerTableWrapper
-                query={issueQuery}
+                query={ledgerQuery}
                 searchText={searchText}
                 pageNumber={pageNumber}
                 setPageNumber={setPageNumber}

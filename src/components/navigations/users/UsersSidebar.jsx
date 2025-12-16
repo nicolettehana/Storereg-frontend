@@ -25,9 +25,11 @@ const UsersSidebar = ({ profile }) => {
       w={256}
       borderRight="1px"
       borderColor="border"
-      bg="paperSecondary"
+      //bg="paperSecondary"
+      bg="gray.800"
       minH="100dvh"
       pos="fixed"
+      color="white"
       top={0}
       left={0}
       py={7}
@@ -52,12 +54,14 @@ const UsersSidebar = ({ profile }) => {
                 : ""
             }
           >
-            <Heading size="md">Stock Mgt. | SAD</Heading>
+            <Heading size="md" color="white">
+              Stock Mgt. | SAD
+            </Heading>
           </Link>
         </Box>
 
         <Stack spacing={1} px={4}>
-          <Text fontSize="2xs" mb={2} letterSpacing="wider">
+          <Text fontSize="xs" mb={2} letterSpacing="wider">
             MENU
           </Text>
           {sortedMenu?.map((link) => (

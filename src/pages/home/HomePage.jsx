@@ -20,7 +20,7 @@ import {
 import { Link } from "react-router-dom";
 import SignInForm from "../../forms/auth/SignInForm";
 import quartersImg from "../../assets/quarters6.png";
-import inventoryImg from "../../assets/inventory1.png";
+import inventoryImg from "../../assets/inventory3.png";
 //import inventoryImg from "../../assets/inventoryy.jpg";
 import MdIcon from "../../components/core/MdIcon";
 import { useGetXsrfToken } from "../../hooks/authQueries";
@@ -51,12 +51,14 @@ const HomePage = () => {
                     backgroundSize="cover"
                     backgroundPosition="center"
                   >
-                    <Stack spacing={3} color="brand.600">
+                    <Stack spacing={3} color="brand.700">
                       <Heading size="xl">Stock Keeping System</Heading>
                       <Text fontSize="2xl">
                         <strong>Secretariat Administration Department</strong>{" "}
                         <br />
-                        Government Of Meghalaya
+                        <Text fontSize="xl">
+                          <strong>Government Of Meghalaya</strong>
+                        </Text>
                       </Text>
                     </Stack>
                   </Stack>
@@ -68,6 +70,7 @@ const HomePage = () => {
             <Center>
               <VStack spacing={8}>
                 <Box
+                  //bg="brand.100"
                   //bg="paper"
                   // bg="white"
                   border="1px"
@@ -76,6 +79,7 @@ const HomePage = () => {
                   p={8}
                   w="sm"
                   maxW="sm"
+                  shadow="lg"
                 >
                   <SignInForm />
                 </Box>

@@ -7,13 +7,24 @@ import {
   VStack,
   HStack,
   Badge,
+  Divider,
 } from "@chakra-ui/react";
 import { getCategoryColorScheme } from "../core/CategoryColors";
 import { FaExclamationTriangle } from "react-icons/fa";
 
 const InventoryCard = ({ title, Icon, data, iconColor = "orange" }) => {
   return (
-    <Card color="black" shadow="md">
+    <Card
+      color="black"
+      shadow="2xl"
+      w="full"
+      minW="0"
+      h="full"
+      minH="0"
+      //bg="#faf8f3ff"
+      border="1px solid"
+      borderColor={iconColor + ".200"}
+    >
       <CardBody>
         {/* Card title with icon */}
         <HStack mb={4}>
@@ -35,9 +46,12 @@ const InventoryCard = ({ title, Icon, data, iconColor = "orange" }) => {
                   {category.category}
                 </Text> */}
                 {category.items && category.items.length > 0 ? (
-                  <Badge colorScheme={color} fontSize="sm">
-                    {category.category}
-                  </Badge>
+                  <>
+                    <Divider mb={4} />
+                    <Badge colorScheme={color} fontSize="sm">
+                      {category.category}
+                    </Badge>
+                  </>
                 ) : (
                   <></>
                 )}
@@ -62,7 +76,7 @@ const InventoryCard = ({ title, Icon, data, iconColor = "orange" }) => {
                             {item.subItems.map((sub, subIdx) => (
                               <Text key={subIdx} fontSize="sm">
                                 <b>{String.fromCharCode(97 + subIdx)}) </b>
-                                <Badge textTransform="none">
+                                <Badge textTransform="none" bg="white">
                                   {sub.subItem}:{" "}
                                   <b>
                                     {sub.stock !== null ? sub.stock : "N/A"}
@@ -82,6 +96,7 @@ const InventoryCard = ({ title, Icon, data, iconColor = "orange" }) => {
             );
           })}
         </VStack>
+        <Divider mt={4} />
       </CardBody>
     </Card>
   );

@@ -6,11 +6,13 @@ const Footer = () => {
     <Container as="footer" maxW="container.xl">
       <Box
         py={4}
-        bg="paper"
+        //bg="paper"
+        bg="brand.50"
         roundedTop="2xl"
         border="1px"
         borderBottom="0px"
         borderColor="border"
+        shadow="lg"
       >
         <VStack>
           <Show below="lg">
@@ -26,12 +28,12 @@ const Footer = () => {
           </Show>
 
           <VStack spacing={0}>
-            <Text fontSize="xs" textAlign="center" color="heading">
-              Content owned by General Administration Department, Government of
-              Meghalaya
+            <Text fontSize="xs" textAlign="center" color="brand.700">
+              Content owned by Secretariat Administration Department, Government
+              of Meghalaya
             </Text>
 
-            <Text fontSize="xs" textAlign="center" color="heading">
+            <Text fontSize="xs" textAlign="center" color="brand.700">
               Developed and hosted by National Informatics Center, Meghalaya
             </Text>
           </VStack>

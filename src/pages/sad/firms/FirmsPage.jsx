@@ -9,7 +9,8 @@ import {
 } from "../../../hooks/masterQueries";
 import { useFetchFirmsByType } from "../../../hooks/firmQueries";
 import { useFetchYearRange } from "../../../hooks/masterQueries";
-import { MdOutlineHome } from "react-icons/md";
+import { MdOutlineAddCircleOutline } from "react-icons/md";
+import { FaEdit } from "react-icons/fa";
 import FirmsTableWrapper from "./FirmsTableWrapper";
 import CategoriesFilter from "../../../components/filter/CategoriesFilter";
 import SearchInput from "../../../components/core/SearchInput";
@@ -95,7 +96,7 @@ const FirmsPage = () => {
                 <HStack justifyContent="space-between" spacing={2}>
                   <Button
                     variant="brand"
-                    leftIcon={<MdOutlineHome />}
+                    leftIcon={<FaEdit />}
                     onClick={() => {
                       navigate("/sad/firms/add-approved-firm");
                     }}
@@ -105,7 +106,7 @@ const FirmsPage = () => {
 
                   <Button
                     variant="brand"
-                    leftIcon={<MdOutlineHome />}
+                    leftIcon={<MdOutlineAddCircleOutline />}
                     onClick={() => {
                       navigate("/sad/firms/create");
                     }}

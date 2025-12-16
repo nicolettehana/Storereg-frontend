@@ -3,15 +3,16 @@ import { getCategoryColor, getCategoryColorScheme } from "../CategoryColors";
 
 const StatCard2 = ({ title, value, categoryCode }) => {
   //const bg = getCategoryColorScheme(categoryCode) + ".50";
-  const bg = "#f7f7fcff";
+  //const bg = "#f7f7fcff";
+  const bg = "gray.50";
   const textColor = getCategoryColorScheme(categoryCode) + ".700"; // readable on all your color backgrounds
 
   return (
     <>
-      <Card bg={bg} color={textColor}>
+      <Card bg={bg} color={textColor} shadow="md">
         <CardBody>
           <Heading size="sm">{title}</Heading>
-          <Text mt={2} fontSize="xl" fontWeight="bold">
+          <Text mt={2} fontSize="lg" fontWeight="bold">
             {value}
           </Text>
         </CardBody>

@@ -259,6 +259,7 @@ const LedgerTableWrapper = ({
                               textTransform="none"
                               fontSize="sm"
                               fontWeight="normal"
+                              bg="white"
                             >
                               <b>({String.fromCharCode(97 + i)}) </b>
                               {subItem.subItemName}

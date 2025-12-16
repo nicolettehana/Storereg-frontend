@@ -20,7 +20,7 @@ const GuestRoutes = () => {
 
   // Hooks
   //const contianerBg = useColorModeValue("brand.300", "brand.700");
-  const contianerBg = useColorModeValue("white", "white");
+  const contianerBg = useColorModeValue("brand.100", "white");
   //const stackBg = useColorModeValue("brand.50", "brand.950");
   const stackBg = useColorModeValue("white", "white");
 

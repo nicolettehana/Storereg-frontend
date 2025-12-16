@@ -6,7 +6,7 @@ import { useFetchYearRange } from "../../../hooks/masterQueries";
 import { useFetchRates } from "../../../hooks/ratesQueries";
 import { useFetchPurchases } from "../../../hooks/purchaseQueries";
 import { useFetchIssues } from "../../../hooks/issueQueries";
-import { MdOutlineHome } from "react-icons/md";
+import { MdOutlineAddCircleOutline } from "react-icons/md";
 import { useFetchCategories } from "../../../hooks/masterQueries";
 import SearchInput from "../../../components/core/SearchInput";
 import { useDebounce } from "use-debounce";
@@ -90,7 +90,7 @@ const IssuePage = () => {
 
                 <Button
                   variant="brand"
-                  leftIcon={<MdOutlineHome />}
+                  leftIcon={<MdOutlineAddCircleOutline />}
                   onClick={() => {
                     navigate("/sad/issue/create");
                   }}

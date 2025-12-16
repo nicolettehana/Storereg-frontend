@@ -8,6 +8,7 @@ import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 
 import {
   getCategoryColor,
+  getCategoryColorDark,
   getCategoryColorScheme,
 } from "../core/CategoryColors";
 
@@ -15,49 +16,51 @@ import PropTypes from "prop-types";
 
 export default function ExpensePieChart({ data }) {
   const colorTokens = data?.categories?.map((entry) =>
-    getCategoryColor(entry.categoryCode)
+    getCategoryColorDark(entry.categoryCode)
   );
   const hexColors = useToken("colors", colorTokens);
   return (
-    <Box p={6} bg="white" maxW="400px" mx="auto" textAlign="center">
+    <Box p={0} bg="white" maxW="400px" mx="auto" textAlign="center">
       <Heading mb={4} size="md">
         Expense Breakdown
       </Heading>
-      <PieChart width={350} height={350}>
-        <Pie
-          data={data?.categories}
-          cx="50%"
-          cy="50%"
-          labelLine={false}
-          outerRadius={120}
-          dataKey="value"
-          label={({ category, percent }) => ` ${(percent * 100).toFixed(0)}%`}
-        >
-          {data?.categories.map((entry, index) => (
-            <Cell
-              key={`cell-${index}`}
-              fill={hexColors[index]}
-              //fill={getColor(getCategoryColor(entry.categoryCode))}
-            />
-          ))}
-        </Pie>
-        <Tooltip
-          formatter={(value, name, props) => {
-            return [`₹${value}`, `${props?.payload?.category}`];
-          }}
-        />
+      <Box bg="brand.50" pb={4} border="1px solid" borderColor="gray.300">
+        <PieChart width={350} height={350}>
+          <Pie
+            data={data?.categories}
+            cx="50%"
+            cy="50%"
+            labelLine={false}
+            outerRadius={120}
+            dataKey="value"
+            label={({ category, percent }) => ` ${(percent * 100).toFixed(0)}%`}
+          >
+            {data?.categories.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={hexColors[index]}
+                //fill={getColor(getCategoryColor(entry.categoryCode))}
+              />
+            ))}
+          </Pie>
+          <Tooltip
+            formatter={(value, name, props) => {
+              return [`₹${value}`, `${props?.payload?.category}`];
+            }}
+          />
 
-        <Legend
-          formatter={(value, entry, index) => {
-            // value is the default name (usually 0, 1 if not set)
-            // entry.payload contains the data object
-            return entry.payload.category; // or entry.payload.name
-          }}
-        />
-      </PieChart>
-      <Text pt={1} fontWeight="bold">
-        Total: ₹{data?.total}
-      </Text>
+          <Legend
+            formatter={(value, entry, index) => {
+              // value is the default name (usually 0, 1 if not set)
+              // entry.payload contains the data object
+              return entry.payload.category; // or entry.payload.name
+            }}
+          />
+        </PieChart>
+        <Text pt={1} fontWeight="bold">
+          Total: ₹{data?.total}
+        </Text>
+      </Box>
     </Box>
   );
 }

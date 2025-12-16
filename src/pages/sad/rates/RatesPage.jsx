@@ -4,7 +4,7 @@ import Section from "../../../components/core/semantics/Section";
 import { Button, Container, HStack, Stack } from "@chakra-ui/react";
 import { useFetchYearRange } from "../../../hooks/masterQueries";
 import { useFetchRates } from "../../../hooks/ratesQueries";
-import { MdOutlineHome } from "react-icons/md";
+import { MdOutlineAddCircleOutline } from "react-icons/md";
 import { useFetchCategories } from "../../../hooks/masterQueries";
 import SearchInput from "../../../components/core/SearchInput";
 import { useDebounce } from "use-debounce";
@@ -65,7 +65,7 @@ const RatesPage = () => {
 
                 <Button
                   variant="brand"
-                  leftIcon={<MdOutlineHome />}
+                  leftIcon={<MdOutlineAddCircleOutline />}
                   onClick={() => {
                     navigate("/sad/rates/create");
                   }}

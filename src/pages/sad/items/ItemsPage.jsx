@@ -5,7 +5,7 @@ import { Button, Container, HStack, Stack, SimpleGrid } from "@chakra-ui/react";
 import { useFetchCategories } from "../../../hooks/masterQueries";
 import { useFetchItemCategoryStats } from "../../../hooks/masterQueries";
 import { useFetchItemsByType } from "../../../hooks/itemQueries";
-import { MdOutlineHome } from "react-icons/md";
+import { MdOutlineAddCircleOutline } from "react-icons/md";
 import ItemsTableWrapper from "./ItemsTableWrapper";
 import CategoriesFilter from "../../../components/filter/CategoriesFilter";
 import SearchInput from "../../../components/core/SearchInput";
@@ -78,7 +78,7 @@ const ItemsPage = () => {
 
                 <Button
                   variant="brand"
-                  leftIcon={<MdOutlineHome />}
+                  leftIcon={<MdOutlineAddCircleOutline />}
                   onClick={() => {
                     navigate("/sad/items/create");
                   }}

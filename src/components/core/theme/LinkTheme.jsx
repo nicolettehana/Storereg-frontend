@@ -58,7 +58,8 @@ const nav = defineStyle({
 });
 
 const sidebar = defineStyle({
-  color: "body",
+  //color: "body",
+  color: "white",
   fontWeight: "normal",
   px: 3,
   py: 2,
@@ -78,8 +79,8 @@ const sidebar = defineStyle({
     },
 
     _activeLink: {
-      bg: "brand.600",
-      color: "white",
+      bg: "white", //Hazel
+      color: "brand.900",
     },
   },
 

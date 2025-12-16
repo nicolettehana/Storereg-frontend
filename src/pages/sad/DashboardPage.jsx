@@ -60,23 +60,30 @@ const YearRangePage = () => {
 
   return (
     <Main>
-      <Container maxW="8xl" py={2}>
-        <Grid templateColumns={{ base: "1fr", lg: "3fr 1fr" }} gap={6}>
+      <Container maxW="100%" py={2}>
+        <Grid templateColumns={{ base: "1fr", lg: "4fr 400px" }} gap={6}>
           {/* LEFT SECTION */}
           <VStack align="stretch" spacing={6}>
             {/* TOP KPI CARDS */}
             <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
               <StatSummaryCard
+                bg="#F3F5F8"
+                fcolor="brand.900"
                 title="In Stock"
                 total={firmsStatsQuery?.data?.data.total}
                 categories={firmsStatsQuery?.data?.data.byCategory}
               />
               <StatSummaryCard
+                bg="#E9EDF1"
+                fcolor="brand.900"
                 title="Firms"
                 total={firmsStatsQuery?.data?.data.total}
                 categories={firmsStatsQuery?.data?.data.byCategory}
               />
               <StatSummaryCard
+                //bg="#E9EDF1"
+                bg="#D8E0E7"
+                fcolor="brand.800"
                 title="Items"
                 total={itemsStatsQuery?.data?.data.total}
                 categories={itemsStatsQuery?.data?.data.byCategory}
@@ -84,38 +91,24 @@ const YearRangePage = () => {
             </SimpleGrid>
 
             {/* STOCK LIST SECTION */}
-            <Box bg="gray.50" p={6} borderRadius="lg" boxShadow="md">
+            {/* <Box bg="gray.50" p={6} borderRadius="lg" boxShadow="md"> */}
+            <Box pt={6} borderRadius="lg" minW="0" w="full">
               <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
-                {/* <Flex align="center" mb={2} gap={2}>
-                  <AiFillWarning size={28} color="red" />
-                  <Icon as={MdWarningAmber} boxSize={6} color="red.500" />
-                  <MdWarningAmber size={22} color="red" />
-                  <FaExclamationTriangle size={26} color="orange" />
-                  <HiOutlineExclamationTriangle size={28} color="orange" />
-                  <Icon as={MdWarningAmber} boxSize={5} color="yellow.500" />
-                  <Heading size="md">Out of Stock</Heading>
-                </Flex> */}
-                {/* <Flex align="center" mb={2} gap={2}>
-                  <Icon as={MdWarningAmber} boxSize={6} color="yellow.500" />
-                  <MdWarningAmber size={22} color="yellow" />
-                  <Heading size="md">Low Stock</Heading>
-                </Flex> */}
-
-                <div style={{ padding: "2%" }}>
+                <Box w="100%">
                   <InventoryCard
                     title="Out of Stock"
                     data={outOfStockQuery?.data?.data}
                     iconColor="red"
                   />
-                </div>
+                </Box>
 
-                <div style={{ padding: "2%" }}>
+                <Box w="100%">
                   <InventoryCard
                     title="Low Stock"
                     data={lowStockQuery?.data?.data}
                     iconColor="orange"
                   />
-                </div>
+                </Box>
               </SimpleGrid>
             </Box>
           </VStack>
@@ -131,11 +124,13 @@ const YearRangePage = () => {
             {(formik) => (
               <Form>
                 <Box
-                  bg="gray.50"
+                  bg="white"
                   p={6}
                   borderRadius="lg"
-                  boxShadow="md"
+                  boxShadow="2xl"
                   h="100%"
+                  border="1px solid"
+                  borderColor="gray.300"
                 >
                   <Heading size="md" mb={4}>
                     <SelectField

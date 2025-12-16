@@ -43,6 +43,11 @@ export function getCategoryColor(categoryCode = "") {
   return color;
 }
 
+export function getCategoryColorDark(categoryKey = "") {
+  const full = getCategoryColor(categoryKey);
+  return full.split(".")[0] + ".700"; // → "red"
+}
+
 export function getCategoryColorScheme(categoryKey = "") {
   const full = getCategoryColor(categoryKey);
   return full.split(".")[0]; // → "red"

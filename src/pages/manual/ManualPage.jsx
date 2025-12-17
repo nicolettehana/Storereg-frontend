@@ -22,7 +22,7 @@ const ManualPage = () => {
           <Stack spacing={8}>
             <Heading size="lg">Manual</Heading>
 
-            <Accordion allowToggle>
+            {/* <Accordion allowToggle>
               <AccordionItem>
                 <h2>
                   <AccordionButton>
@@ -56,7 +56,7 @@ const ManualPage = () => {
                   </Box>
                 </AccordionPanel>
               </AccordionItem>
-            </Accordion>
+            </Accordion> */}
           </Stack>
         </Container>
       </Section>

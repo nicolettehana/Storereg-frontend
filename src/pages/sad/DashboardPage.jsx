@@ -69,7 +69,7 @@ const YearRangePage = () => {
               <StatSummaryCard
                 bg="#F3F5F8"
                 fcolor="brand.900"
-                title="In Stock"
+                title="Items In Stock"
                 total={firmsStatsQuery?.data?.data.total}
                 categories={firmsStatsQuery?.data?.data.byCategory}
               />

@@ -17,10 +17,10 @@ const ContactUsPage = () => {
           <Stack spacing={4}>
             <Stack spacing={2}>
               <Text fontWeight="bold">
-                General Administration Department (B)
+                Secretariat Administration Department (Nazarat)
               </Text>
               <Stack spacing={0}>
-                <Text color="body">Room No.228 (1st floor)</Text>
+                {/* <Text color="body">Room No.228 (1st floor)</Text> */}
                 <Text color="body">Rilang Building Meghalaya Secretariat,</Text>
                 <Text color="body">Shillong - 793001</Text>
               </Stack>

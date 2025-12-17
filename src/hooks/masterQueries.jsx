@@ -110,3 +110,37 @@ export const useFetchUnitsBalance = () => {
     queryFn: () => fetchUnitsBalance(),
   });
 };
+
+// POST: Create Year Range
+const createYearRange = (data) => {
+  return request({
+    url: "/year-range",
+    method: "post",
+    data,
+  });
+};
+
+export const useCreateYearRange = (onSuccess, onError) => {
+  return useMutation({
+    mutationFn: createYearRange,
+    onSuccess,
+    onError,
+  });
+};
+
+// POST: Create Category
+const createCategory = (data) => {
+  return request({
+    url: "/category",
+    method: "post",
+    data,
+  });
+};
+
+export const useCreateCategory = (onSuccess, onError) => {
+  return useMutation({
+    mutationFn: createCategory,
+    onSuccess,
+    onError,
+  });
+};

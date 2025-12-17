@@ -39,6 +39,8 @@ import {
   getCategoryColor,
   getCategoryColorScheme,
 } from "../../../components/core/CategoryColors";
+import CreateCategoryModal from "./CreateCategoryModal";
+import { MdOutlineAddCircleOutline } from "react-icons/md";
 
 const CategoryPage = () => {
   // Queries
@@ -53,16 +55,27 @@ const CategoryPage = () => {
   // Disclosures
   const mobileDisclosure = useDisclosure();
   const verifyOtpDisclosure = useDisclosure();
+  const createCategoryDisclosure = useDisclosure();
 
   return (
     <Main>
+      <CreateCategoryModal
+        isOpen={createCategoryDisclosure.isOpen}
+        onClose={createCategoryDisclosure.onClose}
+      />
       <Section>
         <Container maxW="container.xl">
           {/* User Info */}
           <Stack spacing={8} p={6}>
             <VStack spacing={4}>
               <HStack w="100%" justify="flex-end">
-                <Button variant="brand">Add New Category</Button>
+                <Button
+                  variant="brand"
+                  leftIcon={<MdOutlineAddCircleOutline />}
+                  onClick={createCategoryDisclosure.onOpen}
+                >
+                  Add New Category
+                </Button>
               </HStack>
 
               <TableContainer>

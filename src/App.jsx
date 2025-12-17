@@ -38,7 +38,7 @@ import CreateQuartersPage from "./pages/est/quarters/CreateQuartersPage";
 import UpdateQuartersPage from "./pages/est/quarters/UpdateQuartersPage";
 import ForgotPasswordPage from "./pages/auth/forgotPassword/ForgotPasswordPage";
 import VerifyFPOtpPage from "./pages/auth/forgotPassword/verify-otp/VerifyFPOtpPage";
-import YearRangePage from "./pages/sad/YearRangePage";
+import YearRangePage from "./pages/sad/yearRange/YearRangePage";
 import ItemsPage from "./pages/sad/items/ItemsPage";
 import FirmsPage from "./pages/sad/firms/FirmsPage";
 import CreateFirmsPage from "./pages/sad/firms/CreateFirmsPage";

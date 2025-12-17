@@ -23,9 +23,8 @@ const GuestNavbar = ({ onOpen }) => {
   const links = [
     { label: "Home", path: "/" },
     { label: "Manual", path: "/manual" },
-    { label: "Waiting List", path: "/waiting-list" },
     { label: "Contact Us", path: "/contact-us" },
-    { label: "Privacy Policy", path: "/privacy-policy" },
+    // { label: "Privacy Policy", path: "/privacy-policy" },
   ];
 
   // Theme

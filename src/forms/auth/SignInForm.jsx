@@ -107,8 +107,8 @@ const SignInForm = () => {
   const validationSchema = yup.object({
     username: yup
       .string()
-      .matches(/^\d{10}$/, "Please enter a valid mobile number")
-      .required("Mobile number is required"),
+      //.matches(/^\d{10}$/, "Please enter a valid mobile number")
+      .required("Username is required"),
     password: yup
       .string()
       .matches(/(?=.*[a-z])/, "At least 1 lowercase letter")
@@ -165,9 +165,9 @@ const SignInForm = () => {
             <InputField
               type="text"
               name="username"
-              label="Mobile Number"
+              label="Username"
               autoComplete="off"
-              placeholder="Enter your mobile number"
+              placeholder="Enter your username"
             />
 
             <Box pos="relative">

@@ -1,5 +1,5 @@
-import Main from "../../components/core/semantics/Main";
-import Section from "../../components/core/semantics/Section";
+import Main from "../../../components/core/semantics/Main";
+import Section from "../../../components/core/semantics/Section";
 import {
   Avatar,
   AvatarBadge,
@@ -25,19 +25,20 @@ import {
   Th,
   Thead,
   Tr,
-} from "../../components/core/Table";
-import { useFetchUsersProfile } from "../../hooks/userQueries";
-import { useFetchYearRange } from "../../hooks/masterQueries";
-import { encodeEmail } from "../../components/utils/emailFormatter";
-import ChangeMobileForm from "../../forms/profile/ChangeMobileForm";
+} from "../../../components/core/Table";
+import { useFetchUsersProfile } from "../../../hooks/userQueries";
+import { useFetchYearRange } from "../../../hooks/masterQueries";
+import { encodeEmail } from "../../../components/utils/emailFormatter";
+import ChangeMobileForm from "../../../forms/profile/ChangeMobileForm";
 import { useState } from "react";
-import VerifyChangeMobileOTPForm from "../../forms/profile/VerifyChangeMobileOTPForm";
+import VerifyChangeMobileOTPForm from "../../../forms/profile/VerifyChangeMobileOTPForm";
+import { MdOutlineAddCircleOutline } from "react-icons/md";
+import CreateYearRangeModal from "./CreateYearRangeModal";
 
 const YearRangePage = () => {
   // Queries
   const profileQuery = useFetchUsersProfile();
   const yearRangeQuery = useFetchYearRange();
-  console.log(yearRangeQuery.data);
 
   // States
   const [otpToken, setOtpToken] = useState("");
@@ -46,10 +47,15 @@ const YearRangePage = () => {
   // Disclosures
   const mobileDisclosure = useDisclosure();
   const verifyOtpDisclosure = useDisclosure();
+  const createYearRangeDisclosure = useDisclosure();
 
   return (
     <Main>
       {/* Modals */}
+      <CreateYearRangeModal
+        isOpen={createYearRangeDisclosure.isOpen}
+        onClose={createYearRangeDisclosure.onClose}
+      />
       <ChangeMobileForm
         isOpen={mobileDisclosure.isOpen}
         onClose={mobileDisclosure.onClose}
@@ -71,7 +77,13 @@ const YearRangePage = () => {
           <Stack spacing={8} p={6}>
             <VStack spacing={4}>
               <HStack w="100%" justify="flex-end">
-                <Button variant="brand">Add New Year Range</Button>
+                <Button
+                  variant="brand"
+                  leftIcon={<MdOutlineAddCircleOutline />}
+                  onClick={createYearRangeDisclosure.onOpen}
+                >
+                  Add New Year Range
+                </Button>
               </HStack>
 
               <TableContainer>

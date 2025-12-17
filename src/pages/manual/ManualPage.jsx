@@ -10,6 +10,7 @@ import {
   Container,
   Heading,
   Stack,
+  Badge,
 } from "@chakra-ui/react";
 import registrationVid from "../../assets/manual/user_registration_sign_in.mp4";
 import applicationVid from "../../assets/manual/applying_for_quarters.mp4";
@@ -21,7 +22,12 @@ const ManualPage = () => {
         <Container maxW="container.xl">
           <Stack spacing={8}>
             <Heading size="lg">Manual</Heading>
-
+            {/* "teal.400",  "green.400", "lime.400",
+            "cyan.400", "facebook.400", "messenger.400", "whatsapp.400",
+            "linkedin.400", "twitter.400", "gray.500", "gray.600", "cyan.500",
+            "red.500", "purple.500", "orange.500", "indigo.500", "pink.500",
+            "cyan.500", */}
+            {/* <Badge colorScheme="red">Hello</Badge> */}
             {/* <Accordion allowToggle>
               <AccordionItem>
                 <h2>

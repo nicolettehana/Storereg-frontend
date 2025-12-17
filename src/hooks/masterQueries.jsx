@@ -144,3 +144,20 @@ export const useCreateCategory = (onSuccess, onError) => {
     onError,
   });
 };
+
+// POST: Create Unit
+const createUnit = (data) => {
+  return request({
+    url: "/unit",
+    method: "post",
+    data,
+  });
+};
+
+export const useCreateUnit = (onSuccess, onError) => {
+  return useMutation({
+    mutationFn: createUnit,
+    onSuccess,
+    onError,
+  });
+};

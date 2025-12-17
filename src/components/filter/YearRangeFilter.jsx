@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Button,
   Menu,
@@ -15,8 +15,14 @@ const YearRangeFilter = ({
   setPageNumber,
   query,
 }) => {
+  // Set default to first item when data loads
+  useEffect(() => {
+    if (!yearRangeId && query?.data?.data?.length > 0) {
+      setYearRangeId(String(query.data.data[0].id));
+    }
+  }, [query?.data?.data, yearRangeId, setYearRangeId]);
+
   const selectedRange = query?.data?.data?.find(
-    //(row) => row?.id === yearRangeId
     (row) => String(row?.id) === yearRangeId
   );
 
@@ -31,37 +37,24 @@ const YearRangeFilter = ({
         Year Range:{" "}
         {selectedRange
           ? `${selectedRange.startYear} - ${selectedRange.endYear}`
-          : "All"}
+          : ""}
       </MenuButton>
 
       <MenuList>
         <MenuOptionGroup
           title="Filter by Year Range"
           type="radio"
-          //defaultValue={yearRangeId}
-          value={yearRangeId ?? ""}
+          value={yearRangeId}
           onChange={(value) => {
-            setYearRangeId(value); // keep as STRING
+            setYearRangeId(value);
             setPageNumber(0);
           }}
-
-          // onChange={(value) => {
-          //   setYearRangeId(value);
-          //   setPageNumber(0);
-          // }}
         >
-          <MenuItemOption value="">All</MenuItemOption>
-
           {query?.data?.data?.map((row) => (
             <MenuItemOption key={row.id} value={String(row.id)}>
               {row.startYear} - {row.endYear}
             </MenuItemOption>
           ))}
-          {/* {query?.data?.data?.map((row) => (
-            <MenuItemOption key={row.id} value={row.id}>
-              {row.startYear} - {row.endYear}
-            </MenuItemOption>
-          ))} */}
         </MenuOptionGroup>
       </MenuList>
     </Menu>

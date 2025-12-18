@@ -29,7 +29,7 @@ const InventoryCard = ({ title, Icon, data, iconColor = "orange" }) => {
         {/* Card title with icon */}
         <HStack mb={4}>
           <FaExclamationTriangle size={26} color={iconColor} />
-          <Heading size="lg">{title}</Heading>
+          <Heading size="md">{title}</Heading>
         </HStack>
 
         {/* Categories */}

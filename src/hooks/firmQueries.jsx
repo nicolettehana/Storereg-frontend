@@ -64,6 +64,22 @@ export const useFetchFirmsList = (date) => {
   });
 };
 
+// GET: Firms List
+const fetchFirmsListt = () => {
+  return request({
+    url: `/firms/listt`,
+    method: "get",
+  });
+};
+
+export const useFetchFirmsListt = () => {
+  return useQuery({
+    queryKey: ["fetch-firms-listt"],
+    queryFn: () => fetchFirmsListt(),
+    retry: 0,
+  });
+};
+
 // POST: Create Firm
 const createFirmYear = (data) => {
   return request({

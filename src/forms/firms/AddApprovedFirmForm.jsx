@@ -15,7 +15,7 @@ import InputField from "../../components/core/formik/InputField";
 import { useCreateQuarter } from "../../hooks/quartersQueries";
 import {
   useCreateFirm,
-  useFetchFirmsList,
+  useFetchFirmsListt,
   useCreateFirmYear,
 } from "../../hooks/firmQueries";
 import {
@@ -37,7 +37,7 @@ const AddApprovedFirmForm = () => {
   const queryClient = useQueryClient();
   const categoryQuery = useFetchCategories();
   const yearRangeQuery = useFetchYearRange();
-  const firmsListQuery = useFetchFirmsList();
+  const firmsListQuery = useFetchFirmsListt();
 
   const createFirmYear = useCreateFirmYear(
     (response) => {

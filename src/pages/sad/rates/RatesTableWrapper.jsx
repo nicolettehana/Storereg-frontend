@@ -221,8 +221,8 @@ const RatesTableWrapper = ({
               <Th>Category</Th>
               <Th>Item</Th>
               <Th>Unit</Th>
-              <Th>Rate (Rs.)</Th>
-              <Th>Actions</Th>
+              <Th>Rate (₹)</Th>
+              {/* <Th>Actions</Th> */}
             </Tr>
           </Thead>
           <Tbody>
@@ -265,25 +265,14 @@ const RatesTableWrapper = ({
                       </Badge>
                     </SkeletonText>
                   </Td>
-                  <Td>
+                  <Td whiteSpace="normal">
                     <SkeletonText
                       noOfLines={row?.subItems.length || 1}
                       isLoaded={!query.isPending}
                       fadeDuration={index}
                     >
                       {row?.name}
-                      {/* {row?.subItems.map((subItem, i) => (
-                        <Box key={i} mb={1}>
-                          ({String.fromCharCode(97 + i)}) {subItem.name}
-                        </Box>
-                      ))} */}
-                      {/* {row?.subItems?.map((subItem, i) =>
-                        subItem?.rates?.map((rate, j) => (
-                        <Box key={`${i}-${j}`} mb={1}>
-                          ({String.fromCharCode(97 + i)}) {subItem.name || "-"}
-                        </Box>
-                        ))
-                      )} */}
+                      
 
                       {row?.subItems?.map((subItem, i) => {
                         const hasRates = subItem?.rates?.length > 0;
@@ -416,7 +405,7 @@ const RatesTableWrapper = ({
                       })}
                     </SkeletonText>
                   </Td>
-                  <Td>
+                  {/* <Td>
                     <ButtonGroup variant="outline" isAttached={true}>
                       {isEstate && (
                         <Button
@@ -430,7 +419,7 @@ const RatesTableWrapper = ({
                         </Button>
                       )}
                     </ButtonGroup>
-                  </Td>
+                  </Td> */}
                 </Tr>
               );
             })}

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Main from "../../../components/core/semantics/Main";
 import Section from "../../../components/core/semantics/Section";
-import { Button, Container, HStack, Stack } from "@chakra-ui/react";
+import { Button, Container, HStack, Stack, useDisclosure } from "@chakra-ui/react";
 import { useFetchYearRange } from "../../../hooks/masterQueries";
 import { useFetchRates } from "../../../hooks/ratesQueries";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
@@ -14,6 +14,7 @@ import CategoriesFilter from "../../../components/filter/CategoriesFilter";
 import YearRangeFilter from "../../../components/filter/YearRangeFilter";
 import RatesTableWrapper from "./RatesTableWrapper";
 import { FaFileExport } from "react-icons/fa";
+import CreateRateModal from "./CreateRateModal";
 
 const RatesPage = () => {
   // States
@@ -40,10 +41,18 @@ const RatesPage = () => {
     yearRangeId
   );
 
+  //Disclosures
+  const createRateDisclosure = useDisclosure();
+
   return (
     <>
       {/* Main */}
       <Main>
+        {/* Modals */}
+        <CreateRateModal
+          isOpen={createRateDisclosure.isOpen}
+          onClose={createRateDisclosure.onClose}
+        />
         <Section>
           <Container minW="full">
             <Stack spacing={4}>
@@ -68,12 +77,19 @@ const RatesPage = () => {
                   <Button
                     variant="brand"
                     leftIcon={<MdOutlineAddCircleOutline />}
+                    onClick={createRateDisclosure.onOpen}
+                  >
+                    Add New Rate
+                  </Button>
+                  {/* <Button
+                    variant="brand"
+                    leftIcon={<MdOutlineAddCircleOutline />}
                     onClick={() => {
                       navigate("/sad/rates/create");
                     }}
                   >
                     Add New Rate
-                  </Button>
+                  </Button> */}
                   <Button
                     variant="brand"
                     leftIcon={<FaFileExport />}
@@ -81,7 +97,7 @@ const RatesPage = () => {
                       //navigate("/sad/issue/create");
                     }}
                   >
-                    Export to PDF
+                    Export to Excel
                   </Button>
                 </HStack>
               </HStack>
@@ -107,6 +123,7 @@ const RatesPage = () => {
                 searchText={searchText}
                 pageNumber={pageNumber}
                 setPageNumber={setPageNumber}
+                yearRangeId={yearRangeId}
               />
             </Stack>
           </Container>

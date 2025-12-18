@@ -24,7 +24,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import SelectFieldSearchable from "../../components/core/formik/SelectFieldSearchable";
 
-const CreateRateForm = () => {
+const CreateRateForm = ({ onSuccess }) => {
   // Hooks
   const toast = useToast();
   const navigate = useNavigate();
@@ -47,6 +47,12 @@ const CreateRateForm = () => {
         title: "Success",
         description: response.data.detail || "Rate added",
       });
+      // 👉 close modal if provided, otherwise navigate
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        navigate("/sad/rates");
+      }
       return response;
     },
     (error) => {

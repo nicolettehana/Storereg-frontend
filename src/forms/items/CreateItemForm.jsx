@@ -21,7 +21,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useCreateQuarterAndAddOccupants } from "../../hooks/occpantsQueries";
 import { useNavigate } from "react-router-dom";
 
-const CreateItemForm = () => {
+const CreateItemForm = ({ onSuccess }) => {
   // Hooks
   const toast = useToast();
   const navigate = useNavigate();
@@ -42,6 +42,13 @@ const CreateItemForm = () => {
         title: "Success",
         description: response.data.detail || "Item added",
       });
+
+      // 👉 close modal if provided, otherwise navigate
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        navigate("/sad/items");
+      }
       return response;
     },
     (error) => {
@@ -103,16 +110,7 @@ const CreateItemForm = () => {
         return (
           <Stack as={Form} spacing={8}>
             <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
-              <InputField
-                name="itemName"
-                label="Item Name"
-                placeholder="Enter the item name"
-                onChange={(e) => {
-                  const itemName = e.target.value;
-
-                  formik.setFieldValue("itemName", itemName);
-                }}
-              />
+              
               <SelectField
                 name="category"
                 label="Item Category"
@@ -124,6 +122,16 @@ const CreateItemForm = () => {
                   </option>
                 ))}
               </SelectField>
+              <InputField
+                name="itemName"
+                label="Item Name"
+                placeholder="Enter the item name"
+                onChange={(e) => {
+                  const itemName = e.target.value;
+
+                  formik.setFieldValue("itemName", itemName);
+                }}
+              />
             </SimpleGrid>
 
             <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
@@ -188,6 +196,7 @@ const CreateItemForm = () => {
                       <Button
                         type="button"
                         variant="brand"
+                        minW="fit-content"
                         mt={2}
                         onClick={() => arrayHelpers.push({ name: "" })}
                       >
@@ -200,9 +209,9 @@ const CreateItemForm = () => {
             )}
 
             <HStack justifyContent="end">
-              <Button variant="outline" onClick={() => navigate(-1)}>
+              {/* <Button variant="outline" onClick={() => navigate(-1)}>
                 Back
-              </Button>
+              </Button> */}
               <Button
                 type="submit"
                 variant="brand"

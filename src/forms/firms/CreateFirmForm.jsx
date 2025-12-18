@@ -19,7 +19,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useCreateQuarterAndAddOccupants } from "../../hooks/occpantsQueries";
 import { useNavigate } from "react-router-dom";
 
-const CreateFirmForm = () => {
+const CreateFirmForm = ({ onSuccess }) => {
   // Hooks
   const toast = useToast();
   const navigate = useNavigate();
@@ -40,6 +40,12 @@ const CreateFirmForm = () => {
         title: "Success",
         description: response.data.detail || "Firm added",
       });
+      // 👉 close modal if provided, otherwise navigate
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        navigate("/sad/firms");
+      }
       return response;
     },
     (error) => {

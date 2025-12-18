@@ -11,8 +11,18 @@ import {
   PopoverHeader,
   PopoverTrigger,
   Stack,
+  VStack,
+  Text,
 } from "@chakra-ui/react";
 import { MdOutlineFilterList } from "react-icons/md";
+
+const formatDate = (date) => {
+  return new Date(date).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};
 
 const DateFilter = ({
   fromDate,
@@ -25,7 +35,20 @@ const DateFilter = ({
     <Popover>
       <PopoverTrigger>
         <Button variant="outline" leftIcon={<MdOutlineFilterList size={20} />}>
-          Date Filter: {fromDate} – {toDate}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              lineHeight: 1.2,
+            }}
+          >
+            <VStack spacing={0} align="start">
+              <Text>Date:</Text>
+              <Text fontSize="sm">
+                {formatDate(fromDate)} – {formatDate(toDate)}
+              </Text>
+            </VStack>
+          </div>
         </Button>
       </PopoverTrigger>
       <PopoverContent>

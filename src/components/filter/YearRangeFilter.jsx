@@ -14,30 +14,46 @@ const YearRangeFilter = ({
   setYearRangeId,
   setPageNumber,
   query,
+  includeAll,
 }) => {
-  // Set default to first item when data loads
+  // Default selection logic
   useEffect(() => {
-    if (!yearRangeId && query?.data?.data?.length > 0) {
+    // If "All" is allowed, default to All
+    if (includeAll === 1 && yearRangeId === undefined) {
+      setYearRangeId("");
+      return;
+    }
+
+    // Otherwise default to first item
+    if (
+      includeAll !== '1' &&
+      !yearRangeId &&
+      query?.data?.data?.length > 0
+    ) {
       setYearRangeId(String(query.data.data[0].id));
     }
-  }, [query?.data?.data, yearRangeId, setYearRangeId]);
+  }, [query?.data?.data, yearRangeId, setYearRangeId, includeAll]);
 
   const selectedRange = query?.data?.data?.find(
     (row) => String(row?.id) === yearRangeId
   );
 
+  const buttonLabel =
+    yearRangeId === ""
+      ? "All"
+      : selectedRange
+      ? `${selectedRange.startYear} - ${selectedRange.endYear}`
+      : "";
+
   return (
-    <Menu closeOnSelect={true}>
+    <Menu closeOnSelect>
       <MenuButton
         as={Button}
         variant="outline"
         leftIcon={<MdOutlineFilterList size={20} />}
         w="fit-content"
       >
-        Year Range:{" "}
-        {selectedRange
-          ? `${selectedRange.startYear} - ${selectedRange.endYear}`
-          : ""}
+        Year Range: {buttonLabel}
       </MenuButton>
 
       <MenuList>
@@ -50,6 +66,12 @@ const YearRangeFilter = ({
             setPageNumber(0);
           }}
         >
+          {includeAll === '1' && (
+            <MenuItemOption value="">
+              All
+            </MenuItemOption>
+          )}
+
           {query?.data?.data?.map((row) => (
             <MenuItemOption key={row.id} value={String(row.id)}>
               {row.startYear} - {row.endYear}

@@ -41,3 +41,21 @@ export const useCreateRate = (onSuccess, onError) => {
     onError,
   });
 };
+
+
+// POST: Add Rate
+const addRate = (data) => {
+  return request({
+    url: "/rates/add",
+    method: "post",
+    data,
+  });
+};
+
+export const useAddRate = (onSuccess, onError) => {
+  return useMutation({
+    mutationFn: addRate,
+    onSuccess,
+    onError,
+  });
+};

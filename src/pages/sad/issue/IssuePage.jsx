@@ -106,7 +106,7 @@ const IssuePage = () => {
                       //navigate("/sad/issue/create");
                     }}
                   >
-                    Export to PDF
+                    Export to Excel
                   </Button>
                 </HStack>
               </HStack>

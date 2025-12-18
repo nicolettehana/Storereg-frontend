@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Main from "../../../components/core/semantics/Main";
 import Section from "../../../components/core/semantics/Section";
-import { Button, Container, HStack, Stack, SimpleGrid } from "@chakra-ui/react";
+import { Button, Container, HStack, Stack, SimpleGrid, useDisclosure } from "@chakra-ui/react";
 
 import {
   useFetchCategories,
@@ -22,6 +22,7 @@ import { useNavigate } from "react-router-dom";
 import YearRangeFilter from "../../../components/filter/YearRangeFilter";
 import StatCard2 from "../../../components/core/theme/StatCard2";
 import { FaFileExport } from "react-icons/fa";
+import CreateFirmModal from "./CreateFirmModal";
 
 const FirmsPage = () => {
   // States
@@ -48,12 +49,20 @@ const FirmsPage = () => {
     yearRangeId
   );
 
+  //Disclosures
+  const createFirmDisclosure = useDisclosure();
+
   const categoryStatsQuery = useFetchCategoryStats();
 
   return (
     <>
       {/* Main */}
       <Main>
+        {/* Modals */}
+        <CreateFirmModal
+          isOpen={createFirmDisclosure.isOpen}
+          onClose={createFirmDisclosure.onClose}
+        />
         <Section>
           <Container maxW="100%" pl={10} pr={10}>
             <SimpleGrid minChildWidth="130px" spacing={4}>
@@ -86,6 +95,7 @@ const FirmsPage = () => {
                     setYearRangeId={setYearRangeId}
                     setPageNumber={setPageNumber}
                     query={yearRangeQuery}
+                    includeAll='1'
                   />
                   <CategoriesFilter
                     categoryCode={categoryCode}
@@ -104,8 +114,14 @@ const FirmsPage = () => {
                   >
                     Update Approved Firm
                   </Button>
-
                   <Button
+                    variant="brand"
+                    leftIcon={<MdOutlineAddCircleOutline />}
+                    onClick={createFirmDisclosure.onOpen}
+                  >
+                    Add New Firm
+                  </Button>
+                  {/* <Button
                     variant="brand"
                     leftIcon={<MdOutlineAddCircleOutline />}
                     onClick={() => {
@@ -113,7 +129,7 @@ const FirmsPage = () => {
                     }}
                   >
                     Add New Firm
-                  </Button>
+                  </Button> */}
                   <Button
                     variant="brand"
                     leftIcon={<FaFileExport />}
@@ -121,7 +137,7 @@ const FirmsPage = () => {
                       //navigate("/sad/issue/create");
                     }}
                   >
-                    Export to PDF
+                    Export to Excel
                   </Button>
                 </HStack>
               </HStack>

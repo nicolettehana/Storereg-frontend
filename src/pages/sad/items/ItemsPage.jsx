@@ -1,7 +1,14 @@
 import { useState } from "react";
 import Main from "../../../components/core/semantics/Main";
 import Section from "../../../components/core/semantics/Section";
-import { Button, Container, HStack, Stack, SimpleGrid } from "@chakra-ui/react";
+import {
+  Button,
+  Container,
+  HStack,
+  Stack,
+  SimpleGrid,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { useFetchCategories } from "../../../hooks/masterQueries";
 import { useFetchItemCategoryStats } from "../../../hooks/masterQueries";
 import { useFetchItemsByType } from "../../../hooks/itemQueries";
@@ -15,6 +22,7 @@ import FirmCategoryStats from "../../../components/stats/FirmCategoryStats";
 import { useNavigate } from "react-router-dom";
 import StatCard2 from "../../../components/core/theme/StatCard2";
 import { FaFileExport } from "react-icons/fa";
+import CreateItemsModal from "./CreateItemsModal";
 
 const ItemsPage = () => {
   // States
@@ -38,10 +46,18 @@ const ItemsPage = () => {
     pageSize
   );
 
+  //Disclosures
+  const createItemDisclosure = useDisclosure();
+
   return (
     <>
       {/* Main */}
       <Main>
+        {/* Modals */}
+        <CreateItemsModal
+          isOpen={createItemDisclosure.isOpen}
+          onClose={createItemDisclosure.onClose}
+        />
         <Section>
           <Container maxW="100%" pl={10} pr={10}>
             <SimpleGrid minChildWidth="130px" spacing={4}>
@@ -81,12 +97,19 @@ const ItemsPage = () => {
                   <Button
                     variant="brand"
                     leftIcon={<MdOutlineAddCircleOutline />}
+                    onClick={createItemDisclosure.onOpen}
+                  >
+                    Add New Item
+                  </Button>
+                  {/* <Button
+                    variant="brand"
+                    leftIcon={<MdOutlineAddCircleOutline />}
                     onClick={() => {
                       navigate("/sad/items/create");
                     }}
                   >
                     Add New Item
-                  </Button>
+                  </Button> */}
                   <Button
                     variant="brand"
                     leftIcon={<FaFileExport />}
@@ -94,7 +117,7 @@ const ItemsPage = () => {
                       //navigate("/sad/issue/create");
                     }}
                   >
-                    Export to PDF
+                    Export to Excel
                   </Button>
                 </HStack>
               </HStack>

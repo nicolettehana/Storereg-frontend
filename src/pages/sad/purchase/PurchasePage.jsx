@@ -97,7 +97,7 @@ const PurchasePage = () => {
                       //navigate("/sad/issue/create");
                     }}
                   >
-                    Export to PDF
+                    Export to Excel
                   </Button>
                 </HStack>
               </HStack>

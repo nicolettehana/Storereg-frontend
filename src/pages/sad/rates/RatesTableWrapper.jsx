@@ -41,6 +41,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import DisableQuarterModal from "../../est/quarters/DisableQuarterModal";
 import { useNavigate } from "react-router-dom";
 import { getCategoryColorScheme } from "../../../components/core/CategoryColors";
+import { MdRateReview } from "react-icons/md";
+import AddRateModal from "./AddRateModal";
 
 const RatesTableWrapper = ({
   isEstate = true,
@@ -48,10 +50,12 @@ const RatesTableWrapper = ({
   searchText,
   pageNumber,
   setPageNumber,
+  yearRangeId,
 }) => {
   // Disclosures
   const disableDisclosure = useDisclosure();
   const occupantDetailsDisclosure = useDisclosure();
+  const addRateDisclosure = useDisclosure();
 
   // States
   const [rowState, setRowState] = useState({});
@@ -85,6 +89,7 @@ const RatesTableWrapper = ({
   if (query.isError) {
     return (
       <Center py={16}>
+        
         <VStack spacing={4}>
           <Box
             bg="paperSecondary"
@@ -107,6 +112,14 @@ const RatesTableWrapper = ({
       </Center>
     );
   }
+
+  const [addRateState, setAddRateState] = useState({
+  itemId: null,
+  itemName: "",
+  subItemId: null,
+  subItemName: "",
+
+});
 
   // Empty Search
   if (
@@ -187,6 +200,17 @@ const RatesTableWrapper = ({
         rowState={rowState}
       />
 
+      {/* Modals */}
+                <AddRateModal
+                  isOpen={addRateDisclosure.isOpen}
+                  onClose={addRateDisclosure.onClose}
+                  itemId={addRateState.itemId}
+                  itemName={addRateState.itemName}
+                  subItemId={addRateState.subItemId}
+                  subItemName={addRateState.subItemName}
+                  yearRangeId={yearRangeId}
+                />
+
       {/* Table */}
       <TableContainer>
         <Table>
@@ -248,11 +272,34 @@ const RatesTableWrapper = ({
                       fadeDuration={index}
                     >
                       {row?.name}
-                      {row?.subItems.map((subItem, i) => (
+                      {/* {row?.subItems.map((subItem, i) => (
                         <Box key={i} mb={1}>
                           ({String.fromCharCode(97 + i)}) {subItem.name}
                         </Box>
-                      ))}
+                      ))} */}
+                      {/* {row?.subItems?.map((subItem, i) =>
+                        subItem?.rates?.map((rate, j) => (
+                        <Box key={`${i}-${j}`} mb={1}>
+                          ({String.fromCharCode(97 + i)}) {subItem.name || "-"}
+                        </Box>
+                        ))
+                      )} */}
+
+                      {row?.subItems?.map((subItem, i) => {
+                        const hasRates = subItem?.rates?.length > 0;
+
+                        return hasRates ? (
+                          subItem.rates.map((rate, j) => (
+                            <Box key={`${i}-${j}`} mb={1}>
+                              ({String.fromCharCode(97 + i)}) {subItem.name || "-"}
+                            </Box>
+                          ))
+                        ) : (
+                          <Box key={i} mb={1}>
+                            ({String.fromCharCode(97 + i)}) {subItem.name || "-"}
+                          </Box>
+                        );
+                      })}
                     </SkeletonText>
                   </Td>
 
@@ -262,12 +309,31 @@ const RatesTableWrapper = ({
                       isLoaded={!query.isPending}
                       fadeDuration={index}
                     >
-                      {row?.unit}
-                      {row?.subItems.map((subItem, i) => (
+                    {row?.rates?.map((rate, i) => (
                         <Box key={i} mb={1}>
-                          ({String.fromCharCode(97 + i)}) {subItem.unit || "-"}
+                          {rate.unit || "-"}
                         </Box>
                       ))}
+                      {row?.subItems?.length>0 && "\u00A0"}
+                      {row?.subItems.length==0 && row?.rates?.length==0 &&
+                      ('-')}
+                      {row?.subItems?.map((subItem, i) => {
+                        const hasRates = subItem?.rates?.length > 0;
+
+                        return hasRates ? (
+                          subItem.rates.map((rate, j) => (
+                            <Box key={`${i}-${j}`} mb={1}>
+                              ({String.fromCharCode(97 + i)}) {rate.unit || "-"}
+                            </Box>
+                          ))
+                        ) : (
+                          <Box key={i} mb={1}>
+                            ({String.fromCharCode(97 + i)}) { "-"}
+                          </Box>
+                        );
+                      })}
+                      
+                      
                     </SkeletonText>
                   </Td>
                   <Td>
@@ -276,12 +342,78 @@ const RatesTableWrapper = ({
                       isLoaded={!query.isPending}
                       fadeDuration={index}
                     >
-                      {row?.rate}
-                      {row?.subItems.map((subItem, i) => (
+                      {row?.rates?.map((rate, i) => (
                         <Box key={i} mb={1}>
-                          ({String.fromCharCode(97 + i)}) {subItem.rate || "-"}
+                          {rate.rate || "-"}
                         </Box>
                       ))}
+                      {row?.subItems?.length>0 && "\u00A0"}
+                      {row?.subItems.length==0 && row?.rates?.length==0 &&
+                      (<Tooltip label="Add Rate" hasArrow>
+                              <Button p={0} m={0} size="small"
+                              onClick={() => {
+                                setAddRateState({
+                                  itemId: row.id,
+                                  itemName: row.name,
+                                  subItemId: null,
+                                  subItemName: "",
+                                  yearRangeId: yearRangeId
+
+                                });
+                                addRateDisclosure.onOpen();
+                              }}
+                              ><MdRateReview />
+                              </Button></Tooltip>)}
+                      {/* {row?.subItems?.map((subItem, i) =>
+                        subItem?.rates?.map((rate, j) => (
+                        <Box key={`${i}-${j}`} mb={1}>
+                          ({String.fromCharCode(97 + i)}) {rate.rate || "-"}
+                        </Box>
+                        ))
+                      )} */}
+                      {row?.subItems?.map((subItem, i) => {
+                        const hasRates = subItem?.rates?.length > 0;
+
+                        return hasRates ? (
+                          subItem.rates.map((rate, j) => (
+                            <Box key={`${i}-${j}`} mb={1}>
+                              ({String.fromCharCode(97 + i)}) {rate.rate || 
+                              <Tooltip label="Add Rate" hasArrow>
+                              <Button p={0} m={0} size="small"
+                              onClick={() => {
+                                setAddRateState({
+                                  itemId: row.id,
+                                  itemName: row.name,
+                                  subItemId: subItem?.id || null,
+                                  subItemName: subItem?.name || "",
+                                  yearRangeId: yearRangeId
+                                });
+                                addRateDisclosure.onOpen();
+                              }}
+                              ><MdRateReview />
+                              </Button></Tooltip>}
+                            </Box>
+                          ))
+                        ) : (
+                          <Box key={i} mb={1}>
+                            ({String.fromCharCode(97 + i)}) { 
+                            <Tooltip label="Add Rate" hasArrow>
+                              <Button p={0} m={0} size="small"
+                              onClick={() => {
+                                setAddRateState({
+                                  itemId: row.id,
+                                  itemName: row.name,
+                                  subItemId: subItem?.id || null,
+                                  subItemName: subItem?.name || "",
+                                });
+                                addRateDisclosure.onOpen();
+                              }}
+                              ><MdRateReview />
+                              </Button></Tooltip>
+                            }
+                          </Box>
+                        );
+                      })}
                     </SkeletonText>
                   </Td>
                   <Td>

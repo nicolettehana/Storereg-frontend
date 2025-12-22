@@ -134,7 +134,7 @@ const CreateItemForm = ({ onSuccess }) => {
               />
             </SimpleGrid>
 
-            <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
+            <SimpleGrid columns={{ base: 1, md: 1 }} gap={4}>
               {/* Checkbox group */}
 
               <Checkbox
@@ -160,27 +160,31 @@ const CreateItemForm = ({ onSuccess }) => {
               <FieldArray name="subItems">
                 {(arrayHelpers) => (
                   <>
-                    <SimpleGrid columns={{ base: 1, md: 1 }} gap={4}>
+                    <SimpleGrid columns={{ base: 1, md: 1 }} gap={2}>
                       {formik.values.subItems.map((subItem, index) => (
                         <Box
                           key={index}
                           display="flex"
                           alignItems="center"
                           gap={2}
+                          
                         >
-                          <HStack>
-                            <InputField
-                              name={`subItems.${index}.name`}
-                              value={subItem.name}
-                              placeholder="Sub-item Name"
-                              label=""
-                              onChange={(e) =>
-                                formik.setFieldValue(
-                                  `subItems.${index}.name`,
-                                  e.target.value
-                                )
-                              }
-                            />
+                          <HStack width="100%" align="flex-end">
+                            <Box flex="1">
+                              <InputField
+                                name={`subItems.${index}.name`}
+                                value={subItem.name}
+                                placeholder="Sub-item Name"
+                                label=" Sub-item Name"
+                                onChange={(e) =>
+                                  formik.setFieldValue(
+                                    `subItems.${index}.name`,
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </Box>
+
                             <Button
                               type="button"
                               variant="outline"
@@ -189,6 +193,7 @@ const CreateItemForm = ({ onSuccess }) => {
                               Remove
                             </Button>
                           </HStack>
+
                         </Box>
                       ))}
                     </SimpleGrid>

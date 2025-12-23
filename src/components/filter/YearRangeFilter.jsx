@@ -16,23 +16,24 @@ const YearRangeFilter = ({
   query,
   includeAll,
 }) => {
-  // Default selection logic
   useEffect(() => {
-    // If "All" is allowed, default to All
-    if (includeAll === 1 && yearRangeId === undefined) {
-      setYearRangeId("");
-      return;
-    }
+  // Do nothing if already set ("" or a value)
+  if (yearRangeId !== "") return;
 
-    // Otherwise default to first item
-    if (
-      includeAll !== '1' &&
-      !yearRangeId &&
-      query?.data?.data?.length > 0
-    ) {
-      setYearRangeId(String(query.data.data[0].id));
-    }
-  }, [query?.data?.data, yearRangeId, setYearRangeId, includeAll]);
+  // Data not ready yet
+  if (!query?.data?.data?.length) return;
+
+  // includeAll = 1 → default to FIRST option (not All)
+  if (includeAll === '1') {
+    setYearRangeId(String(query.data.data[0].id));
+    return;
+  }
+
+  // includeAll != 1 → also default to FIRST option
+  setYearRangeId(String(query.data.data[0].id));
+}, [query?.data?.data, yearRangeId, includeAll]);
+
+
 
   const selectedRange = query?.data?.data?.find(
     (row) => String(row?.id) === yearRangeId

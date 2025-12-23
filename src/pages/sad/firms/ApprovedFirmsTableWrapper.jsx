@@ -43,7 +43,7 @@ import DisableQuarterModal from "../../est/quarters/DisableQuarterModal";
 import { useNavigate } from "react-router-dom";
 import { getCategoryColorScheme } from "../../../components/core/CategoryColors";
 
-const FirmsTableWrapper = ({
+const ApprovedFirmsTableWrapper = ({
   isEstate = true,
   query,
   searchText,
@@ -159,19 +159,13 @@ const FirmsTableWrapper = ({
           <VStack>
             <Heading size="md">Empty inventory</Heading>
             <Text color="body" textAlign="center">
-              You haven't added any firms yet.
+              You haven't approved any firms yet.
             </Text>
           </VStack>
         </VStack>
       </Center>
     );
   }
-
-  // Handlers
-  const handleDisable = (row) => {
-    disableDisclosure.onOpen();
-    setRowState(row);
-  };
 
   return (
     <Stack spacing={4}>
@@ -196,8 +190,6 @@ const FirmsTableWrapper = ({
               <Th>Sl. No.</Th>
               <Th>Firm</Th>
               <Th>Category</Th>
-              <Th borderLeft="2px solid">Year approved</Th>
-              {/* <Th>Action</Th> */}
             </Tr>
           </Thead>
           <Tbody>
@@ -243,54 +235,6 @@ const FirmsTableWrapper = ({
                       ))}
                     </SkeletonText>
                   </Td>
-
-                  
-                  <Td borderRight="1px solid #ccc">
-                    <SkeletonText
-                      noOfLines={row?.yearRanges.length || 1}
-                      isLoaded={!query.isPending}
-                      fadeDuration={index}
-                    >
-                      {row?.yearRanges?.map((item, i) => (
-                        <Box key={i} mb={1}>
-                          {item.startYear}-{item.endYear}
-                        </Box>
-                      ))}
-                      {/* <Button
-                      variant="outline"
-                      minW="auto"
-                      //lineHeight="1"
-                      bg="brand.50"
-                      size="xs"
-                      onClick={() => {
-                        navigate("/est/quarters/update", {
-                          state: { rowState: row },
-                        });
-                      }}
-                    >
-                      <FaEdit />
-                    </Button> */}
-                    </SkeletonText>
-                  </Td>
-                  {/* <Td>
-                    <Button
-                      variant="outline"
-                      minW="auto"
-                      py={5}
-                      //pb={5}
-                      //lineHeight="1"
-                      iconLeft={<FaEdit />}
-                      bg="brand.50"
-                      size="xs"
-                      onClick={() => {
-                        navigate("/est/quarters/update", {
-                          state: { rowState: row },
-                        });
-                      }}
-                    >
-                      New <br /> Approval
-                    </Button>
-                  </Td> */}
                 </Tr>
               );
             })}
@@ -308,4 +252,4 @@ const FirmsTableWrapper = ({
   );
 };
 
-export default FirmsTableWrapper;
+export default ApprovedFirmsTableWrapper;

@@ -54,6 +54,7 @@ import DashboardPage from "./pages/sad/DashboardPage";
 import CategoryPage from "./pages/sad/category/CategoryPage";
 import LedgerPage from "./pages/sad/ledger/LedgerPage";
 import UnitsPage from "./pages/sad/units/UnitsPage";
+import FirmsApprovePage from "./pages/sad/firms/FirmsApprovePage";
 
 const App = () => {
   return (
@@ -118,6 +119,7 @@ const App = () => {
           path="firms/add-approved-firm"
           element={<AddApprovedFirmsPage />}
         />
+        <Route path="firms/bulk-approve-firms" element={<FirmsApprovePage />} />
         <Route
           path="dashboard/details"
           element={<ApplicationDetailsPage role="CH" />}

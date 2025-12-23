@@ -28,6 +28,7 @@ import {
   useDisclosure,
   useToast,
   VStack,
+  Checkbox,
 } from "@chakra-ui/react";
 import {
   MdOutlineInfo,
@@ -36,14 +37,15 @@ import {
   MdOutlineTableChart,
 } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
-import OccupantModal from "../../../pages/ch/quarters/OccupantModal";
+import OccupantModal from "../../ch/quarters/OccupantModal";
 import { useEnableDisableQuarter } from "../../../hooks/quartersQueries";
 import { useQueryClient } from "@tanstack/react-query";
 import DisableQuarterModal from "../../est/quarters/DisableQuarterModal";
 import { useNavigate } from "react-router-dom";
 import { getCategoryColorScheme } from "../../../components/core/CategoryColors";
 
-const FirmsTableWrapper = ({
+const FirmsApproveTableWrapper = ({
+  yearRangeId,
   isEstate = true,
   query,
   searchText,
@@ -167,12 +169,6 @@ const FirmsTableWrapper = ({
     );
   }
 
-  // Handlers
-  const handleDisable = (row) => {
-    disableDisclosure.onOpen();
-    setRowState(row);
-  };
-
   return (
     <Stack spacing={4}>
       {/* Modals */}
@@ -195,8 +191,7 @@ const FirmsTableWrapper = ({
             <Tr>
               <Th>Sl. No.</Th>
               <Th>Firm</Th>
-              <Th>Category</Th>
-              <Th borderLeft="2px solid">Year approved</Th>
+              <Th borderLeft="2px solid">Approval Status</Th>
               {/* <Th>Action</Th> */}
             </Tr>
           </Thead>
@@ -223,73 +218,31 @@ const FirmsTableWrapper = ({
                       isLoaded={!query.isPending}
                       fadeDuration={index}
                     >
-                      {row?.firm}
+                      {row?.firmName}
                     </SkeletonText>
                   </Td>
-                  <Td>
+                  <Td><Checkbox
+                            isChecked={row?.isChecked==1}
+                            isReadOnly // remove if you want it clickable
+                          /></Td>
+                  {/* <Td borderRight="1px solid #ccc">
                     <SkeletonText
-                      noOfLines={row?.categories.length || 1}
-                      isLoaded={!query.isPending}
-                      fadeDuration={index}
-                    >
-                      {row?.categories.map((cat, i) => (
-                        <Box key={i} mb={1}>
-                          <Badge
-                            colorScheme={getCategoryColorScheme(cat?.code)}
-                          >
-                            {cat?.name}
-                          </Badge>
-                        </Box>
-                      ))}
-                    </SkeletonText>
-                  </Td>
-
-                  
-                  <Td borderRight="1px solid #ccc">
-                    <SkeletonText
-                      noOfLines={row?.yearRanges.length || 1}
+                      noOfLines={row?.yearRanges?.length || 1}
                       isLoaded={!query.isPending}
                       fadeDuration={index}
                     >
                       {row?.yearRanges?.map((item, i) => (
-                        <Box key={i} mb={1}>
-                          {item.startYear}-{item.endYear}
-                        </Box>
+                        <HStack key={i} mb={1} spacing={2}>
+                          <Checkbox
+                            isChecked={yearRangeId === item.id}
+                            isReadOnly // remove if you want it clickable
+                          />
+                          <Box>
+                            {item.startYear}-{item.endYear}
+                          </Box>
+                        </HStack>
                       ))}
-                      {/* <Button
-                      variant="outline"
-                      minW="auto"
-                      //lineHeight="1"
-                      bg="brand.50"
-                      size="xs"
-                      onClick={() => {
-                        navigate("/est/quarters/update", {
-                          state: { rowState: row },
-                        });
-                      }}
-                    >
-                      <FaEdit />
-                    </Button> */}
                     </SkeletonText>
-                  </Td>
-                  {/* <Td>
-                    <Button
-                      variant="outline"
-                      minW="auto"
-                      py={5}
-                      //pb={5}
-                      //lineHeight="1"
-                      iconLeft={<FaEdit />}
-                      bg="brand.50"
-                      size="xs"
-                      onClick={() => {
-                        navigate("/est/quarters/update", {
-                          state: { rowState: row },
-                        });
-                      }}
-                    >
-                      New <br /> Approval
-                    </Button>
                   </Td> */}
                 </Tr>
               );
@@ -308,4 +261,4 @@ const FirmsTableWrapper = ({
   );
 };
 
-export default FirmsTableWrapper;
+export default FirmsApproveTableWrapper;

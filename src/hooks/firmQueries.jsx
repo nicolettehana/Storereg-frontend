@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { request } from "../components/utils/request";
 
-// GET: Fetch Quarters By Type
+// GET: Fetch Firms By Type
 const fetchFirmsByType = (
   category,
   search = "",
@@ -94,5 +94,35 @@ export const useCreateFirmYear = (onSuccess, onError) => {
     mutationFn: createFirmYear,
     onSuccess,
     onError,
+  });
+};
+
+// GET: Fetch All Firms By Type And Year Range
+const fetchAllFirmsByType = (
+  category,
+  search = "",
+  pageNumber,
+  pageSize,
+  yearRangeId = null
+) => {
+  return request({
+    url: `/firms/all${
+      category ? `/${category}` : ""
+    }?page=${pageNumber}&size=${pageSize}&search=${search}&yearRangeId=${yearRangeId}`,
+    method: "get",
+  });
+};
+
+export const useFetchAllFirmsByType = (
+  category,
+  search,
+  pageNumber,
+  pageSize,
+  yearRangeId
+) => {
+  return useQuery({
+    queryKey: ["firms", category, search, pageNumber, pageSize, yearRangeId],
+    queryFn: () =>
+      fetchAllFirmsByType(category, search, pageNumber, pageSize, yearRangeId),
   });
 };

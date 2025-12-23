@@ -27,10 +27,16 @@ const baseStyle = definePartsStyle({
 
     _light: {
       _selected: {
-        bg: "brand.200",
+        bg: "brand.800",
         fontWeight: "bold",
-        color: "brand.600",
+        color: "brand.50",
       },
+      bg:"brand.50",
+      fontWeight: "bold",
+      color: "brand.800",
+      border: "1px",
+      borderColor: "zinc.300",
+      marginLeft:"1px",
     },
 
     _dark: {

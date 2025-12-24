@@ -128,10 +128,10 @@ const CreateFirmForm = ({ onSuccess }) => {
 
   const validationSchema = yup.object({
     firmName: yup.string().required("Firm name is required"),
-    categories: yup
-      .array()
-      .min(1, "Select at least one category")
-      .required("Select at least one category"),
+    // categories: yup
+    //   .array()
+    //   .min(1, "Select at least one category")
+    //   .required("Select at least one category"),
   });
 
   const onSubmit = (values) => {
@@ -163,15 +163,15 @@ const CreateFirmForm = ({ onSuccess }) => {
               />
             </SimpleGrid>
 
-            <HStack spacing={4}>
+            {/* <HStack spacing={4}>
               <Heading size="sm" flexShrink={0}>
                 Category
               </Heading>
               <Divider />
-            </HStack>
+            </HStack> */}
 
-            <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
-              {/* Checkbox group */}
+            {/* <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
+              
               <FieldArray
                 name="categories"
                 render={(arrayHelpers) => (
@@ -202,7 +202,7 @@ const CreateFirmForm = ({ onSuccess }) => {
                   </Stack>
                 )}
               />
-            </SimpleGrid>
+            </SimpleGrid> */}
 
             <HStack justifyContent="end">
               <Button variant="outline" onClick={() => navigate(-1)}>

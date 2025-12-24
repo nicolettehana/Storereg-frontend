@@ -188,7 +188,7 @@ const FirmsPage = () => {
                   </Section>
                 </TabPanel>
                 <TabPanel>
-                  <SimpleGrid minChildWidth="130px" spacing={4} pb={10}>
+                  {/* <SimpleGrid maxW="15%" spacing={4} pb={10}>
                     {categoryStatsQuery?.data?.data.byCategory.map((c) => (
                       <StatCard2
                         key={c.categoryCode}
@@ -203,7 +203,7 @@ const FirmsPage = () => {
                       value={categoryStatsQuery?.data?.data.total}
                       categoryCode={""}
                     />
-                  </SimpleGrid>
+                  </SimpleGrid> */}
                   <Section>
                     <Container minW="full">
                       <Stack spacing={4}>
@@ -217,12 +217,14 @@ const FirmsPage = () => {
                               query={yearRangeQuery}
                               includeAll='1'
                             /> */}
-                            <CategoriesFilter
+                            {/* <CategoriesFilter
                               categoryCode={categoryCode}
                               setCategoryCode={setCategoryCode}
                               setPageNumber={setPageNumber}
                               query={categoryQuery}
-                            />
+                            /> */}
+                            <Text fontWeight="bold" color="brand.700">Total Firms: {categoryStatsQuery?.data?.data.total}</Text>
+                            
                           </HStack>
                           <HStack justifyContent="space-between" spacing={2}>
                             <Button

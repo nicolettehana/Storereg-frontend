@@ -6,6 +6,8 @@ import {
   MenuItemOption,
   MenuList,
   MenuOptionGroup,
+  HStack,
+  Text
 } from "@chakra-ui/react";
 import { MdOutlineFilterList } from "react-icons/md";
 
@@ -54,7 +56,11 @@ const YearRangeFilter = ({
         leftIcon={<MdOutlineFilterList size={20} />}
         w="fit-content"
       >
-        Year Range: {buttonLabel}
+        <HStack>
+          <Text>Year Range: </Text>
+          <Text color="red.700">{buttonLabel}</Text>
+        </HStack>
+        
       </MenuButton>
 
       <MenuList>

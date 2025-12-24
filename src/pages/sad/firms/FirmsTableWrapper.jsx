@@ -42,6 +42,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import DisableQuarterModal from "../../est/quarters/DisableQuarterModal";
 import { useNavigate } from "react-router-dom";
 import { getCategoryColorScheme } from "../../../components/core/CategoryColors";
+import UpdateFirmModal from "./UpdateFirmModal";
 
 const FirmsTableWrapper = ({
   isEstate = true,
@@ -53,6 +54,7 @@ const FirmsTableWrapper = ({
   // Disclosures
   const disableDisclosure = useDisclosure();
   const occupantDetailsDisclosure = useDisclosure();
+  const updateFirmDisclosure = useDisclosure();
 
   // States
   const [rowState, setRowState] = useState({});
@@ -63,29 +65,11 @@ const FirmsTableWrapper = ({
 
   // Queries
   const queryClient = useQueryClient();
-  const enableDisableQuery = useEnableDisableQuarter(
-    (response) => {
-      queryClient.invalidateQueries({ queryKey: ["fetch-quarters-by-type"] });
-      return response;
-    },
-    (error) => {
-      toast({
-        isClosable: true,
-        duration: 3000,
-        position: "top-right",
-        status: "error",
-        title: "Error",
-        description:
-          error.response.data.detail ||
-          "Oops! Something went wrong. Couldn't enable/disable quarter.",
-      });
-      return error;
-    }
-  );
 
   if (query.isError) {
     return (
       <Center py={16}>
+        
         <VStack spacing={4}>
           <Box
             bg="paperSecondary"
@@ -188,6 +172,14 @@ const FirmsTableWrapper = ({
         rowState={rowState}
       />
 
+      {/* Modals */}
+        <UpdateFirmModal
+          id={rowState?.id}
+          firm={rowState?.firm}
+          isOpen={updateFirmDisclosure.isOpen}
+          onClose={updateFirmDisclosure.onClose}
+        />
+
       {/* Table */}
       <TableContainer>
         <Table>
@@ -195,7 +187,8 @@ const FirmsTableWrapper = ({
             <Tr>
               <Th>Sl. No.</Th>
               <Th>Firm</Th>
-              <Th>Category</Th>
+              <Th>Action</Th>
+              {/* <Th>Category</Th> */}
               <Th borderLeft="2px solid">Year approved</Th>
               {/* <Th>Action</Th> */}
             </Tr>
@@ -227,6 +220,26 @@ const FirmsTableWrapper = ({
                     </SkeletonText>
                   </Td>
                   <Td>
+                    <Button
+                      variant="outline"
+                      minW="auto"
+                      //lineHeight="1"
+                      bg="brand.50"
+                      size="xs"
+                      onClick={() => {
+                        setRowState(row);        // 👈 store row data
+                        updateFirmDisclosure.onOpen();
+                      }}
+                      // onClick={() => {
+                      //   navigate("/est/quarters/update", {
+                      //     state: { rowState: row },
+                      //   });
+                      // }}
+                    >
+                      <FaEdit />
+                    </Button>
+                  </Td>
+                  {/* <Td>
                     <SkeletonText
                       noOfLines={row?.categories.length || 1}
                       isLoaded={!query.isPending}
@@ -242,7 +255,7 @@ const FirmsTableWrapper = ({
                         </Box>
                       ))}
                     </SkeletonText>
-                  </Td>
+                  </Td> */}
 
                   
                   <Td borderRight="1px solid #ccc">

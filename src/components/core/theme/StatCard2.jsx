@@ -15,6 +15,7 @@ const StatCard2 = ({ title, value, categoryCode }) => {
         shadow="md"
         border="1px solid"
         borderColor={textColor}
+      
       >
         <CardBody>
           <Heading size="sm">{title}</Heading>

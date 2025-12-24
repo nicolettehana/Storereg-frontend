@@ -144,3 +144,20 @@ export const useUpdateFirmYear = (onSuccess, onError) => {
     onError,
   });
 };
+
+// POST: Update Firm
+const updateFirm = (data) => {
+  return request({
+    url: "/firms/update",
+    method: "post",
+    data,
+  });
+};
+
+export const useUpdateFirm = (onSuccess, onError) => {
+  return useMutation({
+    mutationFn: updateFirm,
+    onSuccess,
+    onError,
+  });
+};

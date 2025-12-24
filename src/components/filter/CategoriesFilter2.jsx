@@ -1,11 +1,13 @@
 import React, { useEffect } from "react";
 import {
   Button,
+  HStack,
   Menu,
   MenuButton,
   MenuItemOption,
   MenuList,
   MenuOptionGroup,
+  Text
 } from "@chakra-ui/react";
 import { MdOutlineFilterList } from "react-icons/md";
 
@@ -36,8 +38,8 @@ const CategoriesFilter2 = ({
         variant="outline"
         leftIcon={<MdOutlineFilterList size={20} />}
         w="fit-content"
-      >
-        Item Category: {categoryType}
+      ><HStack>
+        <Text>Item Category: </Text><Text color="red.700" fontWeight={"bold"}>{categoryType}</Text></HStack>
       </MenuButton>
 
       <MenuList>

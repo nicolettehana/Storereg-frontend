@@ -19,6 +19,8 @@ import { useFetchCategories } from "../../../hooks/masterQueries";
 import { FaEdit } from "react-icons/fa";
 import { PageSizing } from "../../../components/core/Table";
 import SearchInput from "../../../components/core/SearchInput";
+import { IoMdArrowRoundBack } from "react-icons/io";
+
 
 const FirmsApprovePage = ({ yearRangeId, yearRange, onClose }) => {
   //States
@@ -54,20 +56,19 @@ const FirmsApprovePage = ({ yearRangeId, yearRange, onClose }) => {
     
     <>
       <Section minW="100%">
-        <Container minW="100%">
+        {/* <Container minW="100%"> */}
           <Section>
+            <HStack justifyContent="space-between" pb={1}>
             <Heading>
-              <Text fontWeight="bold" color="brand.700" fontSize="xl">
-                {yearRange}
+              <Text fontWeight="bold" color="brand.700" fontSize="2xl">
+                Year: {yearRange}
               </Text>
             </Heading>
-             <Container>
                <HStack justifyContent="left" spacing={0}>
-               <Button onClick={onClose}>Back</Button>
+               <Button onClick={onClose} leftIcon={<IoMdArrowRoundBack />} variant="outline"> Go Back</Button>
                </HStack>
-             </Container>
+               </HStack>
 
-            <Container minW="full">
               <Stack spacing={4}>
                 <HStack justifyContent="space-between" spacing={0}>
                   <CategoriesFilter2
@@ -88,7 +89,7 @@ const FirmsApprovePage = ({ yearRangeId, yearRange, onClose }) => {
                   </Button>
                 </HStack>
                 {/* Filters */}
-                <HStack justifyContent="space-between" spacing={4}>
+                <HStack justifyContent="space-between" spacing={4} pb={5}>
                   <PageSizing
                     pageSize={pageSize}
                     setPageSize={setPageSize}
@@ -102,21 +103,21 @@ const FirmsApprovePage = ({ yearRangeId, yearRange, onClose }) => {
                   />
                 </HStack>
               </Stack>
-            </Container>
           </Section>
-        </Container>
+        {/* </Container> */}
       </Section>
 
-      <Section>
-        <Container maxW="container.xl" pt={5}>
+      <Section >
+        {/* <Container maxW="container.xl" pt={5}> */}
           <FirmsApproveTableWrapper
           yearRangeId={yearRangeId}
             query={allFirmsByTypeQuery}
             searchText={searchText}
             pageNumber={pageNumber}
             setPageNumber={setPageNumber}
+            categoryCode={categoryCode}
           />
-        </Container>
+        {/* </Container> */}
       </Section>
     </>
     //</Main>

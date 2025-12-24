@@ -80,7 +80,7 @@ export const useFetchFirmsListt = () => {
   });
 };
 
-// POST: Create Firm
+// POST: Create Approved Firm
 const createFirmYear = (data) => {
   return request({
     url: "/firms/add-approved",
@@ -124,5 +124,23 @@ export const useFetchAllFirmsByType = (
     queryKey: ["firms", category, search, pageNumber, pageSize, yearRangeId],
     queryFn: () =>
       fetchAllFirmsByType(category, search, pageNumber, pageSize, yearRangeId),
+  });
+};
+
+
+// POST: Remove/Add Approved Firm by category and yearRange
+const updateFirmYear = (data) => {
+  return request({
+    url: "/firms/approve",
+    method: "post",
+    data,
+  });
+};
+
+export const useUpdateFirmYear = (onSuccess, onError) => {
+  return useMutation({
+    mutationFn: updateFirmYear,
+    onSuccess,
+    onError,
   });
 };

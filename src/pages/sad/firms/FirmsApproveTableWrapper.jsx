@@ -43,6 +43,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import DisableQuarterModal from "../../est/quarters/DisableQuarterModal";
 import { useNavigate } from "react-router-dom";
 import { getCategoryColorScheme } from "../../../components/core/CategoryColors";
+import { useUpdateFirmYear } from "../../../hooks/firmQueries";
 
 const FirmsApproveTableWrapper = ({
   yearRangeId,
@@ -51,6 +52,7 @@ const FirmsApproveTableWrapper = ({
   searchText,
   pageNumber,
   setPageNumber,
+  categoryCode
 }) => {
   // Disclosures
   const disableDisclosure = useDisclosure();
@@ -58,6 +60,7 @@ const FirmsApproveTableWrapper = ({
 
   // States
   const [rowState, setRowState] = useState({});
+  const [localChecked, setLocalChecked] = useState({});
 
   // Hooks
   const toast = useToast();
@@ -65,9 +68,18 @@ const FirmsApproveTableWrapper = ({
 
   // Queries
   const queryClient = useQueryClient();
-  const enableDisableQuery = useEnableDisableQuarter(
+  const updateFirmYear = useUpdateFirmYear(
     (response) => {
-      queryClient.invalidateQueries({ queryKey: ["fetch-quarters-by-type"] });
+      queryClient.invalidateQueries({ queryKey: ["firms"] });
+      navigate("/sad/firms");
+      toast({
+        isClosable: true,
+        duration: 3000,
+        position: "top-right",
+        status: "success",
+        title: "Success",
+        description: response.data.detail || "Successfully updated",
+      });
       return response;
     },
     (error) => {
@@ -77,9 +89,7 @@ const FirmsApproveTableWrapper = ({
         position: "top-right",
         status: "error",
         title: "Error",
-        description:
-          error.response.data.detail ||
-          "Oops! Something went wrong. Couldn't enable/disable quarter.",
+        description: error.response.data.detail || "Unable to update",
       });
       return error;
     }
@@ -169,6 +179,34 @@ const FirmsApproveTableWrapper = ({
     );
   }
 
+  const handleApprovalChange = (row, checked) => {
+    const previousValue = localChecked[row?.firmId] ?? row.isChecked;
+
+    // Optimistic update
+    setLocalChecked((prev) => ({
+      ...prev,
+      [row?.firmId]: checked ? 1 : 0,
+    }));
+
+    updateFirmYear.mutate(
+      {
+        categoryCode: categoryCode,
+        yearRangeId,
+        firmId: row.firmId,
+        isChecked: checked ? 1 : 0,
+      },
+      {
+        onError: () => {
+          // 🔁 Rollback on error
+          setLocalChecked((prev) => ({
+            ...prev,
+            [row.firmId]: previousValue,
+          }));
+        },
+      }
+    );
+  };
+
   return (
     <Stack spacing={4}>
       {/* Modals */}
@@ -221,10 +259,15 @@ const FirmsApproveTableWrapper = ({
                       {row?.firmName}
                     </SkeletonText>
                   </Td>
-                  <Td><Checkbox
-                            isChecked={row?.isChecked==1}
-                            isReadOnly // remove if you want it clickable
-                          /></Td>
+                  <Td>
+                    <Checkbox
+                      isChecked={(localChecked[row?.id] ?? row?.isChecked) === 1}
+                      isDisabled={updateFirmYear.isLoading}
+                      onChange={(e) =>
+                        handleApprovalChange(row, e.target.checked)
+                      }
+                    />
+                  </Td>
                   {/* <Td borderRight="1px solid #ccc">
                     <SkeletonText
                       noOfLines={row?.yearRanges?.length || 1}

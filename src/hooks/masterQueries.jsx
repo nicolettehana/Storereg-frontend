@@ -50,17 +50,17 @@ export const useFetchCategories = () => {
 };
 
 // GET: Category Statistics
-const fetchCategoryStats = () => {
+const fetchCategoryStats = (yearRangeId) => {
   return request({
-    url: "/category/stats",
+    url: `/category/stats?yearRangeId=${yearRangeId}`,
     method: "get",
   });
 };
 
-export const useFetchCategoryStats = () => {
+export const useFetchCategoryStats = (yearRangeId) => {
   return useQuery({
-    queryKey: ["fetch-category-stats"],
-    queryFn: fetchCategoryStats,
+    queryKey: ["fetch-category-stats", yearRangeId],
+    queryFn: () => fetchCategoryStats(yearRangeId),
     retry: 0,
   });
 };
@@ -157,6 +157,40 @@ const createUnit = (data) => {
 export const useCreateUnit = (onSuccess, onError) => {
   return useMutation({
     mutationFn: createUnit,
+    onSuccess,
+    onError,
+  });
+};
+
+// GET: Item In Stock Category Statistics
+const fetchItemInStockCategoryStats = () => {
+  return request({
+    url: "/stock/stats",
+    method: "get",
+  });
+};
+
+export const useFetchItemInStockCategoryStats = () => {
+  return useQuery({
+    queryKey: ["fetch-item-in-stock-category-stats"],
+    queryFn: fetchItemInStockCategoryStats,
+    retry: 0,
+  });
+};
+
+
+// POST: Update Category
+const updateCategory = (data) => {
+  return request({
+    url: "/category/update",
+    method: "post",
+    data,
+  });
+};
+
+export const useUpdateCategory = (onSuccess, onError) => {
+  return useMutation({
+    mutationFn: updateCategory,
     onSuccess,
     onError,
   });

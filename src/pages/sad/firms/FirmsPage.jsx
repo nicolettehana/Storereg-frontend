@@ -81,10 +81,14 @@ const FirmsPage = () => {
     activeYearRangeId
   );
 
+  const categoryStatsQuery = useFetchCategoryStats(activeYearRangeId);
+  const categoryCount =
+  (categoryStatsQuery?.data?.data.byCategory?.length || 0) + 1;
+
   //Disclosures
   const createFirmDisclosure = useDisclosure();
 
-  const categoryStatsQuery = useFetchCategoryStats();
+  
 
   const handleTabChange = (index) => {
     setActiveTab(index);
@@ -119,6 +123,22 @@ const FirmsPage = () => {
               </TabList>
               <TabPanels>
                 <TabPanel>
+                  <SimpleGrid columns={{ base: 1, md: categoryCount }} spacing={6} pb={7} pt={2}>
+                    {categoryStatsQuery?.data?.data?.byCategory?.map((c) => (
+                      <StatCard2
+                        key={c.categoryCode}
+                        title={c.category}
+                        value={c.totalFirms}
+                        categoryCode={c.categoryCode}
+                      />
+                    ))}
+                    <StatCard2
+                      key={"total"}
+                      title={"Total"}
+                      value={categoryStatsQuery?.data?.data.total}
+                      categoryCode={""}
+                    />
+                  </SimpleGrid>
                   <Section>
                     <Container minW="full">
                       <Stack spacing={4}>

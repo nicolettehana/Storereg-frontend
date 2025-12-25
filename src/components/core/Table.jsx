@@ -47,7 +47,7 @@ export const Table = ({ children }) => {
 
 export const Thead = ({ children }) => {
   return (
-    <Box as="thead" bg="paperSecondary" borderBottom="1px" borderColor="border">
+    <Box as="thead" bg="zinc.200" borderBottom="1px" borderColor="border">
       {children}
     </Box>
   );
@@ -60,6 +60,20 @@ export const Tr = ({ children, ...others }) => {
       p={4}
       borderBottom="1px"
       borderColor="border"
+
+      transition="background-color 0.15s ease-in-out"
+
+      /* Alternating row colors */
+      _even={{
+        bg: useColorModeValue("zinc.50", "zinc.800"),
+      }}
+
+      /* Hover highlight */
+      _hover={{
+        bg: useColorModeValue("zinc.100", "zinc.700"),
+      }}
+
+
       _last={{
         borderBottom: "0px",
       }}

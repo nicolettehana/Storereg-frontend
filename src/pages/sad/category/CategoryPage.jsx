@@ -40,7 +40,9 @@ import {
   getCategoryColorScheme,
 } from "../../../components/core/CategoryColors";
 import CreateCategoryModal from "./CreateCategoryModal";
+import UpdateCategoryModal from "./UpdateCategoryModal";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
+import { FaEdit } from "react-icons/fa";
 
 const CategoryPage = () => {
   // Queries
@@ -49,19 +51,24 @@ const CategoryPage = () => {
   const categoryQuery = useFetchCategories();
 
   // States
-  const [otpToken, setOtpToken] = useState("");
-  const [mobileno, setMobileno] = useState("");
+  // States
+  const [rowState, setRowState] = useState({});
 
   // Disclosures
-  const mobileDisclosure = useDisclosure();
-  const verifyOtpDisclosure = useDisclosure();
   const createCategoryDisclosure = useDisclosure();
+  const updateCategoryDisclosure = useDisclosure();
 
   return (
     <Main>
       <CreateCategoryModal
         isOpen={createCategoryDisclosure.isOpen}
         onClose={createCategoryDisclosure.onClose}
+      />
+      <UpdateCategoryModal
+        isOpen={updateCategoryDisclosure.isOpen}
+        onClose={updateCategoryDisclosure.onClose}
+        name={rowState?.name}
+        code={rowState?.code}
       />
       <Section>
         <Container maxW="container.xl">
@@ -85,6 +92,7 @@ const CategoryPage = () => {
                       <Th>Sl. No.</Th>
                       <Th>Category Code</Th>
                       <Th>Category</Th>
+                      <Th>Action</Th>
                     </Tr>
                   </Thead>
 
@@ -130,6 +138,21 @@ const CategoryPage = () => {
                                 {row?.name}
                               </Badge>
                             </SkeletonText>
+                          </Td>
+                          <Td>
+                              <Button
+                                variant="outline"
+                                minW="auto"
+                                //lineHeight="1"
+                                bg="brand.50"
+                                size="xs"
+                                onClick={() => {
+                                  setRowState(row);
+                                  updateCategoryDisclosure.onOpen();
+                                }}
+                              >
+                                <FaEdit />
+                              </Button>
                           </Td>
                         </Tr>
                       );

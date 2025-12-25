@@ -69,7 +69,6 @@ const FirmsTableWrapper = ({
   if (query.isError) {
     return (
       <Center py={16}>
-        
         <VStack spacing={4}>
           <Box
             bg="paperSecondary"
@@ -151,12 +150,6 @@ const FirmsTableWrapper = ({
     );
   }
 
-  // Handlers
-  const handleDisable = (row) => {
-    disableDisclosure.onOpen();
-    setRowState(row);
-  };
-
   return (
     <Stack spacing={4}>
       {/* Modals */}
@@ -173,12 +166,12 @@ const FirmsTableWrapper = ({
       />
 
       {/* Modals */}
-        <UpdateFirmModal
-          id={rowState?.id}
-          firm={rowState?.firm}
-          isOpen={updateFirmDisclosure.isOpen}
-          onClose={updateFirmDisclosure.onClose}
-        />
+      <UpdateFirmModal
+        id={rowState?.id}
+        firm={rowState?.firm}
+        isOpen={updateFirmDisclosure.isOpen}
+        onClose={updateFirmDisclosure.onClose}
+      />
 
       {/* Table */}
       <TableContainer>
@@ -227,7 +220,7 @@ const FirmsTableWrapper = ({
                       bg="brand.50"
                       size="xs"
                       onClick={() => {
-                        setRowState(row);        // 👈 store row data
+                        setRowState(row); // 👈 store row data
                         updateFirmDisclosure.onOpen();
                       }}
                       // onClick={() => {
@@ -257,7 +250,6 @@ const FirmsTableWrapper = ({
                     </SkeletonText>
                   </Td> */}
 
-                  
                   <Td borderRight="1px solid #ccc">
                     <SkeletonText
                       noOfLines={row?.yearRanges.length || 1}
@@ -266,7 +258,15 @@ const FirmsTableWrapper = ({
                     >
                       {row?.yearRanges?.map((item, i) => (
                         <Box key={i} mb={1}>
-                          {item.startYear}-{item.endYear}
+                          {item.startYear}-{item.endYear} (
+                          {item?.categoryCodes?.map((code, j) => (
+                            <span key={j}>{j>0 && ", "}{<Badge
+                            colorScheme={getCategoryColorScheme(code)}
+                          >
+                            {code}
+                          </Badge>}</span>
+                          ))}
+                          )
                         </Box>
                       ))}
                       {/* <Button

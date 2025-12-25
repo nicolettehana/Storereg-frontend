@@ -20,10 +20,11 @@ import {
 
 import StatCard from "../../components/core/theme/StatCard";
 import StockList from "../../components/core/theme/StockList";
-import { useFetchYearRange } from "../../hooks/masterQueries";
+import { useFetchYearRange, useFetchItemInStockCategoryStats } from "../../hooks/masterQueries";
 import {
   useFetchCategoryStats,
   useFetchItemCategoryStats,
+  useFetchCategories
 } from "../../hooks/masterQueries";
 import { useFetchItemsLevelList } from "../../hooks/balanceQueries";
 import { useFetchAmount } from "../../hooks/purchaseQueries";
@@ -44,10 +45,12 @@ const YearRangePage = () => {
 
   // Queries
   const itemsStatsQuery = useFetchItemCategoryStats();
-  const firmsStatsQuery = useFetchCategoryStats();
+  const firmsStatsQuery = useFetchCategoryStats('');
+  const itemsInStockStatsQuery = useFetchItemInStockCategoryStats();
   const outOfStockQuery = useFetchItemsLevelList(0);
   const lowStockQuery = useFetchItemsLevelList(10);
   const amountQuery = useFetchAmount(year);
+  const categoriesQuery = useFetchCategories();
 
   const finalStartYear = isBeforeApril ? currentYear - 1 : currentYear;
   const finalEndYear = finalStartYear + 1;
@@ -65,28 +68,28 @@ const YearRangePage = () => {
           {/* LEFT SECTION */}
           <VStack align="stretch" spacing={6}>
             {/* TOP KPI CARDS */}
-            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
-              <StatSummaryCard
+            <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
+              {/* <StatSummaryCard
                 bg="#F3F5F8"
                 fcolor="brand.900"
                 title="Items In Stock"
-                total={firmsStatsQuery?.data?.data.total}
-                categories={firmsStatsQuery?.data?.data.byCategory}
-              />
+                total={itemsInStockStatsQuery?.data?.data.total}
+                //categories={categoriesQuery?.data?.data?.length<5? (itemsInStockStatsQuery?.data?.data.byCategory):null}
+              /> */}
               <StatSummaryCard
-                bg="#E9EDF1"
+                bg="#F3F5F8"//"#E9EDF1"
                 fcolor="brand.900"
-                title="Firms"
+                title="Total Firms"
                 total={firmsStatsQuery?.data?.data.total}
-                categories={firmsStatsQuery?.data?.data.byCategory}
+                //categories={firmsStatsQuery?.data?.data.byCategory}
               />
               <StatSummaryCard
                 //bg="#E9EDF1"
-                bg="#D8E0E7"
+                bg="#E9EDF1"//"#D8E0E7"
                 fcolor="brand.800"
-                title="Items"
+                title="Total Items"
                 total={itemsStatsQuery?.data?.data.total}
-                categories={itemsStatsQuery?.data?.data.byCategory}
+                categories={categoriesQuery?.data?.data?.length<5? (itemsStatsQuery?.data?.data.byCategory):null}
               />
             </SimpleGrid>
 

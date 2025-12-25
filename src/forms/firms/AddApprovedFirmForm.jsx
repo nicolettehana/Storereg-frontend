@@ -192,12 +192,13 @@ const AddApprovedFirmForm = () => {
                   formik.setFieldValue("firmName", firmName);
                 }}
               /> */}
+              
               <VStack spacing={4} align="start">
                 <Heading size="sm" flexShrink={0}>
                   Category
                 </Heading>
 
-                <FieldArray
+                {/* <FieldArray
                   name="categories"
                   render={(arrayHelpers) => {
                     // Get the selected firm object
@@ -237,9 +238,9 @@ const AddApprovedFirmForm = () => {
                       </Stack>
                     );
                   }}
-                />
+                /> */}
 
-                {/* <FieldArray
+                <FieldArray
                   name="categories"
                   render={(arrayHelpers) => (
                     <Stack spacing={3}>
@@ -268,7 +269,7 @@ const AddApprovedFirmForm = () => {
                       })}
                     </Stack>
                   )}
-                /> */}
+                />
               </VStack>
             </SimpleGrid>
 

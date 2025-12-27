@@ -22,7 +22,7 @@ import {
   useFetchCategories,
   useFetchCategoryStats,
 } from "../../../hooks/masterQueries";
-import { useFetchFirmsByType } from "../../../hooks/firmQueries";
+import { useFetchFirmsByType, useExportFirms } from "../../../hooks/firmQueries";
 import { useFetchYearRange } from "../../../hooks/masterQueries";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
@@ -52,8 +52,8 @@ import {
 import FirmsApprovePage from "./FirmsApprovePage";
 
 const FirmsPage = () => {
+
   // States
-  const [quarterCode, setQuarterCode] = useState("");
   const [searchText, setSearchText] = useState("");
   const [pageNumber, setPageNumber] = useState(0);
   const [pageSize, setPageSize] = useState(10);
@@ -81,14 +81,43 @@ const FirmsPage = () => {
     activeYearRangeId
   );
 
+  const exportFirmsMutation = useExportFirms();
+
   const categoryStatsQuery = useFetchCategoryStats(activeYearRangeId);
   const categoryCount =
-  (categoryStatsQuery?.data?.data.byCategory?.length || 0) + 1;
+  (categoryStatsQuery?.data?.data.byCategory?.length || 0);
 
   //Disclosures
   const createFirmDisclosure = useDisclosure();
 
-  
+  //Handlers
+
+  const handleExport = () => {
+  exportFirmsMutation.mutate(
+    {
+      yearRangeId: activeYearRangeId,
+      category: categoryCode === "" ? "" : categoryCode,
+    },
+    {
+      onSuccess: (response) => {
+        const url = window.URL.createObjectURL(
+          new Blob([response.data])
+        );
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute(
+          "download",
+          `approved_firms_${activeYearRangeId || "all"}.xlsx`
+        );
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      },
+    }
+  );
+};
 
   const handleTabChange = (index) => {
     setActiveTab(index);
@@ -132,12 +161,12 @@ const FirmsPage = () => {
                         categoryCode={c.categoryCode}
                       />
                     ))}
-                    <StatCard2
+                    {/* <StatCard2
                       key={"total"}
                       title={"Total"}
                       value={categoryStatsQuery?.data?.data.total}
                       categoryCode={""}
-                    />
+                    /> */}
                   </SimpleGrid>
                   <Section>
                     <Container minW="full">
@@ -173,7 +202,7 @@ const FirmsPage = () => {
                               variant="brand"
                               leftIcon={<FaFileExport />}
                               onClick={() => {
-                                //navigate("/sad/issue/create");
+                                handleExport();
                               }}
                             >
                               Export to Excel

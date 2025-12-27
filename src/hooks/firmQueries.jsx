@@ -161,3 +161,19 @@ export const useUpdateFirm = (onSuccess, onError) => {
     onError,
   });
 };
+
+// GET: Export Firms
+const exportFirms = (yearRangeId, category) => {
+  return request({
+    url: `/firms/export?yearRangeId=${yearRangeId}&category=${category}`,
+    method: "get",
+    responseType: "blob",
+  });
+};
+
+export const useExportFirms = () => {
+  return useMutation({
+    mutationFn: ({ yearRangeId, category }) =>
+      exportFirms(yearRangeId, category),
+  });
+};

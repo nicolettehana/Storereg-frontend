@@ -296,7 +296,7 @@ const FirmsPage = () => {
                               variant="brand"
                               leftIcon={<FaFileExport />}
                               onClick={() => {
-                                //navigate("/sad/issue/create");
+                                handleExport();
                               }}
                             >
                               Export to Excel

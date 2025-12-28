@@ -49,3 +49,20 @@ export const useFetchItemsList = (category, search) => {
     queryFn: () => fetchItemsList(category, search),
   });
 };
+
+
+// GET: Export Items
+const exportItems = (category) => {
+  return request({
+    url: `/items/export?category=${category}`,
+    method: "get",
+    responseType: "blob",
+  });
+};
+
+export const useExportItems = () => {
+  return useMutation({
+    mutationFn: ({category }) =>
+      exportItems(category),
+  });
+};

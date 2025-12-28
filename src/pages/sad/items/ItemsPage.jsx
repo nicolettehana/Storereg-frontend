@@ -11,7 +11,10 @@ import {
 } from "@chakra-ui/react";
 import { useFetchCategories } from "../../../hooks/masterQueries";
 import { useFetchItemCategoryStats } from "../../../hooks/masterQueries";
-import { useFetchItemsByType } from "../../../hooks/itemQueries";
+import {
+  useFetchItemsByType,
+  useExportItems,
+} from "../../../hooks/itemQueries";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import ItemsTableWrapper from "./ItemsTableWrapper";
 import CategoriesFilter from "../../../components/filter/CategoriesFilter";
@@ -45,9 +48,32 @@ const ItemsPage = () => {
     pageNumber,
     pageSize
   );
+  const exportItemsMutation = useExportItems();
 
   //Disclosures
   const createItemDisclosure = useDisclosure();
+
+  //Handlers
+  const handleExport = () => {
+    exportItemsMutation.mutate(
+      {
+        category: categoryCode === "" ? "" : categoryCode,
+      },
+      {
+        onSuccess: (response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", `items_${categoryCode || "all"}.xlsx`);
+
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+        },
+      }
+    );
+  };
 
   return (
     <>
@@ -114,7 +140,7 @@ const ItemsPage = () => {
                     variant="brand"
                     leftIcon={<FaFileExport />}
                     onClick={() => {
-                      //navigate("/sad/issue/create");
+                      handleExport();
                     }}
                   >
                     Export to Excel

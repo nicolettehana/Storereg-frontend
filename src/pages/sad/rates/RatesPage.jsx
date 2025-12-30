@@ -76,7 +76,9 @@ const RatesPage = () => {
               ? ""
               : yearRangeQuery?.data?.data?.find(
                   (yearRange) => yearRange.id === Number(yearRangeId)
-                )?.startYear || "";
+                )?.startYear+"-"+yearRangeQuery?.data?.data?.find(
+                  (yearRange) => yearRange.id === Number(yearRangeId)
+                )?.endYear || "";
 
           link.setAttribute(
             "download",

@@ -59,3 +59,21 @@ export const useAddRate = (onSuccess, onError) => {
     onError,
   });
 };
+
+// GET: Export Rates
+const exportRates = (category, yearRange) => {
+  return request({
+    url: `/rates/export${
+      category ? `/${category}` : ""
+    }?yearRange=${yearRange}`,
+    method: "get",
+    responseType: "blob",
+  });
+};
+
+export const useExportRates = () => {
+  return useMutation({
+    mutationFn: ({category, yearRange }) =>
+      exportRates(category, yearRange),
+  });
+};

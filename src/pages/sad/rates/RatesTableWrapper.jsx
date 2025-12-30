@@ -217,7 +217,7 @@ const RatesTableWrapper = ({
           <Thead>
             <Tr>
               <Th>Sl. No.</Th>
-              <Th>Year Range</Th>
+              {/* <Th>Year Range</Th> */}
               <Th>Category</Th>
               <Th>Item</Th>
               <Th>Unit</Th>
@@ -242,7 +242,7 @@ const RatesTableWrapper = ({
                       {elementCounter(index, query)}
                     </SkeletonText>
                   </Td>
-                  <Td>
+                  {/* <Td>
                     <SkeletonText
                       w="8"
                       noOfLines={1}
@@ -251,7 +251,7 @@ const RatesTableWrapper = ({
                     >
                       {row?.startYear}-{row?.endYear}
                     </SkeletonText>
-                  </Td>
+                  </Td> */}
                   <Td>
                     <SkeletonText
                       noOfLines={1}

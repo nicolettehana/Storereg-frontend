@@ -1,9 +1,15 @@
 import { useState } from "react";
 import Main from "../../../components/core/semantics/Main";
 import Section from "../../../components/core/semantics/Section";
-import { Button, Container, HStack, Stack, useDisclosure } from "@chakra-ui/react";
+import {
+  Button,
+  Container,
+  HStack,
+  Stack,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { useFetchYearRange } from "../../../hooks/masterQueries";
-import { useFetchRates } from "../../../hooks/ratesQueries";
+import { useFetchRates, useExportRates } from "../../../hooks/ratesQueries";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import { useFetchCategories } from "../../../hooks/masterQueries";
 import SearchInput from "../../../components/core/SearchInput";
@@ -40,9 +46,50 @@ const RatesPage = () => {
     pageSize,
     yearRangeId
   );
+  const exportRatesMutation = useExportRates();
 
   //Disclosures
   const createRateDisclosure = useDisclosure();
+
+  //Handlers
+  const handleExport = () => {
+    exportRatesMutation.mutate(
+      {
+        yearRange: yearRangeId,
+        category: categoryCode === "" ? "" : categoryCode,
+      },
+      {
+        onSuccess: (response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+
+          const link = document.createElement("a");
+          link.href = url;
+          const categoryName =
+            categoryCode === ""
+              ? ""
+              : "_" +
+                  categoryQuery?.data?.data?.find(
+                    (cat) => cat.code === categoryCode
+                  )?.name || "";
+          const yearRange =
+            yearRangeId === ""
+              ? ""
+              : yearRangeQuery?.data?.data?.find(
+                  (yearRange) => yearRange.id === Number(yearRangeId)
+                )?.startYear || "";
+
+          link.setAttribute(
+            "download",
+            `rates_${yearRange}${categoryName}.xlsx`
+          );
+
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+        },
+      }
+    );
+  };
 
   return (
     <>
@@ -94,7 +141,7 @@ const RatesPage = () => {
                     variant="brand"
                     leftIcon={<FaFileExport />}
                     onClick={() => {
-                      //navigate("/sad/issue/create");
+                      handleExport();
                     }}
                   >
                     Export to Excel

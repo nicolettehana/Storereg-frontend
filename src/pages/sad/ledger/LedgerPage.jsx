@@ -6,7 +6,7 @@ import { useFetchYearRange } from "../../../hooks/masterQueries";
 import { useFetchRates } from "../../../hooks/ratesQueries";
 import { useFetchPurchases } from "../../../hooks/purchaseQueries";
 import { useFetchIssues } from "../../../hooks/issueQueries";
-import { useFetchLedger } from "../../../hooks/ledgerQueries";
+import { useFetchLedger, useExportLedger } from "../../../hooks/ledgerQueries";
 import { MdOutlineHome } from "react-icons/md";
 import { useFetchCategories } from "../../../hooks/masterQueries";
 import SearchInput from "../../../components/core/SearchInput";
@@ -40,30 +40,6 @@ const LedgerPage = () => {
 
   // Queries
   const categoryQuery = useFetchCategories();
-  const yearRangeQuery = useFetchYearRange();
-  const ratesQuery = useFetchRates(
-    categoryCode === "" ? null : categoryCode,
-    searchValue,
-    pageNumber,
-    pageSize,
-    yearRangeId
-  );
-  const purchasesQuery = useFetchPurchases(
-    categoryCode === "" ? null : categoryCode,
-    searchValue,
-    pageNumber,
-    pageSize,
-    startDate,
-    endDate
-  );
-  const issueQuery = useFetchIssues(
-    categoryCode === "" ? null : categoryCode,
-    searchValue,
-    pageNumber,
-    pageSize,
-    startDate,
-    endDate
-  );
 
   const ledgerQuery = useFetchLedger(
     pageNumber,
@@ -73,6 +49,53 @@ const LedgerPage = () => {
     categoryCode === "" ? "" : categoryCode,
     searchValue
   );
+
+  const exportLedgerMutation = useExportLedger();
+
+   const formatDate = (date) => {
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
+  //Handlers
+  const handleExport = () => {
+    exportLedgerMutation.mutate(
+      {
+        startDate: startDate,
+        endDate: endDate,
+        categoryCode: categoryCode === "" ? "" : categoryCode,
+      },
+      {
+        onSuccess: (response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+
+          const link = document.createElement("a");
+          const categoryName =
+            categoryCode === ""
+              ? ""
+              : "_" +
+                  categoryQuery?.data?.data?.find(
+                    (cat) => cat.code === categoryCode
+                  )?.name || "";
+
+          link.href = url;
+          link.setAttribute(
+            "download",
+            `Ledger ${categoryName} ${formatDate(startDate)} to ${formatDate(endDate)}.xlsx`
+          );
+
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+        },
+      }
+    );
+  };
+
+ 
 
   return (
     <>
@@ -103,7 +126,7 @@ const LedgerPage = () => {
                   variant="brand"
                   leftIcon={<FaFileExport />}
                   onClick={() => {
-                    //navigate("/sad/issue/create");
+                    handleExport();
                   }}
                 >
                   Export to Excel

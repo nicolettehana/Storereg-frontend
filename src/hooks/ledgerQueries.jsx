@@ -35,3 +35,21 @@ export const useFetchLedger = (
       fetchLedger(pageNumber, pageSize, startDate, endDate, categoryCode),
   });
 };
+
+// GET: Export Ledger
+const exportLedger = (startDate,
+  endDate,
+  categoryCode) => {
+  return request({
+    url: `/ledger/export?categoryCode=${categoryCode}&startDate=${startDate}&endDate=${endDate}`,
+    method: "get",
+    responseType: "blob",
+  });
+};
+
+export const useExportLedger = () => {
+  return useMutation({
+    mutationFn: ({startDate, endDate, categoryCode }) =>
+      exportLedger(startDate, endDate, categoryCode),
+  });
+};

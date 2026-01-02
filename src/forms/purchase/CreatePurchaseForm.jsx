@@ -324,16 +324,16 @@ const CreatePurchaseForm = () => {
                                   );
                                 }}
                               >
-                                {filteredCategories.map((row, index) => (
-                                  <option key={row.code} value={row.code}>
-                                    {row.name}
-                                  </option>
-                                ))}
-                                {/* {categoryQuery?.data?.data?.map((row) => (
+                                {/* {filteredCategories.map((row, index) => (
                                   <option key={row.code} value={row.code}>
                                     {row.name}
                                   </option>
                                 ))} */}
+                                {categoryQuery?.data?.data?.map((row) => (
+                                  <option key={row.code} value={row.code}>
+                                    {row.name}
+                                  </option>
+                                ))}
                               </SelectField>
                             </Flex>
 

@@ -80,3 +80,24 @@ export const useFetchAmount = (year) => {
     retry: 0,
   });
 };
+
+
+// GET: Export Purchases
+const exportPurchases = (startDate,
+  endDate,
+  categoryCode) => {
+  return request({
+    url: `/purchase/export${
+      categoryCode ? `/${categoryCode}` : ""
+    }?startDate=${startDate}&endDate=${endDate}`,
+    method: "get",
+    responseType: "blob",
+  });
+};
+
+export const useExportPurchase = () => {
+  return useMutation({
+    mutationFn: ({startDate, endDate, categoryCode }) =>
+      exportPurchases(startDate, endDate, categoryCode),
+  });
+};

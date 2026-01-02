@@ -81,7 +81,6 @@ export const useFetchAmount = (year) => {
   });
 };
 
-
 // GET: Export Purchases
 const exportPurchases = (startDate,
   endDate,

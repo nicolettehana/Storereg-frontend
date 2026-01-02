@@ -75,7 +75,6 @@ const PurchasePage = () => {
     },
     {
       onSuccess: (response) => {
-        console.log("EXPORT RESPONSE:", response);
 
         // ✅ handle both axios styles safely
         const blob = response instanceof Blob ? response : response.data;
@@ -92,7 +91,7 @@ const PurchasePage = () => {
             : "";
 
         link.href = url;
-        link.download = `Purchases${categoryName} ${formatDate(startDate)} to ${formatDate(endDate)}.xlsx`;
+        link.download = `Purchases ${categoryName} ${formatDate(startDate)} to ${formatDate(endDate)}.xlsx`;
 
         document.body.appendChild(link);
         link.click();

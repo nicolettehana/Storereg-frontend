@@ -64,3 +64,23 @@ export const useCreateIssue = (onSuccess, onError) => {
     onError,
   });
 };
+
+// GET: Export Issues
+const exportIssues = (startDate,
+  endDate,
+  categoryCode) => {
+  return request({
+    url: `/issue/export${
+      categoryCode ? `/${categoryCode}` : ""
+    }?startDate=${startDate}&endDate=${endDate}`,
+    method: "get",
+    responseType: "blob",
+  });
+};
+
+export const useExportIssue = () => {
+  return useMutation({
+    mutationFn: ({startDate, endDate, categoryCode }) =>
+      exportIssues(startDate, endDate, categoryCode),
+  });
+};

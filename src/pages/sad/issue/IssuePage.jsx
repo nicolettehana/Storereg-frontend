@@ -5,7 +5,7 @@ import { Button, Container, HStack, Stack } from "@chakra-ui/react";
 import { useFetchYearRange } from "../../../hooks/masterQueries";
 import { useFetchRates } from "../../../hooks/ratesQueries";
 import { useFetchPurchases } from "../../../hooks/purchaseQueries";
-import { useFetchIssues } from "../../../hooks/issueQueries";
+import { useFetchIssues, useExportIssue } from "../../../hooks/issueQueries";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import { useFetchCategories } from "../../../hooks/masterQueries";
 import SearchInput from "../../../components/core/SearchInput";
@@ -64,6 +64,55 @@ const IssuePage = () => {
     endDate
   );
 
+  const exportIssuesMutation = useExportIssue();
+
+  const formatDate = (date) => {
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
+  //Handlers
+  const handleExport = () => {
+  exportIssuesMutation.mutate(
+    {
+      startDate,
+      endDate,
+      categoryCode: categoryCode || null,
+    },
+    {
+      onSuccess: (response) => {
+
+        // ✅ handle both axios styles safely
+        const blob = response instanceof Blob ? response : response.data;
+
+        const url = window.URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        const categoryName =
+          categoryCode
+            ? "_" +
+              categoryQuery?.data?.data?.find(
+                (cat) => cat.code === categoryCode
+              )?.name
+            : "";
+
+        link.href = url;
+        link.download = `Issues ${categoryName} ${formatDate(startDate)} to ${formatDate(endDate)}.xlsx`;
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      },
+      onError: (err) => {
+        console.error("EXPORT ERROR:", err);
+      }
+    }
+  );
+};
+
   return (
     <>
       {/* Main */}
@@ -103,8 +152,8 @@ const IssuePage = () => {
                     variant="brand"
                     leftIcon={<FaFileExport />}
                     onClick={() => {
-                      //navigate("/sad/issue/create");
-                    }}
+                    handleExport();
+                  }}
                   >
                     Export to Excel
                   </Button>

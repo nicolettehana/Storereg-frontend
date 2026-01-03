@@ -26,6 +26,8 @@ import { useNavigate } from "react-router-dom";
 import StatCard2 from "../../../components/core/theme/StatCard2";
 import { FaFileExport } from "react-icons/fa";
 import CreateItemsModal from "./CreateItemsModal";
+import { useAuth } from "../../../components/auth/useAuth";
+import { hasPermission } from "../../../components/auth/permissions";
 
 const ItemsPage = () => {
   // States
@@ -34,6 +36,7 @@ const ItemsPage = () => {
   const [pageSize, setPageSize] = useState(10);
   const [status, setStatus] = useState("all");
   const [categoryCode, setCategoryCode] = useState("");
+  const { role } = useAuth();
 
   // Hooks
   const [searchValue] = useDebounce(searchText, 300);
@@ -120,13 +123,13 @@ const ItemsPage = () => {
                 </HStack>
 
                 <HStack>
-                  <Button
+                  {hasPermission(role, "canAddItem") && (<Button
                     variant="brand"
                     leftIcon={<MdOutlineAddCircleOutline />}
                     onClick={createItemDisclosure.onOpen}
                   >
                     Add New Item
-                  </Button>
+                  </Button>)}
                   {/* <Button
                     variant="brand"
                     leftIcon={<MdOutlineAddCircleOutline />}
@@ -136,7 +139,7 @@ const ItemsPage = () => {
                   >
                     Add New Item
                   </Button> */}
-                  <Button
+                  {hasPermission(role, "canExportItems") && (<Button
                     variant="brand"
                     leftIcon={<FaFileExport />}
                     onClick={() => {
@@ -144,7 +147,7 @@ const ItemsPage = () => {
                     }}
                   >
                     Export to Excel
-                  </Button>
+                  </Button>)}
                 </HStack>
               </HStack>
 

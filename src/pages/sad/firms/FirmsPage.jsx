@@ -50,6 +50,8 @@ import {
   Tr,
 } from "../../../components/core/Table";
 import FirmsApprovePage from "./FirmsApprovePage";
+import { hasPermission } from "../../../components/auth/permissions";
+import { useAuth } from "../../../components/auth/useAuth";
 
 const FirmsPage = () => {
 
@@ -65,6 +67,7 @@ const FirmsPage = () => {
   const [yearRange, setYearRange] = useState("");
 
   const activeYearRangeId = activeTab === 1 ? yearRangeId : approvedYearRangeId;
+  const { role } = useAuth();
 
   // Hooks
   const [searchValue] = useDebounce(searchText, 300);
@@ -146,9 +149,9 @@ const FirmsPage = () => {
                 <Tab as={HStack}>
                   <Text>All Firms</Text>
                 </Tab>
-                <Tab as={HStack}>
+                {hasPermission(role, "canManageApprovedFirms") && (<Tab as={HStack}>
                   <Text>Manage Approved Firms</Text>
-                </Tab>
+                </Tab>)}
               </TabList>
               <TabPanels>
                 <TabPanel>
@@ -276,13 +279,13 @@ const FirmsPage = () => {
                             
                           </HStack>
                           <HStack justifyContent="space-between" spacing={2}>
-                            <Button
+                            {hasPermission(role, "canAddFirm") && (<Button
                               variant="brand"
                               leftIcon={<MdOutlineAddCircleOutline />}
                               onClick={createFirmDisclosure.onOpen}
                             >
                               Add New Firm
-                            </Button>
+                            </Button>)}
                             {/* <Button
                               variant="brand"
                               leftIcon={<MdOutlineAddCircleOutline />}

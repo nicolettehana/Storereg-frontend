@@ -43,6 +43,8 @@ import CreateCategoryModal from "./CreateCategoryModal";
 import UpdateCategoryModal from "./UpdateCategoryModal";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
+import { hasPermission } from "../../../components/auth/permissions";
+import { useAuth } from "../../../components/auth/useAuth";
 
 const CategoryPage = () => {
   // Queries
@@ -51,8 +53,8 @@ const CategoryPage = () => {
   const categoryQuery = useFetchCategories();
 
   // States
-  // States
   const [rowState, setRowState] = useState({});
+  const { role } = useAuth();
 
   // Disclosures
   const createCategoryDisclosure = useDisclosure();
@@ -76,13 +78,13 @@ const CategoryPage = () => {
           <Stack spacing={8} p={6}>
             <VStack spacing={4}>
               <HStack w="100%" justify="flex-end">
-                <Button
+                {hasPermission(role, "canAddCategory") && (<Button
                   variant="brand"
                   leftIcon={<MdOutlineAddCircleOutline />}
                   onClick={createCategoryDisclosure.onOpen}
                 >
                   Add New Category
-                </Button>
+                </Button>)}
               </HStack>
 
               <TableContainer>
@@ -140,7 +142,7 @@ const CategoryPage = () => {
                             </SkeletonText>
                           </Td>
                           <Td>
-                              <Button
+                              {hasPermission(role, "canEditCategory") && (<Button
                                 variant="outline"
                                 minW="auto"
                                 //lineHeight="1"
@@ -152,7 +154,7 @@ const CategoryPage = () => {
                                 }}
                               >
                                 <FaEdit />
-                              </Button>
+                              </Button>)}
                           </Td>
                         </Tr>
                       );

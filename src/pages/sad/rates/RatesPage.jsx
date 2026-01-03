@@ -21,6 +21,8 @@ import YearRangeFilter from "../../../components/filter/YearRangeFilter";
 import RatesTableWrapper from "./RatesTableWrapper";
 import { FaFileExport } from "react-icons/fa";
 import CreateRateModal from "./CreateRateModal";
+import { hasPermission } from "../../../components/auth/permissions";
+import { useAuth } from "../../../components/auth/useAuth";
 
 const RatesPage = () => {
   // States
@@ -31,6 +33,7 @@ const RatesPage = () => {
   const [status, setStatus] = useState("all");
   const [categoryCode, setCategoryCode] = useState("");
   const [yearRangeId, setYearRangeId] = useState("");
+  const { role } = useAuth();
 
   // Hooks
   const [searchValue] = useDebounce(searchText, 300);
@@ -123,13 +126,13 @@ const RatesPage = () => {
                 </HStack>
 
                 <HStack>
-                  <Button
+                  {hasPermission(role, "canAddRate") && (<Button
                     variant="brand"
                     leftIcon={<MdOutlineAddCircleOutline />}
                     onClick={createRateDisclosure.onOpen}
                   >
                     Add New Rate
-                  </Button>
+                  </Button>)}
                   {/* <Button
                     variant="brand"
                     leftIcon={<MdOutlineAddCircleOutline />}
@@ -139,7 +142,7 @@ const RatesPage = () => {
                   >
                     Add New Rate
                   </Button> */}
-                  <Button
+                  {hasPermission(role, "canExportRates") && (<Button
                     variant="brand"
                     leftIcon={<FaFileExport />}
                     onClick={() => {
@@ -147,7 +150,7 @@ const RatesPage = () => {
                     }}
                   >
                     Export to Excel
-                  </Button>
+                  </Button>)}
                 </HStack>
               </HStack>
 

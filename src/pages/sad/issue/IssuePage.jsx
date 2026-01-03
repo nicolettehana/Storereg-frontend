@@ -15,9 +15,11 @@ import { useNavigate } from "react-router-dom";
 import CategoriesFilter from "../../../components/filter/CategoriesFilter";
 import PurchaseTableWrapper from "./IssueTableWrapper";
 import dayjs from "dayjs";
-import DateFilter from "../../ch/allApplications/DateFilter";
+import DateFilter from "../../../components/filter/DateFilter";
 import IssueTableWrapper from "./IssueTableWrapper";
 import { FaFileExport } from "react-icons/fa";
+import { hasPermission } from "../../../components/auth/permissions";
+import { useAuth } from "../../../components/auth/useAuth";
 
 const IssuePage = () => {
   // States
@@ -32,6 +34,7 @@ const IssuePage = () => {
   const [endDate, setEndDate] = useState(
     dayjs().endOf("M").format("YYYY-MM-DD")
   );
+  const { role } = useAuth();
 
   // Hooks
   const [searchValue] = useDebounce(searchText, 300);
@@ -139,16 +142,17 @@ const IssuePage = () => {
                 </HStack>
 
                 <HStack>
-                  <Button
+                  {hasPermission(role, "canCreateIssue") && (<Button
                     variant="brand"
                     leftIcon={<MdOutlineAddCircleOutline />}
                     onClick={() => {
-                      navigate("/sad/issue/create");
+                      role === "SAD"? 
+                      navigate("/sad/issue/create"):navigate("/issue/issue/create");
                     }}
                   >
                     New Issue
-                  </Button>
-                  <Button
+                  </Button>)}
+                  {hasPermission(role, "canExportIssue") && (<Button
                     variant="brand"
                     leftIcon={<FaFileExport />}
                     onClick={() => {
@@ -156,7 +160,7 @@ const IssuePage = () => {
                   }}
                   >
                     Export to Excel
-                  </Button>
+                  </Button>)}
                 </HStack>
               </HStack>
 

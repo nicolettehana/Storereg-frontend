@@ -34,6 +34,8 @@ import { useState } from "react";
 import VerifyChangeMobileOTPForm from "../../../forms/profile/VerifyChangeMobileOTPForm";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import CreateYearRangeModal from "./CreateYearRangeModal";
+import { hasPermission } from "../../../components/auth/permissions";
+import { useAuth } from "../../../components/auth/useAuth";
 
 const YearRangePage = () => {
   // Queries
@@ -43,6 +45,7 @@ const YearRangePage = () => {
   // States
   const [otpToken, setOtpToken] = useState("");
   const [mobileno, setMobileno] = useState("");
+  const { role } = useAuth();
 
   // Disclosures
   const mobileDisclosure = useDisclosure();
@@ -77,13 +80,13 @@ const YearRangePage = () => {
           <Stack spacing={8} p={6}>
             <VStack spacing={4}>
               <HStack w="100%" justify="flex-end">
-                <Button
+                {hasPermission(role, "canAddYearRange") && (<Button
                   variant="brand"
                   leftIcon={<MdOutlineAddCircleOutline />}
                   onClick={createYearRangeDisclosure.onOpen}
                 >
                   Add New Year Range
-                </Button>
+                </Button>)}
               </HStack>
 
               <TableContainer>

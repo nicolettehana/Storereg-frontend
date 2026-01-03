@@ -2,7 +2,7 @@ import Main from "../../../components/core/semantics/Main";
 import Section from "../../../components/core/semantics/Section";
 import { Container, HStack, Stack } from "@chakra-ui/react";
 import { useFetchAuditTrail } from "../../../hooks/adminQueries";
-import DateFilter from "../../ch/allApplications/DateFilter";
+import DateFilter from "../../../components/filter/DateFilter";
 import { useState } from "react";
 import dayjs from "dayjs";
 import LogsTableWrapper from "./LogsTableWrapper";

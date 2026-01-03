@@ -35,10 +35,7 @@ import {
   MdOutlineSensorOccupied,
   MdOutlineTableChart,
 } from "react-icons/md";
-import OccupantModal from "../../ch/quarters/OccupantModal";
-import { useEnableDisableQuarter } from "../../../hooks/quartersQueries";
 import { useQueryClient } from "@tanstack/react-query";
-import DisableQuarterModal from "../../est/quarters/DisableQuarterModal";
 import { useNavigate } from "react-router-dom";
 import { getCategoryColorScheme } from "../../../components/core/CategoryColors";
 
@@ -51,10 +48,6 @@ const LedgerTableWrapper = ({
   startDate,
   endDate,
 }) => {
-  // Disclosures
-  const disableDisclosure = useDisclosure();
-  const occupantDetailsDisclosure = useDisclosure();
-
   // States
   const [rowState, setRowState] = useState({});
   const formatted = new Date(startDate).toLocaleDateString("en-GB");
@@ -65,25 +58,6 @@ const LedgerTableWrapper = ({
 
   // Queries
   const queryClient = useQueryClient();
-  const enableDisableQuery = useEnableDisableQuarter(
-    (response) => {
-      queryClient.invalidateQueries({ queryKey: ["fetch-quarters-by-type"] });
-      return response;
-    },
-    (error) => {
-      toast({
-        isClosable: true,
-        duration: 3000,
-        position: "top-right",
-        status: "error",
-        title: "Error",
-        description:
-          error.response.data.detail ||
-          "Oops! Something went wrong. Couldn't enable/disable quarter.",
-      });
-      return error;
-    }
-  );
 
   if (query.isError) {
     return (
@@ -169,26 +143,9 @@ const LedgerTableWrapper = ({
     );
   }
 
-  // Handlers
-  const handleDisable = (row) => {
-    disableDisclosure.onOpen();
-    setRowState(row);
-  };
 
   return (
     <Stack spacing={4}>
-      {/* Modals */}
-      <DisableQuarterModal
-        isOpen={disableDisclosure.isOpen}
-        onClose={disableDisclosure.onClose}
-        rowState={rowState}
-      />
-
-      <OccupantModal
-        isOpen={occupantDetailsDisclosure.isOpen}
-        onClose={occupantDetailsDisclosure.onClose}
-        rowState={rowState}
-      />
 
       {/* Table */}
       <TableContainer>

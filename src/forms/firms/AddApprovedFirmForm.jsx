@@ -11,8 +11,6 @@ import {
   useToast,
   Checkbox,
 } from "@chakra-ui/react";
-import InputField from "../../components/core/formik/InputField";
-import { useCreateQuarter } from "../../hooks/quartersQueries";
 import {
   useCreateFirm,
   useFetchFirmsListt,
@@ -24,7 +22,6 @@ import {
 } from "../../hooks/masterQueries";
 import SelectField from "../../components/core/formik/SelectField";
 import { useQueryClient } from "@tanstack/react-query";
-import { useCreateQuarterAndAddOccupants } from "../../hooks/occpantsQueries";
 import { useNavigate } from "react-router-dom";
 import SelectFieldSearchable from "../../components/core/formik/SelectFieldSearchable";
 
@@ -62,65 +59,6 @@ const AddApprovedFirmForm = () => {
         title: "Error",
         description:
           error.response.data.detail || "Unable to add approved firm.",
-      });
-      return error;
-    }
-  );
-
-  const createQuery = useCreateQuarter(
-    (response) => {
-      queryClient.invalidateQueries({ queryKey: ["fetch-quarters-by-type"] });
-      navigate("/est/quarters");
-      toast({
-        isClosable: true,
-        duration: 3000,
-        position: "top-right",
-        status: "success",
-        title: "Success",
-        description: response.data.detail || "Quarter created successfully",
-      });
-      return response;
-    },
-    (error) => {
-      toast({
-        isClosable: true,
-        duration: 3000,
-        position: "top-right",
-        status: "error",
-        title: "Error",
-        description:
-          error.response.data.detail ||
-          "Oops! Something went wrong. Couldn't create quarter.",
-      });
-      return error;
-    }
-  );
-
-  const createAndAddOccupantQuery = useCreateQuarterAndAddOccupants(
-    (response) => {
-      queryClient.invalidateQueries({ queryKey: ["fetch-quarters-by-type"] });
-      navigate("/est/quarters");
-      toast({
-        isClosable: true,
-        duration: 3000,
-        position: "top-right",
-        status: "success",
-        title: "Success",
-        description:
-          response.data.detail || "Quarter and occupants added successfully",
-      });
-      return response;
-    },
-    (error) => {
-      toast({
-        isClosable: true,
-        duration: 3000,
-        position: "top-right",
-        status: "error",
-        title: "Error",
-        description:
-          error.response.data.detail ||
-          "Oops! Something went wrong. Couldn't add quarter and occupants.",
       });
       return error;
     }

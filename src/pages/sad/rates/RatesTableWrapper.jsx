@@ -35,10 +35,7 @@ import {
   MdOutlineSensorOccupied,
   MdOutlineTableChart,
 } from "react-icons/md";
-import OccupantModal from "../../ch/quarters/OccupantModal";
-import { useEnableDisableQuarter } from "../../../hooks/quartersQueries";
 import { useQueryClient } from "@tanstack/react-query";
-import DisableQuarterModal from "../../est/quarters/DisableQuarterModal";
 import { useNavigate } from "react-router-dom";
 import { getCategoryColorScheme } from "../../../components/core/CategoryColors";
 import { MdRateReview } from "react-icons/md";
@@ -53,8 +50,6 @@ const RatesTableWrapper = ({
   yearRangeId,
 }) => {
   // Disclosures
-  const disableDisclosure = useDisclosure();
-  const occupantDetailsDisclosure = useDisclosure();
   const addRateDisclosure = useDisclosure();
 
   // States
@@ -66,30 +61,10 @@ const RatesTableWrapper = ({
 
   // Queries
   const queryClient = useQueryClient();
-  const enableDisableQuery = useEnableDisableQuarter(
-    (response) => {
-      queryClient.invalidateQueries({ queryKey: ["fetch-quarters-by-type"] });
-      return response;
-    },
-    (error) => {
-      toast({
-        isClosable: true,
-        duration: 3000,
-        position: "top-right",
-        status: "error",
-        title: "Error",
-        description:
-          error.response.data.detail ||
-          "Oops! Something went wrong. Couldn't enable/disable quarter.",
-      });
-      return error;
-    }
-  );
 
   if (query.isError) {
     return (
       <Center py={16}>
-        
         <VStack spacing={4}>
           <Box
             bg="paperSecondary"
@@ -114,12 +89,11 @@ const RatesTableWrapper = ({
   }
 
   const [addRateState, setAddRateState] = useState({
-  itemId: null,
-  itemName: "",
-  subItemId: null,
-  subItemName: "",
-
-});
+    itemId: null,
+    itemName: "",
+    subItemId: null,
+    subItemName: "",
+  });
 
   // Empty Search
   if (
@@ -179,37 +153,18 @@ const RatesTableWrapper = ({
     );
   }
 
-  // Handlers
-  const handleDisable = (row) => {
-    disableDisclosure.onOpen();
-    setRowState(row);
-  };
-
   return (
     <Stack spacing={4}>
       {/* Modals */}
-      <DisableQuarterModal
-        isOpen={disableDisclosure.isOpen}
-        onClose={disableDisclosure.onClose}
-        rowState={rowState}
+      <AddRateModal
+        isOpen={addRateDisclosure.isOpen}
+        onClose={addRateDisclosure.onClose}
+        itemId={addRateState.itemId}
+        itemName={addRateState.itemName}
+        subItemId={addRateState.subItemId}
+        subItemName={addRateState.subItemName}
+        yearRangeId={yearRangeId}
       />
-
-      <OccupantModal
-        isOpen={occupantDetailsDisclosure.isOpen}
-        onClose={occupantDetailsDisclosure.onClose}
-        rowState={rowState}
-      />
-
-      {/* Modals */}
-                <AddRateModal
-                  isOpen={addRateDisclosure.isOpen}
-                  onClose={addRateDisclosure.onClose}
-                  itemId={addRateState.itemId}
-                  itemName={addRateState.itemName}
-                  subItemId={addRateState.subItemId}
-                  subItemName={addRateState.subItemName}
-                  yearRangeId={yearRangeId}
-                />
 
       {/* Table */}
       <TableContainer>
@@ -272,7 +227,6 @@ const RatesTableWrapper = ({
                       fadeDuration={index}
                     >
                       {row?.name}
-                      
 
                       {row?.subItems?.map((subItem, i) => {
                         const hasRates = subItem?.rates?.length > 0;
@@ -280,12 +234,14 @@ const RatesTableWrapper = ({
                         return hasRates ? (
                           subItem.rates.map((rate, j) => (
                             <Box key={`${i}-${j}`} mb={1}>
-                              ({String.fromCharCode(97 + i)}) {subItem.name || "-"}
+                              ({String.fromCharCode(97 + i)}){" "}
+                              {subItem.name || "-"}
                             </Box>
                           ))
                         ) : (
                           <Box key={i} mb={1}>
-                            ({String.fromCharCode(97 + i)}) {subItem.name || "-"}
+                            ({String.fromCharCode(97 + i)}){" "}
+                            {subItem.name || "-"}
                           </Box>
                         );
                       })}
@@ -298,14 +254,15 @@ const RatesTableWrapper = ({
                       isLoaded={!query.isPending}
                       fadeDuration={index}
                     >
-                    {row?.rates?.map((rate, i) => (
+                      {row?.rates?.map((rate, i) => (
                         <Box key={i} mb={1}>
                           {rate.unit || "-"}
                         </Box>
                       ))}
-                      {row?.subItems?.length>0 && "\u00A0"}
-                      {row?.subItems.length==0 && row?.rates?.length==0 &&
-                      ('-')}
+                      {row?.subItems?.length > 0 && "\u00A0"}
+                      {row?.subItems.length == 0 &&
+                        row?.rates?.length == 0 &&
+                        "-"}
                       {row?.subItems?.map((subItem, i) => {
                         const hasRates = subItem?.rates?.length > 0;
 
@@ -317,12 +274,10 @@ const RatesTableWrapper = ({
                           ))
                         ) : (
                           <Box key={i} mb={1}>
-                            ({String.fromCharCode(97 + i)}) { "-"}
+                            ({String.fromCharCode(97 + i)}) {"-"}
                           </Box>
                         );
                       })}
-                      
-                      
                     </SkeletonText>
                   </Td>
                   <Td>
@@ -336,23 +291,28 @@ const RatesTableWrapper = ({
                           {rate.rate || "-"}
                         </Box>
                       ))}
-                      {row?.subItems?.length>0 && "\u00A0"}
-                      {row?.subItems.length==0 && row?.rates?.length==0 &&
-                      (<Tooltip label="Add Rate" hasArrow>
-                              <Button p={0} m={0} size="small"
-                              onClick={() => {
-                                setAddRateState({
-                                  itemId: row.id,
-                                  itemName: row.name,
-                                  subItemId: null,
-                                  subItemName: "",
-                                  yearRangeId: yearRangeId
-
-                                });
-                                addRateDisclosure.onOpen();
-                              }}
-                              ><MdRateReview />
-                              </Button></Tooltip>)}
+                      {row?.subItems?.length > 0 && "\u00A0"}
+                      {row?.subItems.length == 0 && row?.rates?.length == 0 && (
+                        <Tooltip label="Add Rate" hasArrow>
+                          <Button
+                            p={0}
+                            m={0}
+                            size="small"
+                            onClick={() => {
+                              setAddRateState({
+                                itemId: row.id,
+                                itemName: row.name,
+                                subItemId: null,
+                                subItemName: "",
+                                yearRangeId: yearRangeId,
+                              });
+                              addRateDisclosure.onOpen();
+                            }}
+                          >
+                            <MdRateReview />
+                          </Button>
+                        </Tooltip>
+                      )}
                       {/* {row?.subItems?.map((subItem, i) =>
                         subItem?.rates?.map((rate, j) => (
                         <Box key={`${i}-${j}`} mb={1}>
@@ -366,39 +326,52 @@ const RatesTableWrapper = ({
                         return hasRates ? (
                           subItem.rates.map((rate, j) => (
                             <Box key={`${i}-${j}`} mb={1}>
-                              ({String.fromCharCode(97 + i)}) {rate.rate || 
-                              <Tooltip label="Add Rate" hasArrow>
-                              <Button p={0} m={0} size="small"
-                              onClick={() => {
-                                setAddRateState({
-                                  itemId: row.id,
-                                  itemName: row.name,
-                                  subItemId: subItem?.id || null,
-                                  subItemName: subItem?.name || "",
-                                  yearRangeId: yearRangeId
-                                });
-                                addRateDisclosure.onOpen();
-                              }}
-                              ><MdRateReview />
-                              </Button></Tooltip>}
+                              ({String.fromCharCode(97 + i)}){" "}
+                              {rate.rate || (
+                                <Tooltip label="Add Rate" hasArrow>
+                                  <Button
+                                    p={0}
+                                    m={0}
+                                    size="small"
+                                    onClick={() => {
+                                      setAddRateState({
+                                        itemId: row.id,
+                                        itemName: row.name,
+                                        subItemId: subItem?.id || null,
+                                        subItemName: subItem?.name || "",
+                                        yearRangeId: yearRangeId,
+                                      });
+                                      addRateDisclosure.onOpen();
+                                    }}
+                                  >
+                                    <MdRateReview />
+                                  </Button>
+                                </Tooltip>
+                              )}
                             </Box>
                           ))
                         ) : (
                           <Box key={i} mb={1}>
-                            ({String.fromCharCode(97 + i)}) { 
-                            <Tooltip label="Add Rate" hasArrow>
-                              <Button p={0} m={0} size="small"
-                              onClick={() => {
-                                setAddRateState({
-                                  itemId: row.id,
-                                  itemName: row.name,
-                                  subItemId: subItem?.id || null,
-                                  subItemName: subItem?.name || "",
-                                });
-                                addRateDisclosure.onOpen();
-                              }}
-                              ><MdRateReview />
-                              </Button></Tooltip>
+                            ({String.fromCharCode(97 + i)}){" "}
+                            {
+                              <Tooltip label="Add Rate" hasArrow>
+                                <Button
+                                  p={0}
+                                  m={0}
+                                  size="small"
+                                  onClick={() => {
+                                    setAddRateState({
+                                      itemId: row.id,
+                                      itemName: row.name,
+                                      subItemId: subItem?.id || null,
+                                      subItemName: subItem?.name || "",
+                                    });
+                                    addRateDisclosure.onOpen();
+                                  }}
+                                >
+                                  <MdRateReview />
+                                </Button>
+                              </Tooltip>
                             }
                           </Box>
                         );

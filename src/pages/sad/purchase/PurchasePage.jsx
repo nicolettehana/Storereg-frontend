@@ -2,9 +2,6 @@ import { useState } from "react";
 import Main from "../../../components/core/semantics/Main";
 import Section from "../../../components/core/semantics/Section";
 import { Button, Container, HStack, Stack } from "@chakra-ui/react";
-import { useFetchYearRange } from "../../../hooks/masterQueries";
-import { useFetchRates } from "../../../hooks/ratesQueries";
-import { useFetchPurchases, useExportPurchase } from "../../../hooks/purchaseQueries";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import { useFetchCategories } from "../../../hooks/masterQueries";
 import SearchInput from "../../../components/core/SearchInput";
@@ -12,11 +9,13 @@ import { useDebounce } from "use-debounce";
 import { PageSizing } from "../../../components/core/Table";
 import { useNavigate } from "react-router-dom";
 import CategoriesFilter from "../../../components/filter/CategoriesFilter";
-import YearRangeFilter from "../../../components/filter/YearRangeFilter";
 import PurchaseTableWrapper from "./PurchaseTableWrapper";
 import dayjs from "dayjs";
-import DateFilter from "../../ch/allApplications/DateFilter";
+import DateFilter from "../../../components/filter/DateFilter";
 import { FaFileExport } from "react-icons/fa";
+import { useFetchPurchases, useExportPurchase } from "../../../hooks/purchaseQueries";
+import { hasPermission } from "../../../components/auth/permissions";
+import { useAuth } from "../../../components/auth/useAuth";
 
 const PurchasePage = () => {
   // States
@@ -24,13 +23,13 @@ const PurchasePage = () => {
   const [pageNumber, setPageNumber] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [categoryCode, setCategoryCode] = useState("");
-  const [yearRangeId, setYearRangeId] = useState("");
   const [startDate, setStartDate] = useState(
     dayjs().subtract(2, "months").startOf("M").format("YYYY-MM-DD")
   );
   const [endDate, setEndDate] = useState(
     dayjs().endOf("M").format("YYYY-MM-DD")
   );
+  const { role } = useAuth();
 
   // Hooks
   const [searchValue] = useDebounce(searchText, 300);
@@ -38,14 +37,7 @@ const PurchasePage = () => {
 
   // Queries
   const categoryQuery = useFetchCategories();
-  const yearRangeQuery = useFetchYearRange();
-  const ratesQuery = useFetchRates(
-    categoryCode === "" ? null : categoryCode,
-    searchValue,
-    pageNumber,
-    pageSize,
-    yearRangeId
-  );
+
   const purchasesQuery = useFetchPurchases(
     categoryCode === "" ? null : categoryCode,
     searchValue,
@@ -131,16 +123,17 @@ const PurchasePage = () => {
                 </HStack>
 
                 <HStack>
-                  <Button
+                  {hasPermission(role, "canCreatePurchase") && (<Button
                     variant="brand"
                     leftIcon={<MdOutlineAddCircleOutline />}
                     onClick={() => {
-                      navigate("/sad/purchase/create");
+                      role === "SAD"? 
+                      navigate("/sad/purchase/create"):navigate("/purchase/purchase/create");
                     }}
                   >
                     Add New Purchase
-                  </Button>
-                  <Button
+                  </Button>)}
+                  {hasPermission(role, "canExportPurchase") && (<Button
                     variant="brand"
                     leftIcon={<FaFileExport />}
                     onClick={() => {
@@ -148,7 +141,7 @@ const PurchasePage = () => {
                   }}
                   >
                     Export to Excel
-                  </Button>
+                  </Button>)}
                 </HStack>
               </HStack>
 

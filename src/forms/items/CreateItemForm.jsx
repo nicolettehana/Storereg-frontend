@@ -12,13 +12,10 @@ import {
   Box,
 } from "@chakra-ui/react";
 import InputField from "../../components/core/formik/InputField";
-import { useCreateQuarter } from "../../hooks/quartersQueries";
-import { useCreateFirm } from "../../hooks/firmQueries";
 import { useCreateItem } from "../../hooks/itemQueries";
 import { useFetchCategories } from "../../hooks/masterQueries";
 import SelectField from "../../components/core/formik/SelectField";
 import { useQueryClient } from "@tanstack/react-query";
-import { useCreateQuarterAndAddOccupants } from "../../hooks/occpantsQueries";
 import { useNavigate } from "react-router-dom";
 
 const CreateItemForm = ({ onSuccess }) => {

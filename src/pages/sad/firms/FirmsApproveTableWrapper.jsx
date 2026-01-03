@@ -37,10 +37,7 @@ import {
   MdOutlineTableChart,
 } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
-import OccupantModal from "../../ch/quarters/OccupantModal";
-import { useEnableDisableQuarter } from "../../../hooks/quartersQueries";
 import { useQueryClient } from "@tanstack/react-query";
-import DisableQuarterModal from "../../est/quarters/DisableQuarterModal";
 import { useNavigate } from "react-router-dom";
 import { getCategoryColorScheme } from "../../../components/core/CategoryColors";
 import { useUpdateFirmYear } from "../../../hooks/firmQueries";
@@ -54,9 +51,6 @@ const FirmsApproveTableWrapper = ({
   setPageNumber,
   categoryCode
 }) => {
-  // Disclosures
-  const disableDisclosure = useDisclosure();
-  const occupantDetailsDisclosure = useDisclosure();
 
   // States
   const [rowState, setRowState] = useState({});
@@ -209,19 +203,7 @@ const FirmsApproveTableWrapper = ({
 
   return (
     <Stack spacing={4}>
-      {/* Modals */}
-      <DisableQuarterModal
-        isOpen={disableDisclosure.isOpen}
-        onClose={disableDisclosure.onClose}
-        rowState={rowState}
-      />
-
-      <OccupantModal
-        isOpen={occupantDetailsDisclosure.isOpen}
-        onClose={occupantDetailsDisclosure.onClose}
-        rowState={rowState}
-      />
-
+      
       {/* Table */}
       <TableContainer>
         <Table>

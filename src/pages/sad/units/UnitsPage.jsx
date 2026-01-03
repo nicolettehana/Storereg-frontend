@@ -34,6 +34,8 @@ import { useState } from "react";
 import VerifyChangeMobileOTPForm from "../../../forms/profile/VerifyChangeMobileOTPForm";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import CreateUnitModal from "./CreateUnitModal";
+import { hasPermission } from "../../../components/auth/permissions";
+import { useAuth } from "../../../components/auth/useAuth";
 
 const UnitsPage = () => {
   // Queries
@@ -44,6 +46,7 @@ const UnitsPage = () => {
   // States
   const [otpToken, setOtpToken] = useState("");
   const [mobileno, setMobileno] = useState("");
+  const { role } = useAuth();
 
   // Disclosures
   const mobileDisclosure = useDisclosure();
@@ -64,13 +67,13 @@ const UnitsPage = () => {
           <Stack spacing={8} p={6}>
             <VStack spacing={4}>
               <HStack w="100%" justify="flex-end">
-                <Button
+                {hasPermission(role, "canAddUnit") && (<Button
                   variant="brand"
                   leftIcon={<MdOutlineAddCircleOutline />}
                   onClick={createYearRangeDisclosure.onOpen}
                 >
                   Add New Unit
-                </Button>
+                </Button>)}
               </HStack>
 
               <TableContainer>

@@ -39,11 +39,10 @@ const SignInForm = () => {
   const captchaQuery = useFetchRefreshCaptcha();
   const authenticateQuery = useAuthenticateUser(
     (response) => {
-      console.log(response.data);
       // ** Uncomment this later **
       localStorage.setItem("access_token", response.data.access_token);
       localStorage.setItem("refresh_token", response.data.refresh_token);
-      localStorage.setItem("role", response.data.role);
+      //localStorage.setItem("role", response.data.role);
 
       // ** Comment this later
       // setToken(response.data.body.otpToken);
@@ -62,11 +61,11 @@ const SignInForm = () => {
         case "USER":
           navigate("/user/dashboard");
           break;
-        case "CH":
-          navigate("/ch/dashboard");
+        case "ISS":
+          navigate("/issue/dashboard");
           break;
-        case "EST":
-          navigate("/est/dashboard");
+        case "PUR":
+          navigate("/purchase/dashboard");
           break;
         case "ADMIN":
           navigate("/admin/logs");

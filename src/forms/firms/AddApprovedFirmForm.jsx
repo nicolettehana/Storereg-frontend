@@ -130,7 +130,7 @@ const AddApprovedFirmForm = () => {
                   formik.setFieldValue("firmName", firmName);
                 }}
               /> */}
-              
+
               <VStack spacing={4} align="start">
                 <Heading size="sm" flexShrink={0}>
                   Category
@@ -218,9 +218,7 @@ const AddApprovedFirmForm = () => {
               <Button
                 type="submit"
                 variant="brand"
-                isLoading={
-                  createQuery.isPending || createAndAddOccupantQuery.isPending
-                }
+                isLoading={createFirmYear.isPending}
                 loadingText="Saving"
               >
                 Add Firm

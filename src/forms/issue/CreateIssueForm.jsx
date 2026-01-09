@@ -58,7 +58,8 @@ const CreateIssueForm = () => {
   const createRate = useCreateRate(
     (response) => {
       queryClient.invalidateQueries({ queryKey: ["rates"] });
-      navigate("/sad/rates");
+      //navigate("/sad/rates");
+      navigate(-1);
       toast({
         isClosable: true,
         duration: 3000,
@@ -83,7 +84,8 @@ const CreateIssueForm = () => {
   const createIssue = useCreateIssue(
     (response) => {
       queryClient.invalidateQueries({ queryKey: ["issue"] });
-      navigate("/sad/issue");
+      //navigate("/sad/issue");
+      navigate(-1);
       toast({
         isClosable: true,
         duration: 3000,

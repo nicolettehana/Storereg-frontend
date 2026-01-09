@@ -126,12 +126,12 @@ const UserProfilePage = () => {
                 </SimpleGrid>
               </Stack>
 
-              <Button
+              {/* <Button
                 variant="outline"
                 onClick={() => mobileDisclosure.onOpen()}
               >
                 Edit Mobile Number
-              </Button>
+              </Button> */}
             </Stack>
 
             {/* Profile Forms */}

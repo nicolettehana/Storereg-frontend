@@ -47,7 +47,6 @@ const ItemsTableWrapper = ({
   pageNumber,
   setPageNumber,
 }) => {
-
   // States
   const [rowState, setRowState] = useState({});
 
@@ -144,7 +143,6 @@ const ItemsTableWrapper = ({
 
   return (
     <Stack spacing={4}>
-      
       {/* Table */}
       <TableContainer>
         <Table>
@@ -154,7 +152,7 @@ const ItemsTableWrapper = ({
               <Th>Item</Th>
               <Th>Category</Th>
               <Th>Balance</Th>
-              <Th>Actions</Th>
+              {/* <Th>Actions</Th> */}
             </Tr>
           </Thead>
           <Tbody>
@@ -218,7 +216,7 @@ const ItemsTableWrapper = ({
                     </SkeletonText>
                   </Td>
 
-                  <Td>
+                  {/* <Td>
                     <ButtonGroup variant="outline" isAttached={true}>
                       {isEstate && (
                         <Button
@@ -232,7 +230,7 @@ const ItemsTableWrapper = ({
                         </Button>
                       )}
                     </ButtonGroup>
-                  </Td>
+                  </Td> */}
                 </Tr>
               );
             })}

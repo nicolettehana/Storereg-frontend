@@ -46,7 +46,6 @@ const PurchaseTableWrapper = ({
   pageNumber,
   setPageNumber,
 }) => {
-
   // States
   const [rowState, setRowState] = useState({});
 
@@ -143,9 +142,8 @@ const PurchaseTableWrapper = ({
 
   return (
     <Stack spacing={4}>
-
       {/* Table */}
-      <TableContainer>
+      <TableContainer overflowX={{ base: "auto", md: "visible" }}>
         <Table>
           <Thead>
             <Tr>
@@ -229,14 +227,20 @@ const PurchaseTableWrapper = ({
                     </SkeletonText>
                   </Td>
 
-                  <Td>
+                  <Td maxW={{ md: "500px", lg: "600px" }}>
                     <SkeletonText
                       noOfLines={row?.items?.length || 1}
                       isLoaded={!query.isPending}
                       fadeDuration={index}
                     >
                       {row?.items?.map((item, i) => (
-                        <Box key={i} mb={1}>
+                        <Box
+                          key={i}
+                          mb={1}
+                          whiteSpace="normal"
+                          //wordBreak="break-word"
+                          overflowWrap="anywhere"
+                        >
                           <b>{i + 1})</b> {item.itemName}
                           {item?.subItems
                             ?.filter((s) => s) // <-- removes null values
@@ -336,7 +340,7 @@ const PurchaseTableWrapper = ({
                       {row?.totalCost}
                     </SkeletonText>
                   </Td>
-                  <Td>
+                  <Td maxW={{ md: "300px", lg: "400px" }}>
                     <SkeletonText
                       noOfLines={1}
                       isLoaded={!query.isPending}

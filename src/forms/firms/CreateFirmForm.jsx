@@ -150,9 +150,7 @@ const CreateFirmForm = ({ onSuccess }) => {
               <Button
                 type="submit"
                 variant="brand"
-                isLoading={
-                  createQuery.isPending || createAndAddOccupantQuery.isPending
-                }
+                isLoading={createFirm.isPending}
                 loadingText="Saving"
               >
                 Add Firm

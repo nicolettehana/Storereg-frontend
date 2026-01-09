@@ -52,13 +52,13 @@ const LedgerPage = () => {
 
   const exportLedgerMutation = useExportLedger();
 
-   const formatDate = (date) => {
-  const d = new Date(date);
-  const day = String(d.getDate()).padStart(2, "0");
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const year = d.getFullYear();
-  return `${day}/${month}/${year}`;
-};
+  const formatDate = (date) => {
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
 
   //Handlers
   const handleExport = () => {
@@ -84,7 +84,9 @@ const LedgerPage = () => {
           link.href = url;
           link.setAttribute(
             "download",
-            `Ledger ${categoryName} ${formatDate(startDate)} to ${formatDate(endDate)}.xlsx`
+            `Ledger ${categoryName} ${formatDate(startDate)} to ${formatDate(
+              endDate
+            )}.xlsx`
           );
 
           document.body.appendChild(link);
@@ -138,12 +140,12 @@ const LedgerPage = () => {
                   setPageSize={setPageSize}
                   setPageNumber={setPageNumber}
                 />
-                <SearchInput
+                {/* <SearchInput
                   searchText={searchText}
                   setSearchText={setSearchText}
                   setPageNumber={setPageNumber}
                   w="fit-content"
-                />
+                /> */}
               </HStack>
 
               {/* Table */}

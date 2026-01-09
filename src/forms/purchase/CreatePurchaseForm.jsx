@@ -54,7 +54,8 @@ const CreatePurchaseForm = () => {
   const createRate = useCreateRate(
     (response) => {
       queryClient.invalidateQueries({ queryKey: ["rates"] });
-      navigate("/sad/rates");
+      //navigate("/sad/rates");
+      navigate(-1);
       toast({
         isClosable: true,
         duration: 3000,
@@ -79,7 +80,8 @@ const CreatePurchaseForm = () => {
   const createPurchase = useCreatePurchase(
     (response) => {
       queryClient.invalidateQueries({ queryKey: ["purchase"] });
-      navigate("/sad/purchase");
+      //navigate("/sad/purchase");
+      navigate(-1);
       toast({
         isClosable: true,
         duration: 3000,

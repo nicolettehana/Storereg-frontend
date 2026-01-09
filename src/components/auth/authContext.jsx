@@ -7,7 +7,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   const profileQuery = useFetchUsersProfile({
-    enabled: !!localStorage.getItem("access_token"),
+    enabled: false, // ❗ important
   });
 
   useEffect(() => {
@@ -21,10 +21,8 @@ export const AuthProvider = ({ children }) => {
     }
   }, [profileQuery.status]);
 
-  const logout = () => {
-    localStorage.clear();
-    setUser(null);
-    window.location.href = "/";
+  const refreshUser = async () => {
+    await profileQuery.refetch();
   };
 
   return (
@@ -34,7 +32,7 @@ export const AuthProvider = ({ children }) => {
         role: user?.role,
         isAuthenticated: !!user,
         isLoading: profileQuery.isPending,
-        logout,
+        refreshUser,
       }}
     >
       {children}

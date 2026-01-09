@@ -23,6 +23,7 @@ import {
 import { encryptRSA } from "../../components/utils/security";
 import CaptchaImage from "../../components/common/CaptchaImage";
 import OTPForm from "./OTPForm";
+import { useAuthContext } from "../../components/auth/authContext";
 
 const SignInForm = () => {
   // Hooks
@@ -33,12 +34,13 @@ const SignInForm = () => {
   // ** Comment this later **
   // const [token, setToken] = useState("");
   // const otpDisclosure = useDisclosure();
+  const { refreshUser } = useAuthContext();
 
   // Queries
   const publicKeyQuery = useGetPublicKey();
   const captchaQuery = useFetchRefreshCaptcha();
   const authenticateQuery = useAuthenticateUser(
-    (response) => {
+    async (response) => {
       // ** Uncomment this later **
       localStorage.setItem("access_token", response.data.access_token);
       localStorage.setItem("refresh_token", response.data.refresh_token);
@@ -56,7 +58,8 @@ const SignInForm = () => {
       //   description: response.data.body.message,
       // });
 
-      // ** Uncomment this later **
+      await refreshUser();
+
       switch (response.data.role) {
         case "USER":
           navigate("/user/dashboard");
@@ -200,6 +203,7 @@ const SignInForm = () => {
               variant="brand"
               isLoading={authenticateQuery.isPending}
               loadingText="Loading"
+              isDisabled={!formik.values.captchaToken} // ✅
             >
               Sign In
             </Button>

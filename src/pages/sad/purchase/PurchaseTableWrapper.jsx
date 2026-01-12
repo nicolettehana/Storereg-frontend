@@ -148,7 +148,7 @@ const PurchaseTableWrapper = ({
           <Thead>
             <Tr>
               <Th>Sl. No.</Th>
-              <Th>Date of Purchase</Th>
+              <Th>Bill No. & Date</Th>
               <Th>Firm</Th>
               <Th>Category</Th>
               <Th>Particulars</Th>

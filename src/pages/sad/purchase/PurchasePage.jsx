@@ -13,6 +13,7 @@ import {
   Text,
   TabPanels,
   TabPanel,
+  useDisclosure
 } from "@chakra-ui/react";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import { useFetchCategories } from "../../../hooks/masterQueries";
@@ -32,6 +33,8 @@ import {
 import { hasPermission } from "../../../components/auth/permissions";
 import { useAuth } from "../../../components/auth/useAuth";
 import PurchaseOrderTableWrapper from "./PurchaseOrderTableWrapper";
+import CreatePurchaseOrderModal from "./CreatePurchaseOrderModal";
+import StatusFilter from "../../../components/filter/StatusFilter";
 
 const PurchasePage = () => {
   // States
@@ -39,6 +42,7 @@ const PurchasePage = () => {
   const [pageNumber, setPageNumber] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [categoryCode, setCategoryCode] = useState("");
+  const [status, setStatus] = useState("");
   const [activeTab, setActiveTab] = useState(0);
   const [startDate, setStartDate] = useState(
     dayjs().subtract(2, "months").startOf("M").format("YYYY-MM-DD")
@@ -61,7 +65,8 @@ const PurchasePage = () => {
     pageNumber,
     pageSize,
     startDate,
-    endDate
+    endDate,
+    status
   );
 
   const exportPurchaseMutation = useExportPurchase();
@@ -73,6 +78,9 @@ const PurchasePage = () => {
     const year = d.getFullYear();
     return `${day}/${month}/${year}`;
   };
+
+  //Disclosures
+  const createPurchaseOrderDisclosure = useDisclosure();
 
   //Handlers
   const handleExport = () => {
@@ -126,6 +134,11 @@ const PurchasePage = () => {
     <>
       {/* Main */}
       <Main>
+        {/* Modals */}
+        <CreatePurchaseOrderModal
+          isOpen={createPurchaseOrderDisclosure.isOpen}
+          onClose={createPurchaseOrderDisclosure.onClose}
+        />
         <Section>
           <Container minW="full">
             <Tabs pb={5} onChange={handleTabChange}>
@@ -136,7 +149,7 @@ const PurchasePage = () => {
                   </Tab>
                 )}
                 <Tab as={HStack}>
-                  <Text>Purchase Register</Text>
+                  <Text>Purchase Receipts</Text>
                 </Tab>
               </TabList>
               <TabPanels>
@@ -158,6 +171,10 @@ const PurchasePage = () => {
                           setPageNumber={setPageNumber}
                           query={categoryQuery}
                         />
+                        <StatusFilter
+                        status={status}
+                        setStatus={setStatus}
+                        setPageNumber ={setPageNumber}></StatusFilter>
                       </HStack>
 
                       <HStack>
@@ -170,10 +187,12 @@ const PurchasePage = () => {
                                 ? navigate("/sad/purchase/create")
                                 : navigate("/purchase/purchase/create");
                             }}
+                            
                           >
-                            Add New Purchase
+                            Add New Purchase Order
                           </Button>
                         )}
+                        
                         {hasPermission(role, "canExportPurchase") && (
                           <Button
                             variant="brand"
@@ -237,11 +256,7 @@ const PurchasePage = () => {
                           <Button
                             variant="brand"
                             leftIcon={<MdOutlineAddCircleOutline />}
-                            onClick={() => {
-                              role === "SAD"
-                                ? navigate("/sad/purchase/create")
-                                : navigate("/purchase/purchase/create");
-                            }}
+                            onClick={createPurchaseOrderDisclosure.onOpen}
                           >
                             Add New Purchase
                           </Button>

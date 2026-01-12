@@ -38,6 +38,10 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { getCategoryColorScheme } from "../../../components/core/CategoryColors";
+import { FaEdit } from "react-icons/fa";
+import { hasPermission } from "../../../components/auth/permissions";
+import { useAuth } from "../../../components/auth/useAuth";
+import CreatePurchaseOrderModal from "./CreatePurchaseOrderModal";
 
 const PurchaseOrderTableWrapper = ({
   isEstate = true,
@@ -48,6 +52,7 @@ const PurchaseOrderTableWrapper = ({
 }) => {
   // States
   const [rowState, setRowState] = useState({});
+  const { role } = useAuth();
 
   // Hooks
   const toast = useToast();
@@ -55,6 +60,9 @@ const PurchaseOrderTableWrapper = ({
 
   // Queries
   const queryClient = useQueryClient();
+
+  //Disclosures
+  const createPurchaseOrderDisclosure = useDisclosure();
 
   if (query.isError) {
     return (
@@ -142,6 +150,11 @@ const PurchaseOrderTableWrapper = ({
 
   return (
     <Stack spacing={4}>
+      {/* Modals */}
+        <CreatePurchaseOrderModal
+          isOpen={createPurchaseOrderDisclosure.isOpen}
+          onClose={createPurchaseOrderDisclosure.onClose}
+        />
       {/* Table */}
       <TableContainer overflowX={{ base: "auto", md: "visible" }}>
         <Table>
@@ -153,8 +166,7 @@ const PurchaseOrderTableWrapper = ({
               <Th>Category</Th>
               <Th>Particulars</Th>
               <Th>Quantity</Th>
-              <Th>Remarks</Th>
-              <Th>Action</Th>
+              <Th>Status</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -181,6 +193,9 @@ const PurchaseOrderTableWrapper = ({
                       isLoaded={!query.isPending}
                       fadeDuration={index}
                     >
+                      {row?.fileNo}
+                      <br />
+                      
                       {row?.date
                         ? new Date(row.date)
                             .toLocaleDateString("en-GB")
@@ -283,17 +298,25 @@ const PurchaseOrderTableWrapper = ({
                       ))}
                     </SkeletonText>
                   </Td>
-                  
-                  <Td maxW={{ md: "300px", lg: "400px" }}>
-                    <SkeletonText
-                      noOfLines={1}
-                      isLoaded={!query.isPending}
-                      fadeDuration={index}
-                    >
-                      {row?.remarks}
-                    </SkeletonText>
+                  <Td>
+                    {row?.billNo && <Badge colorScheme='green'>Received</Badge>}
+                    {!row?.billNo && 
+                  <Badge colorScheme='red'>Pending</Badge>}
+                    <br />
+                    {hasPermission(role, "canCreatePurchase") && (!row?.billNo) && (<Button
+                                                    variant="outline"
+                                                    minW="auto"
+                                                    //lineHeight="1"
+                                                    bg="brand.50"
+                                                    size="xs"
+                                                    onClick={() => {
+                                                      setRowState(row);
+                                                      createPurchaseOrderDisclosure.onOpen()
+                                                    }}
+                                                  >
+                                                    <FaEdit />
+                                                  </Button>)}
                   </Td>
-                  <Td>Actions</Td>
                 </Tr>
               );
             })}

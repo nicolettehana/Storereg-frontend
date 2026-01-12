@@ -31,7 +31,7 @@ export default function ExpensePieChart({ data }) {
         borderColor="gray.300"
         borderRadius="md"
       >
-        <PieChart width={350} height={350}>
+        <PieChart width={350} height={390}>
           <Pie
             data={data?.categories}
             cx="50%"

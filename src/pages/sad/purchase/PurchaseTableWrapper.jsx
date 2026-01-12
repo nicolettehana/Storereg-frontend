@@ -151,7 +151,7 @@ const PurchaseTableWrapper = ({
               <Th>Date of Purchase</Th>
               <Th>Firm</Th>
               <Th>Category</Th>
-              <Th>Item</Th>
+              <Th>Particulars</Th>
               <Th>Quantity</Th>
               <Th>Rate (₹)</Th>
               <Th>Amount (₹)</Th>

@@ -154,7 +154,7 @@ const LedgerTableWrapper = ({
             <Tr>
               <Th>Sl. No.</Th>
               <Th>Category</Th>
-              <Th>Item</Th>
+              <Th>Particulars</Th>
               <Th>Unit</Th>
               <Th>
                 Opening Balance <br /> as on{" "}

@@ -39,14 +39,13 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { getCategoryColorScheme } from "../../../components/core/CategoryColors";
 
-const IssueTableWrapper = ({
+const PurchaseOrderTableWrapper = ({
   isEstate = true,
   query,
   searchText,
   pageNumber,
   setPageNumber,
 }) => {
-
   // States
   const [rowState, setRowState] = useState({});
 
@@ -56,7 +55,6 @@ const IssueTableWrapper = ({
 
   // Queries
   const queryClient = useQueryClient();
-  
 
   if (query.isError) {
     return (
@@ -132,9 +130,9 @@ const IssueTableWrapper = ({
           </Box>
 
           <VStack>
-            <Heading size="md">No Issues</Heading>
+            <Heading size="md">No Purchases</Heading>
             <Text color="body" textAlign="center">
-              There are no issues made in the selected date range/category.
+              There are no purchases in the selected date range/category.
             </Text>
           </VStack>
         </VStack>
@@ -142,28 +140,21 @@ const IssueTableWrapper = ({
     );
   }
 
-  // Handlers
-  const handleDisable = (row) => {
-    disableDisclosure.onOpen();
-    setRowState(row);
-  };
-
   return (
     <Stack spacing={4}>
-      
-
       {/* Table */}
-      <TableContainer>
+      <TableContainer overflowX={{ base: "auto", md: "visible" }}>
         <Table>
           <Thead>
             <Tr>
               <Th>Sl. No.</Th>
-              <Th>Date of Issue</Th>
-              <Th>Issued to</Th>
+              <Th>File no. & Date</Th>
+              <Th>Firm</Th>
               <Th>Category</Th>
               <Th>Particulars</Th>
               <Th>Quantity</Th>
               <Th>Remarks</Th>
+              <Th>Action</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -204,7 +195,7 @@ const IssueTableWrapper = ({
                       isLoaded={!query.isPending}
                       fadeDuration={index}
                     >
-                      <Box whiteSpace="normal">{row?.issuedTo}</Box>
+                      <Box whiteSpace="normal">{row?.firmName}</Box>
                     </SkeletonText>
                   </Td>
                   <Td>
@@ -222,7 +213,6 @@ const IssueTableWrapper = ({
                           >
                             {item.category}
                           </Badge>
-
                           {item?.subItems
                             ?.filter((s) => s) // <-- removes null values
                             .map((subItem, i) => (
@@ -235,14 +225,20 @@ const IssueTableWrapper = ({
                     </SkeletonText>
                   </Td>
 
-                  <Td>
+                  <Td maxW={{ md: "500px", lg: "600px" }}>
                     <SkeletonText
                       noOfLines={row?.items?.length || 1}
                       isLoaded={!query.isPending}
                       fadeDuration={index}
                     >
                       {row?.items?.map((item, i) => (
-                        <Box key={i} mb={1}>
+                        <Box
+                          key={i}
+                          mb={1}
+                          whiteSpace="normal"
+                          //wordBreak="break-word"
+                          overflowWrap="anywhere"
+                        >
                           <b>{i + 1})</b> {item.itemName}
                           {item?.subItems
                             ?.filter((s) => s) // <-- removes null values
@@ -287,8 +283,8 @@ const IssueTableWrapper = ({
                       ))}
                     </SkeletonText>
                   </Td>
-
-                  <Td>
+                  
+                  <Td maxW={{ md: "300px", lg: "400px" }}>
                     <SkeletonText
                       noOfLines={1}
                       isLoaded={!query.isPending}
@@ -297,6 +293,7 @@ const IssueTableWrapper = ({
                       {row?.remarks}
                     </SkeletonText>
                   </Td>
+                  <Td>Actions</Td>
                 </Tr>
               );
             })}
@@ -314,4 +311,4 @@ const IssueTableWrapper = ({
   );
 };
 
-export default IssueTableWrapper;
+export default PurchaseOrderTableWrapper;

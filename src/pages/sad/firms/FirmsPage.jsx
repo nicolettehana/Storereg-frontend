@@ -125,6 +125,7 @@ const FirmsPage = () => {
   const handleTabChange = (index) => {
     setActiveTab(index);
     setPageNumber(0);
+    setCategoryCode("");
     if (index === 1) {
       setYearRangeId("");
     }

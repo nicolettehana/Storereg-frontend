@@ -31,7 +31,7 @@ const LedgerPage = () => {
     dayjs().subtract(2, "months").startOf("M").format("YYYY-MM-DD")
   );
   const [endDate, setEndDate] = useState(
-    dayjs().endOf("M").format("YYYY-MM-DD")
+    dayjs().startOf("day").format("YYYY-MM-DD")
   );
 
   // Hooks

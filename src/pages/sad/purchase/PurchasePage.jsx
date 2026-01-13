@@ -13,7 +13,7 @@ import {
   Text,
   TabPanels,
   TabPanel,
-  useDisclosure
+  useDisclosure,
 } from "@chakra-ui/react";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import { useFetchCategories } from "../../../hooks/masterQueries";
@@ -48,7 +48,7 @@ const PurchasePage = () => {
     dayjs().subtract(2, "months").startOf("M").format("YYYY-MM-DD")
   );
   const [endDate, setEndDate] = useState(
-    dayjs().endOf("M").format("YYYY-MM-DD")
+    dayjs().startOf("day").format("YYYY-MM-DD")
   );
   const { role } = useAuth();
 
@@ -172,9 +172,10 @@ const PurchasePage = () => {
                           query={categoryQuery}
                         />
                         <StatusFilter
-                        status={status}
-                        setStatus={setStatus}
-                        setPageNumber ={setPageNumber}></StatusFilter>
+                          status={status}
+                          setStatus={setStatus}
+                          setPageNumber={setPageNumber}
+                        ></StatusFilter>
                       </HStack>
 
                       <HStack>
@@ -187,12 +188,11 @@ const PurchasePage = () => {
                                 ? navigate("/sad/purchase/create")
                                 : navigate("/purchase/purchase/create");
                             }}
-                            
                           >
                             Add New Purchase Order
                           </Button>
                         )}
-                        
+
                         {hasPermission(role, "canExportPurchase") && (
                           <Button
                             variant="brand"

@@ -32,7 +32,7 @@ const IssuePage = () => {
     dayjs().subtract(2, "months").startOf("M").format("YYYY-MM-DD")
   );
   const [endDate, setEndDate] = useState(
-    dayjs().endOf("M").format("YYYY-MM-DD")
+    dayjs().startOf("day").format("YYYY-MM-DD")
   );
   const { role } = useAuth();
 
@@ -70,51 +70,51 @@ const IssuePage = () => {
   const exportIssuesMutation = useExportIssue();
 
   const formatDate = (date) => {
-  const d = new Date(date);
-  const day = String(d.getDate()).padStart(2, "0");
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const year = d.getFullYear();
-  return `${day}/${month}/${year}`;
-};
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
 
   //Handlers
   const handleExport = () => {
-  exportIssuesMutation.mutate(
-    {
-      startDate,
-      endDate,
-      categoryCode: categoryCode || null,
-    },
-    {
-      onSuccess: (response) => {
+    exportIssuesMutation.mutate(
+      {
+        startDate,
+        endDate,
+        categoryCode: categoryCode || null,
+      },
+      {
+        onSuccess: (response) => {
+          // ✅ handle both axios styles safely
+          const blob = response instanceof Blob ? response : response.data;
 
-        // ✅ handle both axios styles safely
-        const blob = response instanceof Blob ? response : response.data;
+          const url = window.URL.createObjectURL(blob);
 
-        const url = window.URL.createObjectURL(blob);
-
-        const link = document.createElement("a");
-        const categoryName =
-          categoryCode
+          const link = document.createElement("a");
+          const categoryName = categoryCode
             ? "_" +
               categoryQuery?.data?.data?.find(
                 (cat) => cat.code === categoryCode
               )?.name
             : "";
 
-        link.href = url;
-        link.download = `Issues ${categoryName} ${formatDate(startDate)} to ${formatDate(endDate)}.xlsx`;
+          link.href = url;
+          link.download = `Issues ${categoryName} ${formatDate(
+            startDate
+          )} to ${formatDate(endDate)}.xlsx`;
 
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-      },
-      onError: (err) => {
-        console.error("EXPORT ERROR:", err);
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+        },
+        onError: (err) => {
+          console.error("EXPORT ERROR:", err);
+        },
       }
-    }
-  );
-};
+    );
+  };
 
   return (
     <>
@@ -142,25 +142,30 @@ const IssuePage = () => {
                 </HStack>
 
                 <HStack>
-                  {hasPermission(role, "canCreateIssue") && (<Button
-                    variant="brand"
-                    leftIcon={<MdOutlineAddCircleOutline />}
-                    onClick={() => {
-                      role === "SAD"? 
-                      navigate("/sad/issue/create"):navigate("/issue/issue/create");
-                    }}
-                  >
-                    New Issue
-                  </Button>)}
-                  {hasPermission(role, "canExportIssue") && (<Button
-                    variant="brand"
-                    leftIcon={<FaFileExport />}
-                    onClick={() => {
-                    handleExport();
-                  }}
-                  >
-                    Export to Excel
-                  </Button>)}
+                  {hasPermission(role, "canCreateIssue") && (
+                    <Button
+                      variant="brand"
+                      leftIcon={<MdOutlineAddCircleOutline />}
+                      onClick={() => {
+                        role === "SAD"
+                          ? navigate("/sad/issue/create")
+                          : navigate("/issue/issue/create");
+                      }}
+                    >
+                      New Issue
+                    </Button>
+                  )}
+                  {hasPermission(role, "canExportIssue") && (
+                    <Button
+                      variant="brand"
+                      leftIcon={<FaFileExport />}
+                      onClick={() => {
+                        handleExport();
+                      }}
+                    >
+                      Export to Excel
+                    </Button>
+                  )}
                 </HStack>
               </HStack>
 

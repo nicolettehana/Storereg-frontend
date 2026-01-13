@@ -16,6 +16,8 @@ import {
 } from "@chakra-ui/react";
 import { MdOutlineFilterList } from "react-icons/md";
 
+const today = new Date().toISOString().split("T")[0];
+
 const formatDate = (date) => {
   return new Date(date).toLocaleDateString("en-GB", {
     day: "2-digit",
@@ -81,6 +83,7 @@ const DateFilter = ({
                   setPageNumber(0);
                 }}
                 min={fromDate}
+                max={toDate || today}
               />
             </FormControl>
           </Stack>

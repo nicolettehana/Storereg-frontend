@@ -14,7 +14,7 @@ const InputField = ({ name, label, isRequired = true, ...others }) => {
           isRequired={isRequired}
           isInvalid={meta.error && meta.touched}
         >
-          <FormLabel htmlFor={name}>{label}</FormLabel>
+          <FormLabel htmlFor={name} fontSize="sm" mb={1}>{label}</FormLabel>
           <Input
             type="text"
             // variant="brand"

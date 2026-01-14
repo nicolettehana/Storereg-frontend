@@ -156,7 +156,7 @@ const PurchaseTableWrapper = ({
               <Th>Rate (₹)</Th>
               <Th>Amount (₹)</Th>
               <Th>Total (₹)</Th>
-              <Th>Remarks</Th>
+              {/* <Th>Remarks</Th> */}
             </Tr>
           </Thead>
           <Tbody>
@@ -183,6 +183,8 @@ const PurchaseTableWrapper = ({
                       isLoaded={!query.isPending}
                       fadeDuration={index}
                     >
+                      {row?.billNo}
+                      <br />
                       {row?.date
                         ? new Date(row.date)
                             .toLocaleDateString("en-GB")
@@ -337,10 +339,35 @@ const PurchaseTableWrapper = ({
                       isLoaded={!query.isPending}
                       fadeDuration={index}
                     >
-                      {row?.totalCost}
+                      <Badge
+                        fontSize="xs"
+                        fontWeight="bold"
+                        colorScheme="black"
+                        textTransform="none"
+                      >
+                        Sub-total: ₹{row?.totalCost}
+                      </Badge>
+                      <br />
+                      <Badge
+                        fontSize="xs"
+                        fontWeight="bold"
+                        colorScheme="black"
+                        textTransform="none"
+                      >
+                        GST: ₹{row?.gst} ({row?.gstPercentage}%)
+                      </Badge>
+                      <br />
+                      <Badge
+                        fontSize="xs"
+                        fontWeight="bold"
+                        colorScheme="green"
+                        textTransform="none"
+                      >
+                        Total: ₹{row?.totalCost + row?.gst}
+                      </Badge>
                     </SkeletonText>
                   </Td>
-                  <Td maxW={{ md: "300px", lg: "400px" }}>
+                  {/* <Td maxW={{ md: "300px", lg: "400px" }}>
                     <SkeletonText
                       noOfLines={1}
                       isLoaded={!query.isPending}
@@ -348,7 +375,7 @@ const PurchaseTableWrapper = ({
                     >
                       {row?.remarks}
                     </SkeletonText>
-                  </Td>
+                  </Td> */}
                 </Tr>
               );
             })}

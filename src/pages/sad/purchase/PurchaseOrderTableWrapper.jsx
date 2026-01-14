@@ -151,10 +151,11 @@ const PurchaseOrderTableWrapper = ({
   return (
     <Stack spacing={4}>
       {/* Modals */}
-        <CreatePurchaseOrderModal
-          isOpen={createPurchaseOrderDisclosure.isOpen}
-          onClose={createPurchaseOrderDisclosure.onClose}
-        />
+      <CreatePurchaseOrderModal
+        isOpen={createPurchaseOrderDisclosure.isOpen}
+        onClose={createPurchaseOrderDisclosure.onClose}
+        data={rowState}
+      />
       {/* Table */}
       <TableContainer overflowX={{ base: "auto", md: "visible" }}>
         <Table>
@@ -195,7 +196,7 @@ const PurchaseOrderTableWrapper = ({
                     >
                       {row?.fileNo}
                       <br />
-                      
+
                       {row?.date
                         ? new Date(row.date)
                             .toLocaleDateString("en-GB")
@@ -299,23 +300,25 @@ const PurchaseOrderTableWrapper = ({
                     </SkeletonText>
                   </Td>
                   <Td>
-                    {row?.billNo && <Badge colorScheme='green'>Received</Badge>}
-                    {!row?.billNo && 
-                  <Badge colorScheme='red'>Pending</Badge>}
+                    {row?.billNo && <Badge colorScheme="green">Received</Badge>}
+                    {!row?.billNo && <Badge colorScheme="red">Pending</Badge>}
                     <br />
-                    {hasPermission(role, "canCreatePurchase") && (!row?.billNo) && (<Button
-                                                    variant="outline"
-                                                    minW="auto"
-                                                    //lineHeight="1"
-                                                    bg="brand.50"
-                                                    size="xs"
-                                                    onClick={() => {
-                                                      setRowState(row);
-                                                      createPurchaseOrderDisclosure.onOpen()
-                                                    }}
-                                                  >
-                                                    <FaEdit />
-                                                  </Button>)}
+                    {hasPermission(role, "canCreatePurchase") &&
+                      !row?.billNo && (
+                        <Button
+                          variant="outline"
+                          minW="auto"
+                          //lineHeight="1"
+                          bg="brand.50"
+                          size="xs"
+                          onClick={() => {
+                            setRowState(row);
+                            createPurchaseOrderDisclosure.onOpen();
+                          }}
+                        >
+                          <FaEdit />
+                        </Button>
+                      )}
                   </Td>
                 </Tr>
               );

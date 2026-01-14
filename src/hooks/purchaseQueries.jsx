@@ -8,12 +8,13 @@ const fetchPurchases = (
   pageNumber,
   pageSize,
   startDate,
-  endDate
+  endDate,
+  status
 ) => {
   return request({
     url: `/purchase${
       categoryCode ? `/${categoryCode}` : ""
-    }?page=${pageNumber}&size=${pageSize}&search=${searchValue}&startDate=${startDate}&endDate=${endDate}`,
+    }?page=${pageNumber}&size=${pageSize}&search=${searchValue}&startDate=${startDate}&endDate=${endDate}&status=${status}`,
     method: "get",
   });
 };
@@ -24,7 +25,8 @@ export const useFetchPurchases = (
   pageNumber,
   pageSize,
   startDate,
-  endDate
+  endDate,
+  status
 ) => {
   return useQuery({
     queryKey: [
@@ -35,6 +37,7 @@ export const useFetchPurchases = (
       pageSize,
       startDate,
       endDate,
+      status,
     ],
     queryFn: () =>
       fetchPurchases(
@@ -43,7 +46,8 @@ export const useFetchPurchases = (
         pageNumber,
         pageSize,
         startDate,
-        endDate
+        endDate,
+        status
       ),
   });
 };
@@ -82,9 +86,7 @@ export const useFetchAmount = (year) => {
 };
 
 // GET: Export Purchases
-const exportPurchases = (startDate,
-  endDate,
-  categoryCode) => {
+const exportPurchases = (startDate, endDate, categoryCode) => {
   return request({
     url: `/purchase/export${
       categoryCode ? `/${categoryCode}` : ""
@@ -96,7 +98,7 @@ const exportPurchases = (startDate,
 
 export const useExportPurchase = () => {
   return useMutation({
-    mutationFn: ({startDate, endDate, categoryCode }) =>
+    mutationFn: ({ startDate, endDate, categoryCode }) =>
       exportPurchases(startDate, endDate, categoryCode),
   });
 };

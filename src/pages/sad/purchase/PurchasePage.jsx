@@ -42,7 +42,7 @@ const PurchasePage = () => {
   const [pageNumber, setPageNumber] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [categoryCode, setCategoryCode] = useState("");
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("A");
   const [activeTab, setActiveTab] = useState(0);
   const [startDate, setStartDate] = useState(
     dayjs().subtract(2, "months").startOf("M").format("YYYY-MM-DD")
@@ -126,7 +126,9 @@ const PurchasePage = () => {
     setPageNumber(0);
     setCategoryCode("");
     if (index === 1) {
-      setYearRangeId("");
+      setStatus("R");
+    } else {
+      setStatus("A");
     }
   };
 
@@ -252,7 +254,7 @@ const PurchasePage = () => {
                       </HStack>
 
                       <HStack>
-                        {hasPermission(role, "canCreatePurchase") && (
+                        {/* {hasPermission(role, "canCreatePurchase") && (
                           <Button
                             variant="brand"
                             leftIcon={<MdOutlineAddCircleOutline />}
@@ -260,7 +262,7 @@ const PurchasePage = () => {
                           >
                             Add New Purchase
                           </Button>
-                        )}
+                        )} */}
                         {hasPermission(role, "canExportPurchase") && (
                           <Button
                             variant="brand"

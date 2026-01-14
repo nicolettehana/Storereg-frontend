@@ -12,19 +12,23 @@ import {
   Stack,
   useToast,
 } from "@chakra-ui/react";
-import CreatePurchaseForm from "../../../forms/purchase/CreatePurchaseForm";
+import CreatePurchaseReceiptForm from "../../../forms/purchase/CreatePurchaseReceiptForm";
 
-const CreatePurchaseOrderModal = ({ isOpen, onClose }) => {
+const CreatePurchaseOrderModal = ({ isOpen, onClose, data }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered size="5xl">
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
         <ModalHeader fontSize="lg" fontWeight="bold">
-          Create Purchase
+          Purchase Receipt
         </ModalHeader>
         <ModalBody>
-          <CreatePurchaseForm onSuccess={onClose} />
+          {data ? (
+            <CreatePurchaseReceiptForm onSuccess={onClose} data={data} />
+          ) : (
+            <Text color="gray.500">No purchase selected</Text>
+          )}
         </ModalBody>
       </ModalContent>
     </Modal>

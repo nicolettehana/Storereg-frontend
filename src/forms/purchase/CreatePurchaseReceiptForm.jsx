@@ -82,7 +82,7 @@ const CreatePurchaseReceiptForm = ({ data, onSuccess }) => {
     remarks: data?.remarks || "",
     billDate: data?.billDate || "",
     firmId: data?.firmId || "",
-    totalCost: 0,
+    //totalCost: 0,
     items: data?.items?.map((item) => ({
       categoryCode: item.categoryCode || "",
       itemId: item.itemId || "",
@@ -218,8 +218,8 @@ const CreatePurchaseReceiptForm = ({ data, onSuccess }) => {
 
             if (selectedUnit) total += selectedUnit.rate * Number(row.quantity);
           });
-          setTotalCost(total);
-          formik.setFieldValue("totalCost", total, false);
+          //setTotalCost(total);
+          //formik.setFieldValue("totalCost", total, false);
         }, [formik.values.items, unitsRatesQuery.data]);
 
         useEffect(() => {
@@ -238,9 +238,56 @@ const CreatePurchaseReceiptForm = ({ data, onSuccess }) => {
           });
         }, [formik.values.items]);
 
+        useEffect(() => {
+          formik.values.items.forEach((item, itemIndex) => {
+            item.subItems?.forEach((sub, subIndex) => {
+              if (sub.gstPercentage !== "" && sub.amount != null) {
+                const { cgst, sgst } = calculateGst(
+                  sub.amount,
+                  sub.gstPercentage
+                );
+                formik.setFieldValue(
+                  `items[${itemIndex}].subItems[${subIndex}].cgst`,
+                  cgst
+                );
+                formik.setFieldValue(
+                  `items[${itemIndex}].subItems[${subIndex}].sgst`,
+                  sgst
+                );
+              }
+            });
+          });
+          let total = 0;
+        }, [formik.values.items]);
+
+        useEffect(() => {
+          let total = 0;
+
+          formik.values.items.forEach((item) => {
+            // Item without sub-items
+            if (!item.subItems || item.subItems.length === 0) {
+              total +=
+                Number(item.amount || 0) +
+                Number(item.cgst || 0) +
+                Number(item.sgst || 0);
+            }
+
+            // Item with sub-items
+            item.subItems?.forEach((sub) => {
+              total +=
+                Number(sub.amount || 0) +
+                Number(sub.cgst || 0) +
+                Number(sub.sgst || 0);
+            });
+          });
+
+          setTotalCost(total);
+          formik.setFieldValue("totalCost", total, false);
+        }, [formik.values.items]);
+
         return (
           <Stack as={Form} spacing={8}>
-            <Badge mb={4}>
+            <Badge mb={4} width="fit-content">
               {data?.fileNo} Dtd.{" "}
               {data?.date
                 ? new Date(data.date)
@@ -305,7 +352,7 @@ const CreatePurchaseReceiptForm = ({ data, onSuccess }) => {
 
                   {item?.subItems?.filter(Boolean).length === 0 && (
                     <SimpleGrid columns={4} mt={2} fontSize="sm" gap={4}>
-                      <Text>
+                      <Text fontWeight="bold">
                         Qty: {item?.quantity} <br />
                         Rate: ₹{item?.rate} {item?.unit}
                       </Text>
@@ -314,6 +361,7 @@ const CreatePurchaseReceiptForm = ({ data, onSuccess }) => {
                         name={`items[${index}].gstPercentage`}
                         label="GST %"
                         size="xs"
+                        isRequired={false}
                         onValueChange={(value) => {
                           const amount =
                             Number(formik.values.items[index].amount) || 0;
@@ -351,6 +399,7 @@ const CreatePurchaseReceiptForm = ({ data, onSuccess }) => {
                           name={`items[${index}].cgst`}
                           label="CGST (₹)"
                           size="xs"
+                          isRequired={false}
                           //isReadOnly
                         />
                         <InputField
@@ -358,6 +407,7 @@ const CreatePurchaseReceiptForm = ({ data, onSuccess }) => {
                           name={`items[${index}].sgst`}
                           label="SGST (₹)"
                           size="xs"
+                          isRequired={false}
                           //isReadOnly
                         />
                       </HStack>
@@ -365,12 +415,14 @@ const CreatePurchaseReceiptForm = ({ data, onSuccess }) => {
                       <VStack>
                         <Text fontWeight="bold">
                           Sub total: ₹{item?.amount || 0}
-                          {/* {item?.gstPercentage && ( */}
+                          {formik.values.items[index].gstPercentage && (
                             <>
                               <br />
-                              GST: ₹{Number(item.cgst) + Number(item.sgst)}
+                              GST: ₹
+                              {(Number(formik.values.items[index].cgst) || 0) +
+                                (Number(formik.values.items[index].sgst) || 0)}
                             </>
-                          {/* )} */}
+                          )}
                           <br />
                           Total: ₹
                           {Number(item?.amount || 0) +
@@ -389,12 +441,107 @@ const CreatePurchaseReceiptForm = ({ data, onSuccess }) => {
                             {sub?.subItemName}
                           </Text>
 
-                          <SimpleGrid columns={4} mt={1}>
-                            <Text>Qty: {sub?.quantity}</Text>
-                            <Text>
+                          <SimpleGrid columns={4} mt={1} gap={4}>
+                            <Text fontWeight="bold">
+                              Qty: {sub?.quantity}
+                              <br />
                               Rate: ₹{sub?.rate} {sub?.unit}
                             </Text>
-                            <Text fontWeight="bold">Amt: ₹{sub?.amount}</Text>
+                            <SelectField
+                              name={`items[${index}].subItems[${i}].gstPercentage`}
+                              label="GST %"
+                              size="xs"
+                              onValueChange={(value) => {
+                                const amount =
+                                  Number(
+                                    formik.values.items[index].subItems[i]
+                                      .amount
+                                  ) || 0;
+
+                                if (value === "") {
+                                  formik.setFieldValue(
+                                    `items[${index}].subItems[${i}].gstPercentage`,
+                                    ""
+                                  );
+                                  formik.setFieldValue(
+                                    `items[${index}].subItems[${i}].cgst`,
+                                    0
+                                  );
+                                  formik.setFieldValue(
+                                    `items[${index}].subItems[${i}].sgst`,
+                                    0
+                                  );
+                                  return;
+                                }
+
+                                const { cgst, sgst } = calculateGst(
+                                  amount,
+                                  value
+                                );
+
+                                formik.setFieldValue(
+                                  `items[${index}].subItems[${i}].gstPercentage`,
+                                  value
+                                );
+                                formik.setFieldValue(
+                                  `items[${index}].subItems[${i}].cgst`,
+                                  cgst
+                                );
+                                formik.setFieldValue(
+                                  `items[${index}].subItems[${i}].sgst`,
+                                  sgst
+                                );
+                              }}
+                            >
+                              <option value="">Select GST %</option>
+                              <option value={0}>0%</option>
+                              <option value={5}>5%</option>
+                              <option value={12}>12%</option>
+                              <option value={18}>18%</option>
+                              <option value={28}>28%</option>
+                            </SelectField>
+
+                            <HStack>
+                              <InputField
+                                name={`items[${index}].subItems[${i}].cgst`}
+                                label="CGST (₹)"
+                                type="number"
+                                size="xs"
+                              />
+
+                              <InputField
+                                name={`items[${index}].subItems[${i}].sgst`}
+                                label="SGST (₹)"
+                                type="number"
+                                size="xs"
+                              />
+                            </HStack>
+
+                            <VStack>
+                              <Text fontWeight="bold">
+                                Sub total: ₹{sub?.amount || 0}
+                                {formik.values.items[index].subItems[i]
+                                  .gstPercentage && (
+                                  <>
+                                    <br />
+                                    GST: ₹
+                                    {(Number(
+                                      formik.values.items[index].subItems[i]
+                                        .cgst
+                                    ) || 0) +
+                                      (Number(
+                                        formik.values.items[index].subItems[i]
+                                          .sgst
+                                      ) || 0)}
+                                  </>
+                                )}
+                                <br />
+                                Total: ₹
+                                {Number(sub?.amount || 0) +
+                                  (Number(sub?.cgst || 0) +
+                                    Number(sub?.sgst || 0))}
+                              </Text>
+                            </VStack>
                           </SimpleGrid>
                         </Box>
                       ))}
@@ -405,8 +552,8 @@ const CreatePurchaseReceiptForm = ({ data, onSuccess }) => {
             </Stack>
 
             <HStack spacing={2} justifyContent="end">
-              <FormLabel m={0}>Total:</FormLabel>
-              <Text fontWeight="bold">{"₹" + totalCost}</Text>
+              <FormLabel m={0}>Grand total:</FormLabel>
+              <Text fontWeight="bold">₹{totalCost.toFixed(2)}</Text>
             </HStack>
 
             <HStack justifyContent="end">

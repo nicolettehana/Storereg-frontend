@@ -93,6 +93,7 @@ export const useFetchUnitsRates = (purchaseDate) => {
   return useQuery({
     queryKey: ["fetchUnitsRates", purchaseDate],
     queryFn: () => fetchUnitsRates(purchaseDate),
+    enabled: !!purchaseDate,
   });
 };
 
@@ -177,7 +178,6 @@ export const useFetchItemInStockCategoryStats = () => {
     retry: 0,
   });
 };
-
 
 // POST: Update Category
 const updateCategory = (data) => {

@@ -185,8 +185,8 @@ const PurchaseTableWrapper = ({
                     >
                       {row?.billNo}
                       <br />
-                      {row?.date
-                        ? new Date(row.date)
+                      {row?.billDate
+                        ? new Date(row.billDate)
                             .toLocaleDateString("en-GB")
                             .replace(/\//g, "-") // dd-mm-yyyy
                         : ""}

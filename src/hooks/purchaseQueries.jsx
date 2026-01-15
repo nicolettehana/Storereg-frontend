@@ -102,3 +102,20 @@ export const useExportPurchase = () => {
       exportPurchases(startDate, endDate, categoryCode),
   });
 };
+
+// POST: Create Purchase Receipt
+const createPurchaseReceipt = (data) => {
+  return request({
+    url: "/purchase/receipt",
+    method: "post",
+    data,
+  });
+};
+
+export const useCreatePurchaseReceipt = (onSuccess, onError) => {
+  return useMutation({
+    mutationFn: createPurchaseReceipt,
+    onSuccess,
+    onError,
+  });
+};

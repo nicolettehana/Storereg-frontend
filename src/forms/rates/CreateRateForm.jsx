@@ -139,6 +139,7 @@ const CreateRateForm = ({ onSuccess }) => {
                 placeholder="Select category"
               >
                 {categoryQuery?.data?.data?.map((row) => (
+                  row?.stockType === 'S' &&
                   <option key={row?.code} value={row?.code}>
                     {row?.name}
                   </option>

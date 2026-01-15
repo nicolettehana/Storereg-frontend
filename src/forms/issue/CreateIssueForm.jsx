@@ -325,6 +325,7 @@ const CreateIssueForm = () => {
                               >
                                 {categoryQuery?.data?.data?.map(
                                   (row, index) => (
+                                    row?.stockType === 'S' &&
                                     <option key={row.code} value={row.code}>
                                       {row.name}
                                     </option>

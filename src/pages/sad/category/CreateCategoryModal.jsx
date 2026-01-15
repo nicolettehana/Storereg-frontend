@@ -17,6 +17,7 @@ import * as yup from "yup";
 import InputField from "../../../components/core/formik/InputField";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCreateCategory } from "../../../hooks/masterQueries";
+import SelectField from "../../../components/core/formik/SelectField";
 
 const CreateCategoryModal = ({ isOpen, onClose }) => {
   // Hooks
@@ -58,6 +59,7 @@ const CreateCategoryModal = ({ isOpen, onClose }) => {
   const initialValues = {
     name: "",
     code: "",
+    stockType: ""
   };
 
   // Validation schema
@@ -67,6 +69,7 @@ const CreateCategoryModal = ({ isOpen, onClose }) => {
       .string()
       .length(1, "Category Code must be exactly one character")
       .required("Category Code is required"),
+      stockType: yup.string().required("Stock type is required")
   });
 
   // Submit handler
@@ -103,6 +106,16 @@ const CreateCategoryModal = ({ isOpen, onClose }) => {
                   placeholder="Enter one character"
                   maxLength={1}
                 />
+                <SelectField name="stockType"
+                label="Stock Type"
+                placeholder="Select stock type">
+                  <option value="S">
+                    Stock
+                  </option>
+                  <option value="N">
+                    Non-Stock
+                  </option>
+                </SelectField>
               </ModalBody>
 
               <ModalFooter as={HStack}>

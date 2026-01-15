@@ -147,11 +147,17 @@ const PurchasePage = () => {
               <TabList pl={5}>
                 {hasPermission(role, "canManageApprovedFirms") && (
                   <Tab as={HStack}>
-                    <Text>Purchase Order</Text>
+                    <Text>Supply Orders (Stock)</Text>
                   </Tab>
                 )}
                 <Tab as={HStack}>
-                  <Text>Purchase Receipts</Text>
+                  <Text>Purchase Receipts (Stock)</Text>
+                </Tab>
+                <Tab as={HStack}>
+                  <Text>Supply Order (Non-stock)</Text>
+                </Tab>
+                <Tab as={HStack}>
+                  <Text>Purchase Receipts (Non-stock)</Text>
                 </Tab>
               </TabList>
               <TabPanels>
@@ -172,6 +178,7 @@ const PurchasePage = () => {
                           setCategoryCode={setCategoryCode}
                           setPageNumber={setPageNumber}
                           query={categoryQuery}
+                          stockType="S"
                         />
                         <StatusFilter
                           status={status}
@@ -250,6 +257,7 @@ const PurchasePage = () => {
                           setCategoryCode={setCategoryCode}
                           setPageNumber={setPageNumber}
                           query={categoryQuery}
+                          stockType="S"
                         />
                       </HStack>
 

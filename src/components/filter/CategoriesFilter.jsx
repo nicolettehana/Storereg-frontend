@@ -7,7 +7,7 @@ import {
   MenuItemOption,
   MenuList,
   MenuOptionGroup,
-  Text
+  Text,
 } from "@chakra-ui/react";
 import { MdOutlineFilterList } from "react-icons/md";
 
@@ -16,6 +16,7 @@ const CategoriesFilter = ({
   setCategoryCode,
   setPageNumber,
   query,
+  stockType,
 }) => {
   const categoryType = query?.data?.data?.find(
     (row) => row?.code === categoryCode
@@ -29,9 +30,10 @@ const CategoriesFilter = ({
         leftIcon={<MdOutlineFilterList size={20} />}
         w="fit-content"
       >
-        <HStack><Text>Item Category: </Text>
-        <Text color="red.700">{categoryType || "All"}</Text></HStack>
-        
+        <HStack>
+          <Text>Item Category: </Text>
+          <Text color="red.700">{categoryType || "All"}</Text>
+        </HStack>
       </MenuButton>
       <MenuList>
         <MenuOptionGroup
@@ -44,11 +46,14 @@ const CategoriesFilter = ({
           }}
         >
           <MenuItemOption value="">All</MenuItemOption>
-          {query?.data?.data?.map((row) => (
-            <MenuItemOption key={row?.code} value={`${row?.code}`}>
-              {row?.name}
-            </MenuItemOption>
-          ))}
+          {query?.data?.data?.map(
+            (row) =>
+              row?.stockType === stockType && (
+                <MenuItemOption key={row?.code} value={`${row?.code}`}>
+                  {row?.name}
+                </MenuItemOption>
+              )
+          )}
         </MenuOptionGroup>
       </MenuList>
     </Menu>

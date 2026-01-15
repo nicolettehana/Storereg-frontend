@@ -190,6 +190,7 @@ const FirmsPage = () => {
                               setCategoryCode={setCategoryCode}
                               setPageNumber={setPageNumber}
                               query={categoryQuery}
+                              stockType="S"
                             />
                           </HStack>
                           <HStack justifyContent="space-between" spacing={2}>

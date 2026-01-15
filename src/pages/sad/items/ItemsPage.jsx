@@ -119,6 +119,7 @@ const ItemsPage = () => {
                     setCategoryCode={setCategoryCode}
                     setPageNumber={setPageNumber}
                     query={categoryQuery}
+                    stockType="S"
                   />
                 </HStack>
 

@@ -140,6 +140,43 @@ const PurchaseTableWrapper = ({
     );
   }
 
+  const calculateItemGST = (amount, gstPercentage = 0) => {
+    const gst = (amount * gstPercentage) / 100;
+    return {
+      cgst: gst / 2,
+      sgst: gst / 2,
+      gst,
+    };
+  };
+
+  const calculateRowTotals = (items = []) => {
+    let subtotal = 0;
+    let gstTotal = 0;
+
+    items.forEach((item) => {
+      // If subItems exist, calculate from subItems
+      if (item?.subItems?.some((s) => s)) {
+        item.subItems.forEach((subItem) => {
+          if (!subItem) return;
+          subtotal += subItem.amount || 0;
+          gstTotal += calculateItemGST(
+            subItem.amount || 0,
+            subItem.gstPercentage
+          ).gst;
+        });
+      } else {
+        subtotal += item.amount || 0;
+        gstTotal += calculateItemGST(item.amount || 0, item.gstPercentage).gst;
+      }
+    });
+
+    return {
+      subtotal,
+      gstTotal,
+      grandTotal: subtotal + gstTotal,
+    };
+  };
+
   return (
     <Stack spacing={4}>
       {/* Table */}
@@ -318,14 +355,32 @@ const PurchaseTableWrapper = ({
                     >
                       {row?.items?.map((item, i) => (
                         <Box key={i} mb={1}>
-                          {item.subItems?.every((s) => s == null)
-                            ? item.amount
-                            : "\u00A0"}
+                          {item.subItems?.every((s) => s == null) ? (
+                            <>
+                              <HStack>
+                                <Text>₹{item.amount}</Text>
+                                <Text fontSize="sm">
+                                  {item.gstPercentage && " CGST: ₹" + item.cgst}
+                                  {item.gstPercentage && " SGST: ₹" + item.sgst}
+                                </Text>
+                              </HStack>
+                            </>
+                          ) : (
+                            "\u00A0"
+                          )}
                           {item?.subItems?.map(
                             (subItem, i) =>
                               subItem?.subItemName && (
                                 <Box key={i} mb={1}>
-                                  {subItem.amount}
+                                  <HStack>
+                                    <Text >₹{subItem.amount}</Text>
+                                    <Text fontSize="sm">
+                                      {subItem.gstPercentage &&
+                                        " CGST: ₹" + subItem.cgst}
+                                      {subItem.gstPercentage &&
+                                        " SGST: ₹" + subItem.sgst}
+                                    </Text>
+                                  </HStack>
                                 </Box>
                               )
                           )}
@@ -333,7 +388,7 @@ const PurchaseTableWrapper = ({
                       ))}
                     </SkeletonText>
                   </Td>
-                  <Td>
+                  {/* <Td>
                     <SkeletonText
                       noOfLines={1}
                       isLoaded={!query.isPending}
@@ -366,7 +421,51 @@ const PurchaseTableWrapper = ({
                         Total: ₹{row?.totalCost + row?.gst}
                       </Badge>
                     </SkeletonText>
+                  </Td> */}
+                  <Td>
+                    <SkeletonText
+                      noOfLines={1}
+                      isLoaded={!query.isPending}
+                      fadeDuration={index}
+                    >
+                      {(() => {
+                        const { subtotal, gstTotal, grandTotal } =
+                          calculateRowTotals(row?.items);
+
+                        return (
+                          <>
+                            <Badge
+                              fontSize="xs"
+                              fontWeight="bold"
+                              colorScheme="black"
+                              textTransform="none"
+                            >
+                              Sub-total: ₹{subtotal.toFixed(2)}
+                            </Badge>
+                            <br />
+                            <Badge
+                              fontSize="xs"
+                              fontWeight="bold"
+                              colorScheme="black"
+                              textTransform="none"
+                            >
+                              GST: ₹{gstTotal.toFixed(2)}
+                            </Badge>
+                            <br />
+                            <Badge
+                              fontSize="xs"
+                              fontWeight="bold"
+                              colorScheme="green"
+                              textTransform="none"
+                            >
+                              Total: ₹{grandTotal.toFixed(2)}
+                            </Badge>
+                          </>
+                        );
+                      })()}
+                    </SkeletonText>
                   </Td>
+
                   {/* <Td maxW={{ md: "300px", lg: "400px" }}>
                     <SkeletonText
                       noOfLines={1}

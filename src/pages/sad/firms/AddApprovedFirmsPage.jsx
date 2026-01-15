@@ -1,7 +1,6 @@
 import { Container, Heading } from "@chakra-ui/react";
 import Main from "../../../components/core/semantics/Main";
 import Section from "../../../components/core/semantics/Section";
-import CreateFirmForm from "../../../forms/firms/CreateFirmForm";
 import AddApprovedFirmForm from "../../../forms/firms/AddApprovedFirmForm";
 
 const AddApprovedFirmsPage = () => {

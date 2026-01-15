@@ -94,6 +94,7 @@ const CategoryPage = () => {
                       <Th>Sl. No.</Th>
                       <Th>Category Code</Th>
                       <Th>Category</Th>
+                      <Th>Stock Type</Th>
                       <Th>Action</Th>
                     </Tr>
                   </Thead>
@@ -141,6 +142,7 @@ const CategoryPage = () => {
                               </Badge>
                             </SkeletonText>
                           </Td>
+                          <Td><Text fontSize="sm">{row?.stockType === 'S'? 'Stock':'Non-Stock'}</Text></Td>
                           <Td>
                               {hasPermission(role, "canEditCategory") && (<Button
                                 variant="outline"

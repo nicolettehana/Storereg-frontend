@@ -16,6 +16,7 @@ const CategoriesFilter2 = ({
   setCategoryCode,
   setPageNumber,
   query,
+  stockType
 }) => {
   const categories = query?.data?.data || [];
 
@@ -52,7 +53,9 @@ const CategoriesFilter2 = ({
             setPageNumber(0);
           }}
         >
+
           {categories.map((row) => (
+            row?.stockType === stockType &&
             <MenuItemOption key={row.code} value={row.code}>
               {row.name}
             </MenuItemOption>

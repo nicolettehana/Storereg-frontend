@@ -85,6 +85,7 @@ const FirmsApprovePage = ({ yearRangeId, yearRange, onClose }) => {
                 setCategoryCode={setCategoryCode}
                 setPageNumber={setPageNumber}
                 query={categoryQuery}
+                stockType="S"
               />
 
               <Button

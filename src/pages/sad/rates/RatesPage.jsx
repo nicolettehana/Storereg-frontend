@@ -122,6 +122,7 @@ const RatesPage = () => {
                     setCategoryCode={setCategoryCode}
                     setPageNumber={setPageNumber}
                     query={categoryQuery}
+                    stockType="S"
                   />
                 </HStack>
 

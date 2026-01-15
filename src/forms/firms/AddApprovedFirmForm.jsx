@@ -188,6 +188,7 @@ const AddApprovedFirmForm = () => {
                         );
 
                         return (
+                          row?.stockType === 'S' &&
                           <Checkbox
                             key={row.code}
                             isChecked={isChecked}

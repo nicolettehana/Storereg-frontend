@@ -36,6 +36,7 @@ import PurchaseRoutes from "./components/routes/PurchaseRoutes";
 import { AuthProvider } from "./components/auth/authContext";
 import ProtectedRoute from "./components/routes/ProtectedRoute";
 import IssueRoutes from "./components/routes/IssueRoutes";
+import CreatePurchaseNSPage from "./pages/sad/purchase/CreatePurchaseNSPage";
 
 const App = () => {
   return (
@@ -73,6 +74,7 @@ const App = () => {
           <Route path="rates/create" element={<CreateRatesPage />} />
           <Route path="purchase" element={<PurchasePage />} />
           <Route path="purchase/create" element={<CreatePurchasePage />} />
+          <Route path="purchase/create-ns" element={<CreatePurchaseNSPage />} />
           <Route path="issue" element={<IssuePage />} />
           <Route path="issue/create" element={<CreateIssuePage />} />
           <Route path="category" element={<CategoryPage />} />
@@ -98,6 +100,7 @@ const App = () => {
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="purchase" element={<PurchasePage />} />
             <Route path="purchase/create" element={<CreatePurchasePage />} />
+            <Route path="purchase/create-ns" element={<CreatePurchaseNSPage />} />
             <Route path="ledger" element={<LedgerPage />} />
             <Route path="items" element={<ItemsPage />} />
             <Route path="firms" element={<FirmsPage />} />

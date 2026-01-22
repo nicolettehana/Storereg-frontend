@@ -322,6 +322,39 @@ const CreatePurchaseReceiptNSForm = ({ data, onSuccess }) => {
     >
       {(formik) => {
         useEffect(() => {
+  formik.values.items.forEach((item, index) => {
+    const rate = Number(item.rate) || 0;
+    const qty = Number(item.quantity) || 0;
+    const gstPercentage = Number(item.gstPercentage) || 0;
+
+    const amount = rate * qty;
+
+    // update amount
+    if (item.amount !== amount) {
+      formik.setFieldValue(`items[${index}].amount`, amount, false);
+    }
+
+    // update GST when amount OR gstPercentage changes
+    if (gstPercentage > 0) {
+      const { cgst, sgst } = calculateGst(amount, gstPercentage);
+
+      if (item.cgst !== cgst) {
+        formik.setFieldValue(`items[${index}].cgst`, cgst, false);
+      }
+      if (item.sgst !== sgst) {
+        formik.setFieldValue(`items[${index}].sgst`, sgst, false);
+      }
+    } else {
+      // clear GST if % is removed
+      if (item.cgst !== 0)
+        formik.setFieldValue(`items[${index}].cgst`, 0, false);
+      if (item.sgst !== 0)
+        formik.setFieldValue(`items[${index}].sgst`, 0, false);
+    }
+  });
+}, [formik.values.items]);
+
+        useEffect(() => {
           const total = calculateGrandTotal(formik.values.items);
 
           // update UI total

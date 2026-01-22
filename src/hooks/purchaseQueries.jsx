@@ -9,12 +9,13 @@ const fetchPurchases = (
   pageSize,
   startDate,
   endDate,
-  status
+  status,
+  type
 ) => {
   return request({
     url: `/purchase${
       categoryCode ? `/${categoryCode}` : ""
-    }?page=${pageNumber}&size=${pageSize}&search=${searchValue}&startDate=${startDate}&endDate=${endDate}&status=${status}`,
+    }?page=${pageNumber}&size=${pageSize}&search=${searchValue}&startDate=${startDate}&endDate=${endDate}&status=${status}&type=${type}`,
     method: "get",
   });
 };
@@ -26,7 +27,8 @@ export const useFetchPurchases = (
   pageSize,
   startDate,
   endDate,
-  status
+  status,
+  type
 ) => {
   return useQuery({
     queryKey: [
@@ -38,6 +40,7 @@ export const useFetchPurchases = (
       startDate,
       endDate,
       status,
+      type
     ],
     queryFn: () =>
       fetchPurchases(
@@ -47,7 +50,8 @@ export const useFetchPurchases = (
         pageSize,
         startDate,
         endDate,
-        status
+        status,
+        type
       ),
   });
 };
@@ -60,12 +64,13 @@ const fetchNonStockPurchases = (
   pageSize,
   startDate,
   endDate,
-  status
+  status,
+  type
 ) => {
   return request({
     url: `/purchase/ns${
       categoryCode ? `/${categoryCode}` : ""
-    }?page=${pageNumber}&size=${pageSize}&search=${searchValue}&startDate=${startDate}&endDate=${endDate}&status=${status}`,
+    }?page=${pageNumber}&size=${pageSize}&search=${searchValue}&startDate=${startDate}&endDate=${endDate}&status=${status}&type=${type}`,
     method: "get",
   });
 };
@@ -77,7 +82,8 @@ export const useFetchNonStockPurchases = (
   pageSize,
   startDate,
   endDate,
-  status
+  status,
+  type
 ) => {
   return useQuery({
     queryKey: [
@@ -89,6 +95,7 @@ export const useFetchNonStockPurchases = (
       startDate,
       endDate,
       status,
+      type
     ],
     queryFn: () =>
       fetchNonStockPurchases(
@@ -98,7 +105,8 @@ export const useFetchNonStockPurchases = (
         pageSize,
         startDate,
         endDate,
-        status
+        status,
+        type
       ),
   });
 };

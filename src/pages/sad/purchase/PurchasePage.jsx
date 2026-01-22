@@ -49,6 +49,7 @@ const PurchasePage = () => {
   const [pageSize, setPageSize] = useState(10);
   const [categoryCode, setCategoryCode] = useState("");
   const [status, setStatus] = useState("A");
+  const [type, setType] = useState("PO");
   const [activeTab, setActiveTab] = useState(0);
   const [startDate, setStartDate] = useState(
     dayjs().subtract(2, "months").startOf("M").format("YYYY-MM-DD")
@@ -72,7 +73,8 @@ const PurchasePage = () => {
     pageSize,
     startDate,
     endDate,
-    status
+    status,
+    type
   );
 
   const nonStockPurchasesQuery = useFetchNonStockPurchases(
@@ -82,7 +84,8 @@ const PurchasePage = () => {
     pageSize,
     startDate,
     endDate,
-    status
+    status,
+    type
   );
 
   const exportPurchaseMutation = useExportPurchase();
@@ -185,7 +188,8 @@ const PurchasePage = () => {
         startDate,
         endDate,
         categoryCode: categoryCode || null,
-        status: status || "All"
+        status: status || "All",
+        type: type || "PO"
       },
       {
         onSuccess: (response) => {
@@ -262,8 +266,10 @@ const PurchasePage = () => {
     setCategoryCode("");
     if (index === 1 || index === 3) {
       setStatus("R");
+      setType("PR");
     } else {
       setStatus("A");
+      setType("PO");
     }
   };
 

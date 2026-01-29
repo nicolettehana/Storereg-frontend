@@ -32,7 +32,7 @@ import {
   useFetchNonStockPurchases,
   useExportPurchaseNS,
   useExportPurchaseReceipts,
-  useExportPurchaseReceiptsNS
+  useExportPurchaseReceiptsNS,
 } from "../../../hooks/purchaseQueries";
 import { hasPermission } from "../../../components/auth/permissions";
 import { useAuth } from "../../../components/auth/useAuth";
@@ -52,10 +52,10 @@ const PurchasePage = () => {
   const [type, setType] = useState("PO");
   const [activeTab, setActiveTab] = useState(0);
   const [startDate, setStartDate] = useState(
-    dayjs().subtract(2, "months").startOf("M").format("YYYY-MM-DD")
+    dayjs().subtract(2, "months").startOf("M").format("YYYY-MM-DD"),
   );
   const [endDate, setEndDate] = useState(
-    dayjs().startOf("day").format("YYYY-MM-DD")
+    dayjs().startOf("day").format("YYYY-MM-DD"),
   );
   const { role } = useAuth();
 
@@ -74,7 +74,7 @@ const PurchasePage = () => {
     startDate,
     endDate,
     status,
-    type
+    type,
   );
 
   const nonStockPurchasesQuery = useFetchNonStockPurchases(
@@ -85,7 +85,7 @@ const PurchasePage = () => {
     startDate,
     endDate,
     status,
-    type
+    type,
   );
 
   const exportPurchaseMutation = useExportPurchase();
@@ -111,7 +111,7 @@ const PurchasePage = () => {
         startDate,
         endDate,
         categoryCode: categoryCode || null,
-        status: status || 'A'
+        status: status || "A",
       },
       {
         onSuccess: (response) => {
@@ -124,13 +124,13 @@ const PurchasePage = () => {
           const categoryName = categoryCode
             ? "_" +
               categoryQuery?.data?.data?.find(
-                (cat) => cat.code === categoryCode
+                (cat) => cat.code === categoryCode,
               )?.name
             : "";
 
           link.href = url;
           link.download = `Purchase Orders ${categoryName} ${formatDate(
-            startDate
+            startDate,
           )} to ${formatDate(endDate)}.xlsx`;
 
           document.body.appendChild(link);
@@ -140,7 +140,7 @@ const PurchasePage = () => {
         onError: (err) => {
           console.error("EXPORT ERROR:", err);
         },
-      }
+      },
     );
   };
 
@@ -162,13 +162,13 @@ const PurchasePage = () => {
           const categoryName = categoryCode
             ? "_" +
               categoryQuery?.data?.data?.find(
-                (cat) => cat.code === categoryCode
+                (cat) => cat.code === categoryCode,
               )?.name
             : "";
 
           link.href = url;
           link.download = `Purchase Receipts ${categoryName} ${formatDate(
-            startDate
+            startDate,
           )} to ${formatDate(endDate)}.xlsx`;
 
           document.body.appendChild(link);
@@ -178,7 +178,7 @@ const PurchasePage = () => {
         onError: (err) => {
           console.error("EXPORT ERROR:", err);
         },
-      }
+      },
     );
   };
 
@@ -189,7 +189,7 @@ const PurchasePage = () => {
         endDate,
         categoryCode: categoryCode || null,
         status: status || "All",
-        type: type || "PO"
+        type: type || "PO",
       },
       {
         onSuccess: (response) => {
@@ -202,13 +202,13 @@ const PurchasePage = () => {
           const categoryName = categoryCode
             ? "_" +
               categoryQuery?.data?.data?.find(
-                (cat) => cat.code === categoryCode
+                (cat) => cat.code === categoryCode,
               )?.name
             : "";
 
           link.href = url;
           link.download = `Purchase Orders (Non-Stock) ${categoryName} ${formatDate(
-            startDate
+            startDate,
           )} to ${formatDate(endDate)}.xlsx`;
 
           document.body.appendChild(link);
@@ -218,7 +218,7 @@ const PurchasePage = () => {
         onError: (err) => {
           console.error("EXPORT ERROR:", err);
         },
-      }
+      },
     );
   };
 
@@ -240,13 +240,13 @@ const PurchasePage = () => {
           const categoryName = categoryCode
             ? "_" +
               categoryQuery?.data?.data?.find(
-                (cat) => cat.code === categoryCode
+                (cat) => cat.code === categoryCode,
               )?.name
             : "";
 
           link.href = url;
           link.download = `Purchase Receipts (Non-Stock) ${categoryName} ${formatDate(
-            startDate
+            startDate,
           )} to ${formatDate(endDate)}.xlsx`;
 
           document.body.appendChild(link);
@@ -256,7 +256,7 @@ const PurchasePage = () => {
         onError: (err) => {
           console.error("EXPORT ERROR:", err);
         },
-      }
+      },
     );
   };
 
@@ -286,272 +286,133 @@ const PurchasePage = () => {
           <Container minW="full">
             <Tabs pb={5} onChange={handleTabChange}>
               <TabList pl={5}>
-                {hasPermission(role, "canManageApprovedFirms") && (
+                {hasPermission(role, "canCreatePurchase") && (
                   <Tab as={HStack}>
                     <Text>Supply Orders (Stock)</Text>
                   </Tab>
                 )}
-                <Tab as={HStack}>
-                  <Text>Purchase Receipts (Stock)</Text>
-                </Tab>
-                <Tab as={HStack}>
-                  <Text>Supply Order (Non-stock)</Text>
-                </Tab>
-                <Tab as={HStack}>
-                  <Text>Purchase Receipts (Non-stock)</Text>
-                </Tab>
+                {hasPermission(role, "canCreatePurchase") && (
+                  <Tab as={HStack}>
+                    <Text>Purchase Receipts (Stock)</Text>
+                  </Tab>
+                )}
+                {hasPermission(role, "canCreatePurchaseNS") && (
+                  <Tab as={HStack}>
+                    <Text>Supply Order (Non-stock)</Text>
+                  </Tab>
+                )}
+                {hasPermission(role, "canCreatePurchaseNS") && (
+                  <Tab as={HStack}>
+                    <Text>Purchase Receipts (Non-stock)</Text>
+                  </Tab>
+                )}
               </TabList>
               <TabPanels>
-                <TabPanel>
-                  <Stack spacing={4}>
-                    {/* Filter */}
-                    <HStack justifyContent="space-between" spacing={2}>
-                      <HStack>
-                        <DateFilter
-                          fromDate={startDate}
-                          setFromDate={setStartDate}
-                          toDate={endDate}
-                          setToDate={setEndDate}
-                          setPageNumber={setPageNumber}
-                        />
-                        <CategoriesFilter
-                          categoryCode={categoryCode}
-                          setCategoryCode={setCategoryCode}
-                          setPageNumber={setPageNumber}
-                          query={categoryQuery}
-                          stockType="S"
-                        />
-                        <StatusFilter
-                          status={status}
-                          setStatus={setStatus}
-                          setPageNumber={setPageNumber}
-                        ></StatusFilter>
+                {hasPermission(role, "canCreatePurchase") && (
+                  <TabPanel>
+                    <Stack spacing={4}>
+                      {/* Filter */}
+                      <HStack justifyContent="space-between" spacing={2}>
+                        <HStack>
+                          <DateFilter
+                            fromDate={startDate}
+                            setFromDate={setStartDate}
+                            toDate={endDate}
+                            setToDate={setEndDate}
+                            setPageNumber={setPageNumber}
+                          />
+                          <CategoriesFilter
+                            categoryCode={categoryCode}
+                            setCategoryCode={setCategoryCode}
+                            setPageNumber={setPageNumber}
+                            query={categoryQuery}
+                            stockType="S"
+                          />
+                          <StatusFilter
+                            status={status}
+                            setStatus={setStatus}
+                            setPageNumber={setPageNumber}
+                          ></StatusFilter>
+                        </HStack>
+
+                        <HStack>
+                          {hasPermission(role, "canCreatePurchase") && (
+                            <Button
+                              variant="brand"
+                              leftIcon={<MdOutlineAddCircleOutline />}
+                              onClick={() => {
+                                role === "SAD"
+                                  ? navigate("/sad/purchase/create")
+                                  : navigate("/purchase/purchase/create");
+                              }}
+                            >
+                              Add New Purchase Order
+                            </Button>
+                          )}
+
+                          {hasPermission(role, "canExportPurchase") && (
+                            <Button
+                              variant="brand"
+                              leftIcon={<FaFileExport />}
+                              onClick={() => {
+                                handleExport();
+                              }}
+                            >
+                              Export to Excel
+                            </Button>
+                          )}
+                        </HStack>
                       </HStack>
 
-                      <HStack>
-                        {hasPermission(role, "canCreatePurchase") && (
-                          <Button
-                            variant="brand"
-                            leftIcon={<MdOutlineAddCircleOutline />}
-                            onClick={() => {
-                              role === "SAD"
-                                ? navigate("/sad/purchase/create")
-                                : navigate("/purchase/purchase/create");
-                            }}
-                          >
-                            Add New Purchase Order
-                          </Button>
-                        )}
-
-                        {hasPermission(role, "canExportPurchase") && (
-                          <Button
-                            variant="brand"
-                            leftIcon={<FaFileExport />}
-                            onClick={() => {
-                              handleExport();
-                            }}
-                          >
-                            Export to Excel
-                          </Button>
-                        )}
+                      {/* Filters */}
+                      <HStack justifyContent="space-between" spacing={4}>
+                        <PageSizing
+                          pageSize={pageSize}
+                          setPageSize={setPageSize}
+                          setPageNumber={setPageNumber}
+                        />
+                        <SearchInput
+                          searchText={searchText}
+                          setSearchText={setSearchText}
+                          setPageNumber={setPageNumber}
+                          w="fit-content"
+                        />
                       </HStack>
-                    </HStack>
 
-                    {/* Filters */}
-                    <HStack justifyContent="space-between" spacing={4}>
-                      <PageSizing
-                        pageSize={pageSize}
-                        setPageSize={setPageSize}
-                        setPageNumber={setPageNumber}
-                      />
-                      <SearchInput
+                      {/* Table */}
+                      <PurchaseOrderTableWrapper
+                        query={purchasesQuery}
                         searchText={searchText}
-                        setSearchText={setSearchText}
-                        setPageNumber={setPageNumber}
-                        w="fit-content"
-                      />
-                    </HStack>
-
-                    {/* Table */}
-                    <PurchaseOrderTableWrapper
-                      query={purchasesQuery}
-                      searchText={searchText}
-                      pageNumber={pageNumber}
-                      setPageNumber={setPageNumber}
-                    />
-                  </Stack>
-                </TabPanel>
-                <TabPanel>
-                  <Stack spacing={4}>
-                    {/* Filter */}
-                    <HStack justifyContent="space-between" spacing={2}>
-                      <HStack>
-                        <DateFilter
-                          fromDate={startDate}
-                          setFromDate={setStartDate}
-                          toDate={endDate}
-                          setToDate={setEndDate}
-                          setPageNumber={setPageNumber}
-                        />
-                        <CategoriesFilter
-                          categoryCode={categoryCode}
-                          setCategoryCode={setCategoryCode}
-                          setPageNumber={setPageNumber}
-                          query={categoryQuery}
-                          stockType="S"
-                        />
-                      </HStack>
-
-                      <HStack>
-                        {/* {hasPermission(role, "canCreatePurchase") && (
-                          <Button
-                            variant="brand"
-                            leftIcon={<MdOutlineAddCircleOutline />}
-                            onClick={createPurchaseOrderDisclosure.onOpen}
-                          >
-                            Add New Purchase
-                          </Button>
-                        )} */}
-                        {hasPermission(role, "canExportPurchase") && (
-                          <Button
-                            variant="brand"
-                            leftIcon={<FaFileExport />}
-                            onClick={() => {
-                              handleExportPurchaseReceipts();
-                            }}
-                          >
-                            Export to Excel
-                          </Button>
-                        )}
-                      </HStack>
-                    </HStack>
-
-                    {/* Filters */}
-                    <HStack justifyContent="space-between" spacing={4}>
-                      <PageSizing
-                        pageSize={pageSize}
-                        setPageSize={setPageSize}
+                        pageNumber={pageNumber}
                         setPageNumber={setPageNumber}
                       />
-                      <SearchInput
-                        searchText={searchText}
-                        setSearchText={setSearchText}
-                        setPageNumber={setPageNumber}
-                        w="fit-content"
-                      />
-                    </HStack>
+                    </Stack>
+                  </TabPanel>
+                )}
+                {hasPermission(role, "canCreatePurchase") && (
+                  <TabPanel>
+                    <Stack spacing={4}>
+                      {/* Filter */}
+                      <HStack justifyContent="space-between" spacing={2}>
+                        <HStack>
+                          <DateFilter
+                            fromDate={startDate}
+                            setFromDate={setStartDate}
+                            toDate={endDate}
+                            setToDate={setEndDate}
+                            setPageNumber={setPageNumber}
+                          />
+                          <CategoriesFilter
+                            categoryCode={categoryCode}
+                            setCategoryCode={setCategoryCode}
+                            setPageNumber={setPageNumber}
+                            query={categoryQuery}
+                            stockType="S"
+                          />
+                        </HStack>
 
-                    {/* Table */}
-                    <PurchaseTableWrapper
-                      query={purchasesQuery}
-                      searchText={searchText}
-                      pageNumber={pageNumber}
-                      setPageNumber={setPageNumber}
-                    />
-                  </Stack>
-                </TabPanel>
-                <TabPanel>
-                  <Stack spacing={4}>
-                    {/* Filter */}
-                    <HStack justifyContent="space-between" spacing={2}>
-                      <HStack>
-                        <DateFilter
-                          fromDate={startDate}
-                          setFromDate={setStartDate}
-                          toDate={endDate}
-                          setToDate={setEndDate}
-                          setPageNumber={setPageNumber}
-                        />
-                        <CategoriesFilter
-                          categoryCode={categoryCode}
-                          setCategoryCode={setCategoryCode}
-                          setPageNumber={setPageNumber}
-                          query={categoryQuery}
-                          stockType="N"
-                        />
-                        <StatusFilter
-                          status={status}
-                          setStatus={setStatus}
-                          setPageNumber={setPageNumber}
-                        ></StatusFilter>
-                      </HStack>
-
-                      <HStack>
-                        {hasPermission(role, "canCreatePurchase") && (
-                          <Button
-                            variant="brand"
-                            leftIcon={<MdOutlineAddCircleOutline />}
-                            onClick={() => {
-                              role === "SAD"
-                                ? navigate("/sad/purchase/create-ns")
-                                : navigate("/purchase/purchase/create-ns");
-                            }} 
-                          >
-                            Add New Purchase Order
-                          </Button>
-                        )}
-
-                        {hasPermission(role, "canExportPurchase") && (
-                          <Button
-                            variant="brand"
-                            leftIcon={<FaFileExport />}
-                            onClick={() => {
-                              handleExportPurchaseOrdersNS();
-                            }}
-                          >
-                            Export to Excel
-                          </Button>
-                        )}
-                      </HStack>
-                    </HStack>
-
-                    {/* Filters */}
-                    <HStack justifyContent="space-between" spacing={4}>
-                      <PageSizing
-                        pageSize={pageSize}
-                        setPageSize={setPageSize}
-                        setPageNumber={setPageNumber}
-                      />
-                      <SearchInput
-                        searchText={searchText}
-                        setSearchText={setSearchText}
-                        setPageNumber={setPageNumber}
-                        w="fit-content"
-                      />
-                    </HStack>
-
-                    {/* Table */}
-                    <PurchaseOrderNSTableWrapper
-                      query={nonStockPurchasesQuery}
-                      searchText={searchText}
-                      pageNumber={pageNumber}
-                      setPageNumber={setPageNumber}
-                    />
-                  </Stack>
-                </TabPanel>
-                <TabPanel>
-                  <Stack spacing={4}>
-                    {/* Filter */}
-                    <HStack justifyContent="space-between" spacing={2}>
-                      <HStack>
-                        <DateFilter
-                          fromDate={startDate}
-                          setFromDate={setStartDate}
-                          toDate={endDate}
-                          setToDate={setEndDate}
-                          setPageNumber={setPageNumber}
-                        />
-                        <CategoriesFilter
-                          categoryCode={categoryCode}
-                          setCategoryCode={setCategoryCode}
-                          setPageNumber={setPageNumber}
-                          query={categoryQuery}
-                          stockType="N"
-                        />
-                      </HStack>
-
-                      <HStack>
-                        {/* {hasPermission(role, "canCreatePurchase") && (
+                        <HStack>
+                          {/* {hasPermission(role, "canCreatePurchase") && (
                           <Button
                             variant="brand"
                             leftIcon={<MdOutlineAddCircleOutline />}
@@ -560,44 +421,197 @@ const PurchasePage = () => {
                             Add New Purchase
                           </Button>
                         )} */}
-                        {hasPermission(role, "canExportPurchase") && (
+                          {hasPermission(role, "canExportPurchase") && (
+                            <Button
+                              variant="brand"
+                              leftIcon={<FaFileExport />}
+                              onClick={() => {
+                                handleExportPurchaseReceipts();
+                              }}
+                            >
+                              Export to Excel
+                            </Button>
+                          )}
+                        </HStack>
+                      </HStack>
+
+                      {/* Filters */}
+                      <HStack justifyContent="space-between" spacing={4}>
+                        <PageSizing
+                          pageSize={pageSize}
+                          setPageSize={setPageSize}
+                          setPageNumber={setPageNumber}
+                        />
+                        <SearchInput
+                          searchText={searchText}
+                          setSearchText={setSearchText}
+                          setPageNumber={setPageNumber}
+                          w="fit-content"
+                        />
+                      </HStack>
+
+                      {/* Table */}
+                      <PurchaseTableWrapper
+                        query={purchasesQuery}
+                        searchText={searchText}
+                        pageNumber={pageNumber}
+                        setPageNumber={setPageNumber}
+                      />
+                    </Stack>
+                  </TabPanel>
+                )}
+                {hasPermission(role, "canCreatePurchaseNS") && (
+                  <TabPanel>
+                    <Stack spacing={4}>
+                      {/* Filter */}
+                      <HStack justifyContent="space-between" spacing={2}>
+                        <HStack>
+                          <DateFilter
+                            fromDate={startDate}
+                            setFromDate={setStartDate}
+                            toDate={endDate}
+                            setToDate={setEndDate}
+                            setPageNumber={setPageNumber}
+                          />
+                          <CategoriesFilter
+                            categoryCode={categoryCode}
+                            setCategoryCode={setCategoryCode}
+                            setPageNumber={setPageNumber}
+                            query={categoryQuery}
+                            stockType="N"
+                          />
+                          <StatusFilter
+                            status={status}
+                            setStatus={setStatus}
+                            setPageNumber={setPageNumber}
+                          ></StatusFilter>
+                        </HStack>
+
+                        <HStack>
+                          {hasPermission(role, "canCreatePurchaseNS") && (
+                            <Button
+                              variant="brand"
+                              leftIcon={<MdOutlineAddCircleOutline />}
+                              onClick={() => {
+                                role === "SAD"
+                                  ? navigate("/sad/purchase/create-ns")
+                                  : navigate("/purns/purchase/create-ns");
+                              }}
+                            >
+                              Add New Purchase Order
+                            </Button>
+                          )}
+
+                          {hasPermission(role, "canExportPurchaseNS") && (
+                            <Button
+                              variant="brand"
+                              leftIcon={<FaFileExport />}
+                              onClick={() => {
+                                handleExportPurchaseOrdersNS();
+                              }}
+                            >
+                              Export to Excel
+                            </Button>
+                          )}
+                        </HStack>
+                      </HStack>
+
+                      {/* Filters */}
+                      <HStack justifyContent="space-between" spacing={4}>
+                        <PageSizing
+                          pageSize={pageSize}
+                          setPageSize={setPageSize}
+                          setPageNumber={setPageNumber}
+                        />
+                        <SearchInput
+                          searchText={searchText}
+                          setSearchText={setSearchText}
+                          setPageNumber={setPageNumber}
+                          w="fit-content"
+                        />
+                      </HStack>
+
+                      {/* Table */}
+                      <PurchaseOrderNSTableWrapper
+                        query={nonStockPurchasesQuery}
+                        searchText={searchText}
+                        pageNumber={pageNumber}
+                        setPageNumber={setPageNumber}
+                      />
+                    </Stack>
+                  </TabPanel>
+                )}
+                {hasPermission(role, "canCreatePurchaseNS") && (
+                  <TabPanel>
+                    <Stack spacing={4}>
+                      {/* Filter */}
+                      <HStack justifyContent="space-between" spacing={2}>
+                        <HStack>
+                          <DateFilter
+                            fromDate={startDate}
+                            setFromDate={setStartDate}
+                            toDate={endDate}
+                            setToDate={setEndDate}
+                            setPageNumber={setPageNumber}
+                          />
+                          <CategoriesFilter
+                            categoryCode={categoryCode}
+                            setCategoryCode={setCategoryCode}
+                            setPageNumber={setPageNumber}
+                            query={categoryQuery}
+                            stockType="N"
+                          />
+                        </HStack>
+
+                        <HStack>
+                          {/* {hasPermission(role, "canCreatePurchase") && (
                           <Button
                             variant="brand"
-                            leftIcon={<FaFileExport />}
-                            onClick={() => {
-                              handleExportReceiptsNS();
-                            }}
+                            leftIcon={<MdOutlineAddCircleOutline />}
+                            onClick={createPurchaseOrderDisclosure.onOpen}
                           >
-                            Export to Excel
+                            Add New Purchase
                           </Button>
-                        )}
+                        )} */}
+                          {hasPermission(role, "canExportPurchaseNS") && (
+                            <Button
+                              variant="brand"
+                              leftIcon={<FaFileExport />}
+                              onClick={() => {
+                                handleExportReceiptsNS();
+                              }}
+                            >
+                              Export to Excel
+                            </Button>
+                          )}
+                        </HStack>
                       </HStack>
-                    </HStack>
 
-                    {/* Filters */}
-                    <HStack justifyContent="space-between" spacing={4}>
-                      <PageSizing
-                        pageSize={pageSize}
-                        setPageSize={setPageSize}
-                        setPageNumber={setPageNumber}
-                      />
-                      <SearchInput
+                      {/* Filters */}
+                      <HStack justifyContent="space-between" spacing={4}>
+                        <PageSizing
+                          pageSize={pageSize}
+                          setPageSize={setPageSize}
+                          setPageNumber={setPageNumber}
+                        />
+                        <SearchInput
+                          searchText={searchText}
+                          setSearchText={setSearchText}
+                          setPageNumber={setPageNumber}
+                          w="fit-content"
+                        />
+                      </HStack>
+
+                      {/* Table */}
+                      <PurchaseNSTableWrapper
+                        query={nonStockPurchasesQuery}
                         searchText={searchText}
-                        setSearchText={setSearchText}
+                        pageNumber={pageNumber}
                         setPageNumber={setPageNumber}
-                        w="fit-content"
                       />
-                    </HStack>
-
-                    {/* Table */}
-                    <PurchaseNSTableWrapper
-                      query={nonStockPurchasesQuery}
-                      searchText={searchText}
-                      pageNumber={pageNumber}
-                      setPageNumber={setPageNumber}
-                    />
-                  </Stack>
-                </TabPanel>
+                    </Stack>
+                  </TabPanel>
+                )}
               </TabPanels>
             </Tabs>
           </Container>

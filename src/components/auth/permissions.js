@@ -15,7 +15,9 @@ export const permissions = {
     canAddUnit: true,
     canManageApprovedFirms:true,
     canAddFirm: true,
-    canEditCategory: true
+    canEditCategory: true,
+    canCreatePurchaseNS: true,
+    canExportPurchaseNS: true,
   },
   PUR: {
     canCreatePurchase: true,
@@ -30,6 +32,10 @@ export const permissions = {
     canExportItems: true,
     canExportRates: true,
     canExportFirms: true
+  },
+  PURNS: {
+    canCreatePurchaseNS: true,
+    canExportPurchaseNS: true,
   },
 };
 

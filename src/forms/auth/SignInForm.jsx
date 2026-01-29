@@ -75,6 +75,9 @@ const SignInForm = () => {
         case "SAD":
           navigate("/sad/dashboard");
           break;
+        case "PURNS":
+          navigate("/purns/purchase");
+          break;
         default:
           break;
       }
@@ -95,7 +98,7 @@ const SignInForm = () => {
         description: error.response.data.detail,
       });
       return error;
-    }
+    },
   );
 
   // Formik
@@ -137,7 +140,7 @@ const SignInForm = () => {
     if (captchaQuery.isSuccess) {
       formikRef.current.setFieldValue(
         "captchaToken",
-        captchaQuery?.data?.data?.captchaToken
+        captchaQuery?.data?.data?.captchaToken,
       );
     }
   }, [captchaQuery?.data?.data?.captchaToken]);

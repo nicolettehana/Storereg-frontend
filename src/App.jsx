@@ -37,6 +37,7 @@ import { AuthProvider } from "./components/auth/authContext";
 import ProtectedRoute from "./components/routes/ProtectedRoute";
 import IssueRoutes from "./components/routes/IssueRoutes";
 import CreatePurchaseNSPage from "./pages/sad/purchase/CreatePurchaseNSPage";
+import PurchaseNSRoutes from "./components/routes/PurchaseNSRoutes";
 
 const App = () => {
   return (
@@ -100,11 +101,34 @@ const App = () => {
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="purchase" element={<PurchasePage />} />
             <Route path="purchase/create" element={<CreatePurchasePage />} />
-            <Route path="purchase/create-ns" element={<CreatePurchaseNSPage />} />
+            <Route
+              path="purchase/create-ns"
+              element={<CreatePurchaseNSPage />}
+            />
             <Route path="ledger" element={<LedgerPage />} />
             <Route path="items" element={<ItemsPage />} />
             <Route path="firms" element={<FirmsPage />} />
             <Route path="rates" element={<RatesPage />} />
+            <Route path="category" element={<CategoryPage />} />
+            {/* <Route path="year-range" element={<YearRangePage />} />
+        
+
+            {/* Profile */}
+            <Route path="profile" element={<UserProfilePage />} />
+          </Route>
+        </Route>
+
+        {/* Purchase Non-Stock ROUTES *******************************************************/}
+        <Route element={<ProtectedRoute allowedRoles={["PURNS"]} />}>
+          <Route path="/purns" element={<PurchaseNSRoutes />}>
+            {/* Dashboard */}
+            <Route path="dashboard" element={<DashboardPage />} />
+            <Route path="purchase" element={<PurchasePage />} />
+            <Route path="purchase/create" element={<CreatePurchasePage />} />
+            <Route
+              path="purchase/create-ns"
+              element={<CreatePurchaseNSPage />}
+            />
             <Route path="category" element={<CategoryPage />} />
             {/* <Route path="year-range" element={<YearRangePage />} />
         

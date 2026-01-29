@@ -10,7 +10,7 @@ const fetchPurchases = (
   startDate,
   endDate,
   status,
-  type
+  type,
 ) => {
   return request({
     url: `/purchase${
@@ -28,7 +28,7 @@ export const useFetchPurchases = (
   startDate,
   endDate,
   status,
-  type
+  type,
 ) => {
   return useQuery({
     queryKey: [
@@ -40,7 +40,7 @@ export const useFetchPurchases = (
       startDate,
       endDate,
       status,
-      type
+      type,
     ],
     queryFn: () =>
       fetchPurchases(
@@ -51,7 +51,7 @@ export const useFetchPurchases = (
         startDate,
         endDate,
         status,
-        type
+        type,
       ),
   });
 };
@@ -65,7 +65,7 @@ const fetchNonStockPurchases = (
   startDate,
   endDate,
   status,
-  type
+  type,
 ) => {
   return request({
     url: `/purchase/ns${
@@ -83,7 +83,7 @@ export const useFetchNonStockPurchases = (
   startDate,
   endDate,
   status,
-  type
+  type,
 ) => {
   return useQuery({
     queryKey: [
@@ -95,7 +95,7 @@ export const useFetchNonStockPurchases = (
       startDate,
       endDate,
       status,
-      type
+      type,
     ],
     queryFn: () =>
       fetchNonStockPurchases(
@@ -106,11 +106,10 @@ export const useFetchNonStockPurchases = (
         startDate,
         endDate,
         status,
-        type
+        type,
       ),
   });
 };
-
 
 // POST: Create Purchase
 const createPurchase = (data) => {

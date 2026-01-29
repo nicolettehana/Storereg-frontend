@@ -31,6 +31,7 @@ import SelectFieldSearchable from "../../components/core/formik/SelectFieldSearc
 import dayjs from "dayjs";
 import { MdHorizontalRule } from "react-icons/md";
 import { getCategoryColorScheme } from "../../components/core/CategoryColors";
+import { useAuth } from "../../components/auth/useAuth";
 
 const PurchaseFormEffects = ({
   formik,
@@ -44,7 +45,7 @@ const PurchaseFormEffects = ({
     if (!data?.firmName || !firmsListQuery?.data?.data) return;
 
     const matchedFirm = firmsListQuery.data.data.find(
-      (f) => f.firm === data.firmName
+      (f) => f.firm === data.firmName,
     );
 
     if (matchedFirm) {
@@ -111,7 +112,9 @@ const PurchaseFormEffects = ({
 
         const rateRow = rates.find(
           (r) =>
-            r.itemId === item.itemId && r.unitId === item.unitId && !r.subItemId
+            r.itemId === item.itemId &&
+            r.unitId === item.unitId &&
+            !r.subItemId,
         );
 
         if (!rateRow) return;
@@ -138,7 +141,7 @@ const PurchaseFormEffects = ({
           (r) =>
             r.itemId === item.itemId &&
             r.subItemId === sub.subItemId &&
-            r.unitId === sub.unitId
+            r.unitId === sub.unitId,
         );
 
         if (!rateRow) return;
@@ -150,7 +153,7 @@ const PurchaseFormEffects = ({
           formik.setFieldValue(
             `items[${itemIndex}].subItems[${subIndex}].rate`,
             rate,
-            false
+            false,
           );
         }
 
@@ -158,7 +161,7 @@ const PurchaseFormEffects = ({
           formik.setFieldValue(
             `items[${itemIndex}].subItems[${subIndex}].amount`,
             amount,
-            false
+            false,
           );
         }
       });
@@ -179,6 +182,8 @@ const CreatePurchaseReceiptForm = ({ data, onSuccess }) => {
   const [selectedCategoryCode, setSelectedCategoryCode] = useState("All");
   const [billDate, setBillDate] = useState("");
 
+  const { role } = useAuth();
+
   const toast = useToast();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -195,7 +200,10 @@ const CreatePurchaseReceiptForm = ({ data, onSuccess }) => {
   const createPurchase = useCreatePurchaseReceipt(
     (response) => {
       queryClient.invalidateQueries({ queryKey: ["purchase"] });
-      navigate(-1);
+      role === "SAD"
+        ? navigate("/sad/purchase")
+        : navigate("/purchase/purchase");
+      onSuccess?.();
       toast({
         isClosable: true,
         duration: 3000,
@@ -215,7 +223,7 @@ const CreatePurchaseReceiptForm = ({ data, onSuccess }) => {
         description:
           error.response.data.detail || "Unable to add purchase receipt.",
       });
-    }
+    },
   );
 
   const initialValues = {
@@ -305,7 +313,7 @@ const CreatePurchaseReceiptForm = ({ data, onSuccess }) => {
         gstPercentage: yup.mixed(),
         cgst: yup.number(),
         sgst: yup.number(),
-      })
+      }),
     ),
   });
 
@@ -423,34 +431,34 @@ const CreatePurchaseReceiptForm = ({ data, onSuccess }) => {
                               if (value === "") {
                                 formik.setFieldValue(
                                   `items[${index}].gstPercentage`,
-                                  ""
+                                  "",
                                 );
                                 formik.setFieldValue(
                                   `items[${index}].cgst`,
-                                  ""
+                                  "",
                                 );
                                 formik.setFieldValue(
                                   `items[${index}].sgst`,
-                                  ""
+                                  "",
                                 );
                                 return;
                               }
 
                               const { cgst, sgst } = calculateGst(
                                 amount,
-                                value
+                                value,
                               );
                               formik.setFieldValue(
                                 `items[${index}].gstPercentage`,
-                                value
+                                value,
                               );
                               formik.setFieldValue(
                                 `items[${index}].cgst`,
-                                cgst
+                                cgst,
                               );
                               formik.setFieldValue(
                                 `items[${index}].sgst`,
-                                sgst
+                                sgst,
                               );
                             }}
                           >
@@ -529,41 +537,41 @@ const CreatePurchaseReceiptForm = ({ data, onSuccess }) => {
                                     const amount =
                                       Number(
                                         formik.values.items[index].subItems[i]
-                                          .amount
+                                          .amount,
                                       ) || 0;
 
                                     if (value === "") {
                                       formik.setFieldValue(
                                         `items[${index}].subItems[${i}].gstPercentage`,
-                                        ""
+                                        "",
                                       );
                                       formik.setFieldValue(
                                         `items[${index}].subItems[${i}].cgst`,
-                                        0
+                                        0,
                                       );
                                       formik.setFieldValue(
                                         `items[${index}].subItems[${i}].sgst`,
-                                        0
+                                        0,
                                       );
                                       return;
                                     }
 
                                     const { cgst, sgst } = calculateGst(
                                       amount,
-                                      value
+                                      value,
                                     );
 
                                     formik.setFieldValue(
                                       `items[${index}].subItems[${i}].gstPercentage`,
-                                      value
+                                      value,
                                     );
                                     formik.setFieldValue(
                                       `items[${index}].subItems[${i}].cgst`,
-                                      cgst
+                                      cgst,
                                     );
                                     formik.setFieldValue(
                                       `items[${index}].subItems[${i}].sgst`,
-                                      sgst
+                                      sgst,
                                     );
                                   }}
                                 >
@@ -602,11 +610,11 @@ const CreatePurchaseReceiptForm = ({ data, onSuccess }) => {
                                       {(
                                         (Number(
                                           formik.values.items[index].subItems[i]
-                                            .cgst
+                                            .cgst,
                                         ) || 0) +
                                         (Number(
                                           formik.values.items[index].subItems[i]
-                                            .sgst
+                                            .sgst,
                                         ) || 0)
                                       ).toFixed(2)}
                                     </>

@@ -230,7 +230,7 @@ const PurchaseOrderNSTableWrapper = ({
                             {isFirstOccurrence ? (
                               <Badge
                                 colorScheme={getCategoryColorScheme(
-                                  item.categoryCode
+                                  item.categoryCode,
                                 )}
                               >
                                 {item.category}
@@ -296,7 +296,7 @@ const PurchaseOrderNSTableWrapper = ({
                     {row?.billNo && <Badge colorScheme="green">Received</Badge>}
                     {!row?.billNo && <Badge colorScheme="red">Pending</Badge>}
                     <br />
-                    {hasPermission(role, "canCreatePurchase") &&
+                    {hasPermission(role, "canCreatePurchaseNS") &&
                       !row?.billNo && (
                         <Button
                           variant="outline"

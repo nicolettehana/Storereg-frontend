@@ -15,20 +15,21 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import InputField from "../../components/core/formik/InputField";
-import {
-  useFetchCategories,
-} from "../../hooks/masterQueries";
+import { useFetchCategories } from "../../hooks/masterQueries";
 import { useCreatePurchaseNS } from "../../hooks/purchaseQueries";
 import SelectField from "../../components/core/formik/SelectField";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import { MdHorizontalRule } from "react-icons/md";
+import { useAuth } from "../../components/auth/useAuth";
 
 const CreatePurchaseOrderNSForm = () => {
   const [totalCost, setTotalCost] = useState(0);
   const [selectedCategoryCode, setSelectedCategoryCode] = useState("All");
   const [purchaseDate, setPurchaseDate] = useState("");
+
+  const { role } = useAuth();
 
   const toast = useToast();
   const navigate = useNavigate();
@@ -38,9 +39,9 @@ const CreatePurchaseOrderNSForm = () => {
 
   const createPurchase = useCreatePurchaseNS(
     (response) => {
-      queryClient.invalidateQueries({ queryKey: ["purchase"] });
+      queryClient.invalidateQueries({ queryKey: ["purchasens"] });
       //navigate("/sad/purchase");
-      navigate(-1);
+      role === "SAD" ? navigate("/sad/purchase") : navigate("/purns/purchase");
       toast({
         isClosable: true,
         duration: 3000,
@@ -59,7 +60,7 @@ const CreatePurchaseOrderNSForm = () => {
         title: "Error",
         description: error.response.data.detail || "Unable to add purchase.",
       });
-    }
+    },
   );
 
   const initialValues = {
@@ -71,8 +72,8 @@ const CreatePurchaseOrderNSForm = () => {
     items: [
       {
         categoryCode: "",
-        item:"",
-        unit:"",
+        item: "",
+        unit: "",
         quantity: "",
       },
     ],
@@ -89,7 +90,7 @@ const CreatePurchaseOrderNSForm = () => {
         item: yup.string().required("Item name is required"),
         unit: "",
         quantity: yup.number().min(1).required("Quantity is required"),
-      })
+      }),
     ),
   });
 
@@ -107,7 +108,6 @@ const CreatePurchaseOrderNSForm = () => {
       onSubmit={onSubmit}
     >
       {(formik) => {
-
         return (
           <Stack as={Form} spacing={8}>
             {/* Top Form Fields */}
@@ -155,7 +155,6 @@ const CreatePurchaseOrderNSForm = () => {
                 {({ push, remove }) => (
                   <Stack spacing={8}>
                     {formik.values.items.map((row, index) => {
-                          
                       return (
                         <Box
                           key={index}
@@ -177,7 +176,6 @@ const CreatePurchaseOrderNSForm = () => {
                                 placeholder="Select category"
                                 onValueChange={(value) => {
                                   setSelectedCategoryCode(value);
-                                  
                                 }}
                               >
                                 {categoryQuery?.data?.data?.map(
@@ -186,7 +184,7 @@ const CreatePurchaseOrderNSForm = () => {
                                       <option key={row.code} value={row.code}>
                                         {row.name}
                                       </option>
-                                    )
+                                    ),
                                 )}
                               </SelectField>
                             </Flex>
@@ -195,7 +193,7 @@ const CreatePurchaseOrderNSForm = () => {
                               name={`items[${index}].item`}
                               label="Item"
                               placeholder="Enter item"
-                            />                           
+                            />
 
                             <InputField
                               name={`items[${index}].quantity`}
@@ -219,7 +217,6 @@ const CreatePurchaseOrderNSForm = () => {
                               >
                                 -
                               </Button>
-
                             </HStack>
                           </SimpleGrid>
                         </Box>

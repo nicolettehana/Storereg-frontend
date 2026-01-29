@@ -29,11 +29,14 @@ import { useNavigate } from "react-router-dom";
 import SelectFieldSearchable from "../../components/core/formik/SelectFieldSearchable";
 import dayjs from "dayjs";
 import { MdHorizontalRule } from "react-icons/md";
+import { useAuth } from "../../components/auth/useAuth";
 
 const CreatePurchaseOrderForm = () => {
   const [totalCost, setTotalCost] = useState(0);
   const [selectedCategoryCode, setSelectedCategoryCode] = useState("All");
   const [purchaseDate, setPurchaseDate] = useState("");
+
+  const { role } = useAuth();
 
   const toast = useToast();
   const navigate = useNavigate();
@@ -54,7 +57,9 @@ const CreatePurchaseOrderForm = () => {
     (response) => {
       queryClient.invalidateQueries({ queryKey: ["purchase"] });
       //navigate("/sad/purchase");
-      navigate(-1);
+      role === "SAD"
+        ? navigate("/sad/purchase")
+        : navigate("/purchase/purchase");
       toast({
         isClosable: true,
         duration: 3000,
@@ -73,11 +78,11 @@ const CreatePurchaseOrderForm = () => {
         title: "Error",
         description: error.response.data.detail || "Unable to add purchase.",
       });
-    }
+    },
   );
 
   const initialValues = {
-    fileNo:"",
+    fileNo: "",
     remarks: "",
     purchaseDate: "",
     firmId: "",
@@ -107,7 +112,7 @@ const CreatePurchaseOrderForm = () => {
         unitId: yup.number().required("Please select a unit"),
         quantity: yup.number().min(1).required("Quantity is required"),
         subItemId: yup.number(),
-      })
+      }),
     ),
   });
 
@@ -151,7 +156,7 @@ const CreatePurchaseOrderForm = () => {
 
           formik.values.items.forEach((row) => {
             const selectedItem = allItems.find(
-              (item) => item.id === Number(row.itemId)
+              (item) => item.id === Number(row.itemId),
             );
 
             const unitsRatesFilteredList = unitsRatesQuery?.data?.data.filter(
@@ -162,11 +167,11 @@ const CreatePurchaseOrderForm = () => {
                   return Number(item?.subItemId) === Number(row?.subItemId);
                 }
                 if (!hasSubItems) return item.itemId === row.itemId;
-              }
+              },
             );
 
             const selectedUnit = unitsRatesFilteredList?.find(
-              (item) => item?.unitId === row?.unitId
+              (item) => item?.unitId === row?.unitId,
             );
 
             if (selectedUnit && row.quantity) {
@@ -226,10 +231,10 @@ const CreatePurchaseOrderForm = () => {
                   <Stack spacing={8}>
                     {formik.values.items.map((row, index) => {
                       const filteredItems = allItems.filter(
-                        (item) => item.category.code === row.categoryCode
+                        (item) => item.category.code === row.categoryCode,
                       );
                       const selectedItem = allItems.find(
-                        (item) => item.id === Number(row.itemId)
+                        (item) => item.id === Number(row.itemId),
                       );
 
                       const unitsRatesFilteredList =
@@ -246,24 +251,22 @@ const CreatePurchaseOrderForm = () => {
                         });
 
                       const selectedUnit = unitsRatesFilteredList?.find(
-                        (item) => item?.unitId === row?.unitId
+                        (item) => item?.unitId === row?.unitId,
                       );
 
                       const filteredCategories =
                         categoryQuery?.data?.data.filter((item) => {
                           const matchingFirm = firmsListQuery?.data?.data.find(
                             (firm) =>
-                              Number(formik.values?.firmId) === Number(firm.id)
+                              Number(formik.values?.firmId) === Number(firm.id),
                           );
                           if (!matchingFirm) return false;
 
                           // Check if ANY of the firm's categories matches item.code
                           return matchingFirm.categories?.some(
-                            (cat) => cat.code === item.code
+                            (cat) => cat.code === item.code,
                           );
                         });
-
-                      
 
                       return (
                         <Box
@@ -289,11 +292,11 @@ const CreatePurchaseOrderForm = () => {
                                   setSelectedCategoryCode(value);
                                   formik.setFieldValue(
                                     `items[${index}].itemId`,
-                                    ""
+                                    "",
                                   );
                                   formik.setFieldValue(
                                     `items[${index}].subItemId`,
-                                    ""
+                                    "",
                                   );
                                 }}
                               >
@@ -302,12 +305,14 @@ const CreatePurchaseOrderForm = () => {
                                     {row.name}
                                   </option>
                                 ))} */}
-                                {categoryQuery?.data?.data?.map((row) => (
-                                  row?.stockType === 'S' &&
-                                  <option key={row.code} value={row.code}>
-                                    {row.name}
-                                  </option>
-                                ))}
+                                {categoryQuery?.data?.data?.map(
+                                  (row) =>
+                                    row?.stockType === "S" && (
+                                      <option key={row.code} value={row.code}>
+                                        {row.name}
+                                      </option>
+                                    ),
+                                )}
                               </SelectField>
                             </Flex>
 
@@ -319,13 +324,13 @@ const CreatePurchaseOrderForm = () => {
                               onValueChange={(value) => {
                                 formik.setFieldValue(
                                   `items[${index}].itemId`,
-                                  value
+                                  value,
                                 );
 
                                 // Reset subItem
                                 formik.setFieldValue(
                                   `items[${index}].subItemId`,
-                                  ""
+                                  "",
                                 );
                               }}
                               options={

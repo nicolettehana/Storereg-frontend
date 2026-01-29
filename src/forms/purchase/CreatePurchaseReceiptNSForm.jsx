@@ -24,6 +24,7 @@ import SelectFieldSearchable from "../../components/core/formik/SelectFieldSearc
 import dayjs from "dayjs";
 import { MdHorizontalRule } from "react-icons/md";
 import { getCategoryColorScheme } from "../../components/core/CategoryColors";
+import { useAuth } from "../../components/auth/useAuth";
 
 const PurchaseFormEffects = ({
   formik,
@@ -37,7 +38,7 @@ const PurchaseFormEffects = ({
     if (!data?.firmName || !firmsListQuery?.data?.data) return;
 
     const matchedFirm = firmsListQuery.data.data.find(
-      (f) => f.firm === data.firmName
+      (f) => f.firm === data.firmName,
     );
 
     if (matchedFirm) {
@@ -104,7 +105,9 @@ const PurchaseFormEffects = ({
 
         const rateRow = rates.find(
           (r) =>
-            r.itemId === item.itemId && r.unitId === item.unitId && !r.subItemId
+            r.itemId === item.itemId &&
+            r.unitId === item.unitId &&
+            !r.subItemId,
         );
 
         if (!rateRow) return;
@@ -131,7 +134,7 @@ const PurchaseFormEffects = ({
           (r) =>
             r.itemId === item.itemId &&
             r.subItemId === sub.subItemId &&
-            r.unitId === sub.unitId
+            r.unitId === sub.unitId,
         );
 
         if (!rateRow) return;
@@ -143,7 +146,7 @@ const PurchaseFormEffects = ({
           formik.setFieldValue(
             `items[${itemIndex}].subItems[${subIndex}].rate`,
             rate,
-            false
+            false,
           );
         }
 
@@ -151,7 +154,7 @@ const PurchaseFormEffects = ({
           formik.setFieldValue(
             `items[${itemIndex}].subItems[${subIndex}].amount`,
             amount,
-            false
+            false,
           );
         }
       });
@@ -172,14 +175,18 @@ const CreatePurchaseReceiptNSForm = ({ data, onSuccess }) => {
   const [selectedCategoryCode, setSelectedCategoryCode] = useState("All");
   const [billDate, setBillDate] = useState("");
 
+  const { role } = useAuth();
+
   const toast = useToast();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const createPurchase = useCreatePurchaseReceiptNS(
     (response) => {
-      queryClient.invalidateQueries({ queryKey: ["purchase"] });
-      navigate(-1);
+      queryClient.invalidateQueries({ queryKey: ["purchasens"] });
+      role === "SAD" ? navigate("/sad/purchase") : navigate("/purns/purchase");
+      onSuccess?.();
+
       toast({
         isClosable: true,
         duration: 3000,
@@ -199,7 +206,7 @@ const CreatePurchaseReceiptNSForm = ({ data, onSuccess }) => {
         description:
           error.response.data.detail || "Unable to add purchase receipt.",
       });
-    }
+    },
   );
 
   const initialValues = {
@@ -268,7 +275,7 @@ const CreatePurchaseReceiptNSForm = ({ data, onSuccess }) => {
         gstPercentage: yup.mixed(),
         cgst: yup.number(),
         sgst: yup.number(),
-      })
+      }),
     ),
   });
 
@@ -322,37 +329,37 @@ const CreatePurchaseReceiptNSForm = ({ data, onSuccess }) => {
     >
       {(formik) => {
         useEffect(() => {
-  formik.values.items.forEach((item, index) => {
-    const rate = Number(item.rate) || 0;
-    const qty = Number(item.quantity) || 0;
-    const gstPercentage = Number(item.gstPercentage) || 0;
+          formik.values.items.forEach((item, index) => {
+            const rate = Number(item.rate) || 0;
+            const qty = Number(item.quantity) || 0;
+            const gstPercentage = Number(item.gstPercentage) || 0;
 
-    const amount = rate * qty;
+            const amount = rate * qty;
 
-    // update amount
-    if (item.amount !== amount) {
-      formik.setFieldValue(`items[${index}].amount`, amount, false);
-    }
+            // update amount
+            if (item.amount !== amount) {
+              formik.setFieldValue(`items[${index}].amount`, amount, false);
+            }
 
-    // update GST when amount OR gstPercentage changes
-    if (gstPercentage > 0) {
-      const { cgst, sgst } = calculateGst(amount, gstPercentage);
+            // update GST when amount OR gstPercentage changes
+            if (gstPercentage > 0) {
+              const { cgst, sgst } = calculateGst(amount, gstPercentage);
 
-      if (item.cgst !== cgst) {
-        formik.setFieldValue(`items[${index}].cgst`, cgst, false);
-      }
-      if (item.sgst !== sgst) {
-        formik.setFieldValue(`items[${index}].sgst`, sgst, false);
-      }
-    } else {
-      // clear GST if % is removed
-      if (item.cgst !== 0)
-        formik.setFieldValue(`items[${index}].cgst`, 0, false);
-      if (item.sgst !== 0)
-        formik.setFieldValue(`items[${index}].sgst`, 0, false);
-    }
-  });
-}, [formik.values.items]);
+              if (item.cgst !== cgst) {
+                formik.setFieldValue(`items[${index}].cgst`, cgst, false);
+              }
+              if (item.sgst !== sgst) {
+                formik.setFieldValue(`items[${index}].sgst`, sgst, false);
+              }
+            } else {
+              // clear GST if % is removed
+              if (item.cgst !== 0)
+                formik.setFieldValue(`items[${index}].cgst`, 0, false);
+              if (item.sgst !== 0)
+                formik.setFieldValue(`items[${index}].sgst`, 0, false);
+            }
+          });
+        }, [formik.values.items]);
 
         useEffect(() => {
           const total = calculateGrandTotal(formik.values.items);
@@ -474,35 +481,35 @@ const CreatePurchaseReceiptNSForm = ({ data, onSuccess }) => {
                                 if (!value) {
                                   formik.setFieldValue(
                                     `items[${index}].gstPercentage`,
-                                    ""
+                                    "",
                                   );
                                   formik.setFieldValue(
                                     `items[${index}].cgst`,
-                                    0
+                                    0,
                                   );
                                   formik.setFieldValue(
                                     `items[${index}].sgst`,
-                                    0
+                                    0,
                                   );
                                   return;
                                 }
 
                                 const { cgst, sgst } = calculateGst(
                                   amount,
-                                  value
+                                  value,
                                 );
 
                                 formik.setFieldValue(
                                   `items[${index}].gstPercentage`,
-                                  value
+                                  value,
                                 );
                                 formik.setFieldValue(
                                   `items[${index}].cgst`,
-                                  cgst
+                                  cgst,
                                 );
                                 formik.setFieldValue(
                                   `items[${index}].sgst`,
-                                  sgst
+                                  sgst,
                                 );
                               }}
                             >
@@ -587,41 +594,41 @@ const CreatePurchaseReceiptNSForm = ({ data, onSuccess }) => {
                                     const amount =
                                       Number(
                                         formik.values.items[index].subItems[i]
-                                          .amount
+                                          .amount,
                                       ) || 0;
 
                                     if (value === "") {
                                       formik.setFieldValue(
                                         `items[${index}].subItems[${i}].gstPercentage`,
-                                        ""
+                                        "",
                                       );
                                       formik.setFieldValue(
                                         `items[${index}].subItems[${i}].cgst`,
-                                        0
+                                        0,
                                       );
                                       formik.setFieldValue(
                                         `items[${index}].subItems[${i}].sgst`,
-                                        0
+                                        0,
                                       );
                                       return;
                                     }
 
                                     const { cgst, sgst } = calculateGst(
                                       amount,
-                                      value
+                                      value,
                                     );
 
                                     formik.setFieldValue(
                                       `items[${index}].subItems[${i}].gstPercentage`,
-                                      value
+                                      value,
                                     );
                                     formik.setFieldValue(
                                       `items[${index}].subItems[${i}].cgst`,
-                                      cgst
+                                      cgst,
                                     );
                                     formik.setFieldValue(
                                       `items[${index}].subItems[${i}].sgst`,
-                                      sgst
+                                      sgst,
                                     );
                                   }}
                                 >
@@ -660,11 +667,11 @@ const CreatePurchaseReceiptNSForm = ({ data, onSuccess }) => {
                                       {(
                                         (Number(
                                           formik.values.items[index].subItems[i]
-                                            .cgst
+                                            .cgst,
                                         ) || 0) +
                                         (Number(
                                           formik.values.items[index].subItems[i]
-                                            .sgst
+                                            .sgst,
                                         ) || 0)
                                       ).toFixed(2)}
                                     </>

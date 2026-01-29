@@ -30,11 +30,14 @@ import { useNavigate } from "react-router-dom";
 import SelectFieldSearchable from "../../components/core/formik/SelectFieldSearchable";
 import dayjs from "dayjs";
 import { MdHorizontalRule } from "react-icons/md";
+import { useAuth } from "../../components/auth/useAuth";
 
 const CreatePurchaseForm = () => {
   const [totalCost, setTotalCost] = useState(0);
   const [selectedCategoryCode, setSelectedCategoryCode] = useState("All");
   const [purchaseDate, setPurchaseDate] = useState("");
+
+  const { role } = useAuth();
 
   const toast = useToast();
   const navigate = useNavigate();
@@ -55,7 +58,9 @@ const CreatePurchaseForm = () => {
     (response) => {
       queryClient.invalidateQueries({ queryKey: ["rates"] });
       //navigate("/sad/rates");
-      navigate(-1);
+      role === "SAD"
+        ? navigate("/sad/purchase")
+        : navigate("/purchase/purchase");
       toast({
         isClosable: true,
         duration: 3000,
@@ -74,7 +79,7 @@ const CreatePurchaseForm = () => {
         title: "Error",
         description: error.response.data.detail || "Unable to add rate.",
       });
-    }
+    },
   );
 
   const createPurchase = useCreatePurchase(
@@ -100,7 +105,7 @@ const CreatePurchaseForm = () => {
         title: "Error",
         description: error.response.data.detail || "Unable to add purchase.",
       });
-    }
+    },
   );
 
   const initialValues = {
@@ -132,7 +137,7 @@ const CreatePurchaseForm = () => {
         unitId: yup.number().required("Please select a unit"),
         quantity: yup.number().min(1).required("Quantity is required"),
         subItemId: yup.number(),
-      })
+      }),
     ),
   });
 
@@ -176,7 +181,7 @@ const CreatePurchaseForm = () => {
 
           formik.values.items.forEach((row) => {
             const selectedItem = allItems.find(
-              (item) => item.id === Number(row.itemId)
+              (item) => item.id === Number(row.itemId),
             );
 
             const unitsRatesFilteredList = unitsRatesQuery?.data?.data.filter(
@@ -187,11 +192,11 @@ const CreatePurchaseForm = () => {
                   return Number(item?.subItemId) === Number(row?.subItemId);
                 }
                 if (!hasSubItems) return item.itemId === row.itemId;
-              }
+              },
             );
 
             const selectedUnit = unitsRatesFilteredList?.find(
-              (item) => item?.unitId === row?.unitId
+              (item) => item?.unitId === row?.unitId,
             );
 
             if (selectedUnit && row.quantity) {
@@ -246,10 +251,10 @@ const CreatePurchaseForm = () => {
                   <Stack spacing={8}>
                     {formik.values.items.map((row, index) => {
                       const filteredItems = allItems.filter(
-                        (item) => item.category.code === row.categoryCode
+                        (item) => item.category.code === row.categoryCode,
                       );
                       const selectedItem = allItems.find(
-                        (item) => item.id === Number(row.itemId)
+                        (item) => item.id === Number(row.itemId),
                       );
 
                       const unitsRatesFilteredList =
@@ -266,20 +271,20 @@ const CreatePurchaseForm = () => {
                         });
 
                       const selectedUnit = unitsRatesFilteredList?.find(
-                        (item) => item?.unitId === row?.unitId
+                        (item) => item?.unitId === row?.unitId,
                       );
 
                       const filteredCategories =
                         categoryQuery?.data?.data.filter((item) => {
                           const matchingFirm = firmsListQuery?.data?.data.find(
                             (firm) =>
-                              Number(formik.values?.firmId) === Number(firm.id)
+                              Number(formik.values?.firmId) === Number(firm.id),
                           );
                           if (!matchingFirm) return false;
 
                           // Check if ANY of the firm's categories matches item.code
                           return matchingFirm.categories?.some(
-                            (cat) => cat.code === item.code
+                            (cat) => cat.code === item.code,
                           );
                         });
 
@@ -318,11 +323,11 @@ const CreatePurchaseForm = () => {
                                   setSelectedCategoryCode(value);
                                   formik.setFieldValue(
                                     `items[${index}].itemId`,
-                                    ""
+                                    "",
                                   );
                                   formik.setFieldValue(
                                     `items[${index}].subItemId`,
-                                    ""
+                                    "",
                                   );
                                 }}
                               >
@@ -347,13 +352,13 @@ const CreatePurchaseForm = () => {
                               onValueChange={(value) => {
                                 formik.setFieldValue(
                                   `items[${index}].itemId`,
-                                  value
+                                  value,
                                 );
 
                                 // Reset subItem
                                 formik.setFieldValue(
                                   `items[${index}].subItemId`,
-                                  ""
+                                  "",
                                 );
                               }}
                               options={

@@ -485,7 +485,7 @@ const PurchasePage = () => {
                               role === "SAD"
                                 ? navigate("/sad/purchase/create-ns")
                                 : navigate("/purchase/purchase/create-ns");
-                            }}
+                            }} 
                           >
                             Add New Purchase Order
                           </Button>

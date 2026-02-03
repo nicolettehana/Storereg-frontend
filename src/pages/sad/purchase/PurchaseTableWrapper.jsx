@@ -161,7 +161,7 @@ const PurchaseTableWrapper = ({
           subtotal += subItem.amount || 0;
           gstTotal += calculateItemGST(
             subItem.amount || 0,
-            subItem.gstPercentage
+            subItem.gstPercentage,
           ).gst;
         });
       } else {
@@ -249,7 +249,7 @@ const PurchaseTableWrapper = ({
                         <Box key={i} mb={1}>
                           <Badge
                             colorScheme={getCategoryColorScheme(
-                              item?.categoryCode
+                              item?.categoryCode,
                             )}
                           >
                             {item.category}
@@ -318,7 +318,7 @@ const PurchaseTableWrapper = ({
                                 <Box key={i} mb={1}>
                                   {subItem.quantity}
                                 </Box>
-                              )
+                              ),
                           )}
                         </Box>
                       ))}
@@ -341,7 +341,7 @@ const PurchaseTableWrapper = ({
                                 <Box key={i} mb={1}>
                                   {subItem.rate} {subItem.unit}
                                 </Box>
-                              )
+                              ),
                           )}
                         </Box>
                       ))}
@@ -373,7 +373,7 @@ const PurchaseTableWrapper = ({
                               subItem?.subItemName && (
                                 <Box key={i} mb={1}>
                                   <HStack>
-                                    <Text >₹{subItem.amount}</Text>
+                                    <Text>₹{subItem.amount}</Text>
                                     <Text fontSize="sm">
                                       {subItem.gstPercentage &&
                                         " CGST: ₹" + subItem.cgst}
@@ -382,7 +382,7 @@ const PurchaseTableWrapper = ({
                                     </Text>
                                   </HStack>
                                 </Box>
-                              )
+                              ),
                           )}
                         </Box>
                       ))}
@@ -449,7 +449,8 @@ const PurchaseTableWrapper = ({
                               colorScheme="black"
                               textTransform="none"
                             >
-                              GST: ₹{gstTotal.toFixed(2)}
+                              {/* GST: ₹{gstTotal.toFixed(2)} */}
+                              GST: ₹{row?.gst}
                             </Badge>
                             <br />
                             <Badge
@@ -458,7 +459,9 @@ const PurchaseTableWrapper = ({
                               colorScheme="green"
                               textTransform="none"
                             >
-                              Total: ₹{grandTotal.toFixed(2)}
+                              {/* Total: ₹{grandTotal.toFixed(2)} */}
+                              Total: ₹
+                              {Number(row?.totalCost.toFixed(2)) + row?.gst}
                             </Badge>
                           </>
                         );

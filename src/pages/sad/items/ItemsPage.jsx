@@ -21,7 +21,6 @@ import CategoriesFilter from "../../../components/filter/CategoriesFilter";
 import SearchInput from "../../../components/core/SearchInput";
 import { useDebounce } from "use-debounce";
 import { PageSizing } from "../../../components/core/Table";
-import FirmCategoryStats from "../../../components/stats/FirmCategoryStats";
 import { useNavigate } from "react-router-dom";
 import StatCard2 from "../../../components/core/theme/StatCard2";
 import { FaFileExport } from "react-icons/fa";
@@ -34,7 +33,6 @@ const ItemsPage = () => {
   const [searchText, setSearchText] = useState("");
   const [pageNumber, setPageNumber] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const [status, setStatus] = useState("all");
   const [categoryCode, setCategoryCode] = useState("");
   const { role } = useAuth();
 
@@ -49,7 +47,7 @@ const ItemsPage = () => {
     categoryCode === "" ? null : categoryCode,
     searchValue,
     pageNumber,
-    pageSize
+    pageSize,
   );
   const exportItemsMutation = useExportItems();
 
@@ -74,7 +72,7 @@ const ItemsPage = () => {
           link.click();
           link.remove();
         },
-      }
+      },
     );
   };
 
@@ -124,13 +122,15 @@ const ItemsPage = () => {
                 </HStack>
 
                 <HStack>
-                  {hasPermission(role, "canAddItem") && (<Button
-                    variant="brand"
-                    leftIcon={<MdOutlineAddCircleOutline />}
-                    onClick={createItemDisclosure.onOpen}
-                  >
-                    Add New Item
-                  </Button>)}
+                  {hasPermission(role, "canAddItem") && (
+                    <Button
+                      variant="brand"
+                      leftIcon={<MdOutlineAddCircleOutline />}
+                      onClick={createItemDisclosure.onOpen}
+                    >
+                      Add New Item
+                    </Button>
+                  )}
                   {/* <Button
                     variant="brand"
                     leftIcon={<MdOutlineAddCircleOutline />}
@@ -140,15 +140,17 @@ const ItemsPage = () => {
                   >
                     Add New Item
                   </Button> */}
-                  {hasPermission(role, "canExportItems") && (<Button
-                    variant="brand"
-                    leftIcon={<FaFileExport />}
-                    onClick={() => {
-                      handleExport();
-                    }}
-                  >
-                    Export to Excel
-                  </Button>)}
+                  {hasPermission(role, "canExportItems") && (
+                    <Button
+                      variant="brand"
+                      leftIcon={<FaFileExport />}
+                      onClick={() => {
+                        handleExport();
+                      }}
+                    >
+                      Export to Excel
+                    </Button>
+                  )}
                 </HStack>
               </HStack>
 

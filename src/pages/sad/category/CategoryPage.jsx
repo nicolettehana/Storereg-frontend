@@ -78,13 +78,15 @@ const CategoryPage = () => {
           <Stack spacing={8} p={6}>
             <VStack spacing={4}>
               <HStack w="100%" justify="flex-end">
-                {hasPermission(role, "canAddCategory") && (<Button
-                  variant="brand"
-                  leftIcon={<MdOutlineAddCircleOutline />}
-                  onClick={createCategoryDisclosure.onOpen}
-                >
-                  Add New Category
-                </Button>)}
+                {hasPermission(role, "canAddCategory") && (
+                  <Button
+                    variant="brand"
+                    leftIcon={<MdOutlineAddCircleOutline />}
+                    onClick={createCategoryDisclosure.onOpen}
+                  >
+                    Add New Category
+                  </Button>
+                )}
               </HStack>
 
               <TableContainer>
@@ -142,9 +144,14 @@ const CategoryPage = () => {
                               </Badge>
                             </SkeletonText>
                           </Td>
-                          <Td><Text fontSize="sm">{row?.stockType === 'S'? 'Stock':'Non-Stock'}</Text></Td>
                           <Td>
-                              {hasPermission(role, "canEditCategory") && (<Button
+                            <Text fontSize="sm">
+                              {row?.stockType === "S" ? "Stock" : "Non-Stock"}
+                            </Text>
+                          </Td>
+                          <Td>
+                            {hasPermission(role, "canEditCategory") && (
+                              <Button
                                 variant="outline"
                                 minW="auto"
                                 //lineHeight="1"
@@ -156,11 +163,27 @@ const CategoryPage = () => {
                                 }}
                               >
                                 <FaEdit />
-                              </Button>)}
+                              </Button>
+                            )}
                           </Td>
                         </Tr>
                       );
                     })}
+
+                    {!categoryQuery.isPending &&
+                      (!categoryQuery?.data?.data ||
+                        categoryQuery.data.data.length === 0) && (
+                        <Tr>
+                          <Td
+                            colSpan={5}
+                            textAlign="center"
+                            color="gray.500"
+                            fontSize="sm"
+                          >
+                            No data
+                          </Td>
+                        </Tr>
+                      )}
                   </Tbody>
                 </Table>
               </TableContainer>

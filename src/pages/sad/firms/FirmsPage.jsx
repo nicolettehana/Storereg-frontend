@@ -22,7 +22,10 @@ import {
   useFetchCategories,
   useFetchCategoryStats,
 } from "../../../hooks/masterQueries";
-import { useFetchFirmsByType, useExportFirms } from "../../../hooks/firmQueries";
+import {
+  useFetchFirmsByType,
+  useExportFirms,
+} from "../../../hooks/firmQueries";
 import { useFetchYearRange } from "../../../hooks/masterQueries";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
@@ -54,7 +57,6 @@ import { hasPermission } from "../../../components/auth/permissions";
 import { useAuth } from "../../../components/auth/useAuth";
 
 const FirmsPage = () => {
-
   // States
   const [searchText, setSearchText] = useState("");
   const [pageNumber, setPageNumber] = useState(0);
@@ -81,14 +83,13 @@ const FirmsPage = () => {
     searchValue,
     pageNumber,
     pageSize,
-    activeYearRangeId
+    activeYearRangeId,
   );
 
   const exportFirmsMutation = useExportFirms();
 
   const categoryStatsQuery = useFetchCategoryStats(activeYearRangeId);
-  const categoryCount =
-  (categoryStatsQuery?.data?.data.byCategory?.length || 0);
+  const categoryCount = categoryStatsQuery?.data?.data.byCategory?.length || 0;
 
   //Disclosures
   const createFirmDisclosure = useDisclosure();
@@ -96,31 +97,29 @@ const FirmsPage = () => {
   //Handlers
 
   const handleExport = () => {
-  exportFirmsMutation.mutate(
-    {
-      yearRangeId: activeYearRangeId,
-      category: categoryCode === "" ? "" : categoryCode,
-    },
-    {
-      onSuccess: (response) => {
-        const url = window.URL.createObjectURL(
-          new Blob([response.data])
-        );
-
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute(
-          "download",
-          `approved_firms_${activeYearRangeId || "all"}.xlsx`
-        );
-
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
+    exportFirmsMutation.mutate(
+      {
+        yearRangeId: activeYearRangeId,
+        category: categoryCode === "" ? "" : categoryCode,
       },
-    }
-  );
-};
+      {
+        onSuccess: (response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute(
+            "download",
+            `approved_firms_${activeYearRangeId || "all"}.xlsx`,
+          );
+
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+        },
+      },
+    );
+  };
 
   const handleTabChange = (index) => {
     setActiveTab(index);
@@ -150,13 +149,20 @@ const FirmsPage = () => {
                 <Tab as={HStack}>
                   <Text>All Firms</Text>
                 </Tab>
-                {hasPermission(role, "canManageApprovedFirms") && (<Tab as={HStack}>
-                  <Text>Manage Approved Firms</Text>
-                </Tab>)}
+                {hasPermission(role, "canManageApprovedFirms") && (
+                  <Tab as={HStack}>
+                    <Text>Manage Approved Firms</Text>
+                  </Tab>
+                )}
               </TabList>
               <TabPanels>
                 <TabPanel>
-                  <SimpleGrid columns={{ base: 1, md: categoryCount }} spacing={6} pb={7} pt={2}>
+                  <SimpleGrid
+                    columns={{ base: 1, md: categoryCount }}
+                    spacing={6}
+                    pb={7}
+                    pt={2}
+                  >
                     {categoryStatsQuery?.data?.data?.byCategory?.map((c) => (
                       <StatCard2
                         key={c.categoryCode}
@@ -277,17 +283,21 @@ const FirmsPage = () => {
                               setPageNumber={setPageNumber}
                               query={categoryQuery}
                             /> */}
-                            <Text fontWeight="bold" color="brand.700">Total Firms: {categoryStatsQuery?.data?.data.total}</Text>
-                            
+                            <Text fontWeight="bold" color="brand.700">
+                              Total Firms:{" "}
+                              {categoryStatsQuery?.data?.data.total}
+                            </Text>
                           </HStack>
                           <HStack justifyContent="space-between" spacing={2}>
-                            {hasPermission(role, "canAddFirm") && (<Button
-                              variant="brand"
-                              leftIcon={<MdOutlineAddCircleOutline />}
-                              onClick={createFirmDisclosure.onOpen}
-                            >
-                              Add New Firm
-                            </Button>)}
+                            {hasPermission(role, "canAddFirm") && (
+                              <Button
+                                variant="brand"
+                                leftIcon={<MdOutlineAddCircleOutline />}
+                                onClick={createFirmDisclosure.onOpen}
+                              >
+                                Add New Firm
+                              </Button>
+                            )}
                             {/* <Button
                               variant="brand"
                               leftIcon={<MdOutlineAddCircleOutline />}
@@ -338,11 +348,9 @@ const FirmsPage = () => {
                 <TabPanel>
                   <Section>
                     <Container minW="full">
-                      
-                      {selectedYearRangeId==="" &&
+                      {selectedYearRangeId === "" && (
                         <HStack justify="right" pb={5}>
-                        
-                        <Button
+                          {/* <Button
                           variant="brand"
                           leftIcon={<FaEdit />}
                           onClick={() => {
@@ -350,8 +358,9 @@ const FirmsPage = () => {
                           }}
                         >
                           Approve New Firm
-                        </Button>
-                      </HStack>}
+                        </Button> */}
+                        </HStack>
+                      )}
 
                       {selectedYearRangeId ? (
                         <FirmsApprovePage
@@ -402,7 +411,9 @@ const FirmsPage = () => {
                                         leftIcon={<FaEdit />}
                                         onClick={() => {
                                           setSelectedYearRangeId(row.id);
-                                          setYearRange((row?.startYear)+"-"+(row?.endYear))
+                                          setYearRange(
+                                            row?.startYear + "-" + row?.endYear,
+                                          );
                                         }}
                                       >
                                         Manage Approved Firms

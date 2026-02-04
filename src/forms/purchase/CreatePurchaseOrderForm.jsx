@@ -51,7 +51,7 @@ const CreatePurchaseOrderForm = () => {
   const allItemsQuery = useFetchItemsList("All");
   const allItems = allItemsQuery?.data?.data || [];
 
-  const unitsRatesQuery = useFetchUnitsRates("2025-01-01");
+  const unitsRatesQuery = useFetchUnitsRates(purchaseDate);
 
   const createPurchase = useCreatePurchase(
     (response) => {

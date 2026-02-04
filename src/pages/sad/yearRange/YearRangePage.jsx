@@ -80,13 +80,15 @@ const YearRangePage = () => {
           <Stack spacing={8} p={6}>
             <VStack spacing={4}>
               <HStack w="100%" justify="flex-end">
-                {hasPermission(role, "canAddYearRange") && (<Button
-                  variant="brand"
-                  leftIcon={<MdOutlineAddCircleOutline />}
-                  onClick={createYearRangeDisclosure.onOpen}
-                >
-                  Add New Year Range
-                </Button>)}
+                {hasPermission(role, "canAddYearRange") && (
+                  <Button
+                    variant="brand"
+                    leftIcon={<MdOutlineAddCircleOutline />}
+                    onClick={createYearRangeDisclosure.onOpen}
+                  >
+                    Add New Year Range
+                  </Button>
+                )}
               </HStack>
 
               <TableContainer>
@@ -137,6 +139,21 @@ const YearRangePage = () => {
                         </Tr>
                       );
                     })}
+
+                    {!yearRangeQuery.isPending &&
+                      (!yearRangeQuery?.data?.data ||
+                        yearRangeQuery.data.data.length === 0) && (
+                        <Tr>
+                          <Td
+                            colSpan={5}
+                            textAlign="center"
+                            color="gray.500"
+                            fontSize="sm"
+                          >
+                            No data
+                          </Td>
+                        </Tr>
+                      )}
                   </Tbody>
                 </Table>
               </TableContainer>

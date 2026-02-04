@@ -47,7 +47,7 @@ const RatesPage = () => {
     searchValue,
     pageNumber,
     pageSize,
-    yearRangeId
+    yearRangeId,
   );
   const exportRatesMutation = useExportRates();
 
@@ -72,27 +72,29 @@ const RatesPage = () => {
               ? ""
               : "_" +
                   categoryQuery?.data?.data?.find(
-                    (cat) => cat.code === categoryCode
+                    (cat) => cat.code === categoryCode,
                   )?.name || "";
           const yearRange =
             yearRangeId === ""
               ? ""
               : yearRangeQuery?.data?.data?.find(
-                  (yearRange) => yearRange.id === Number(yearRangeId)
-                )?.startYear+"-"+yearRangeQuery?.data?.data?.find(
-                  (yearRange) => yearRange.id === Number(yearRangeId)
-                )?.endYear || "";
+                  (yearRange) => yearRange.id === Number(yearRangeId),
+                )?.startYear +
+                  "-" +
+                  yearRangeQuery?.data?.data?.find(
+                    (yearRange) => yearRange.id === Number(yearRangeId),
+                  )?.endYear || "";
 
           link.setAttribute(
             "download",
-            `rates_${yearRange}${categoryName}.xlsx`
+            `rates_${yearRange}${categoryName}.xlsx`,
           );
 
           document.body.appendChild(link);
           link.click();
           link.remove();
         },
-      }
+      },
     );
   };
 
@@ -127,13 +129,13 @@ const RatesPage = () => {
                 </HStack>
 
                 <HStack>
-                  {hasPermission(role, "canAddRate") && (<Button
+                  {/* {hasPermission(role, "canAddRate") && (<Button
                     variant="brand"
                     leftIcon={<MdOutlineAddCircleOutline />}
                     onClick={createRateDisclosure.onOpen}
                   >
                     Add New Rate
-                  </Button>)}
+                  </Button>)} */}
                   {/* <Button
                     variant="brand"
                     leftIcon={<MdOutlineAddCircleOutline />}
@@ -143,15 +145,17 @@ const RatesPage = () => {
                   >
                     Add New Rate
                   </Button> */}
-                  {hasPermission(role, "canExportRates") && (<Button
-                    variant="brand"
-                    leftIcon={<FaFileExport />}
-                    onClick={() => {
-                      handleExport();
-                    }}
-                  >
-                    Export to Excel
-                  </Button>)}
+                  {hasPermission(role, "canExportRates") && (
+                    <Button
+                      variant="brand"
+                      leftIcon={<FaFileExport />}
+                      onClick={() => {
+                        handleExport();
+                      }}
+                    >
+                      Export to Excel
+                    </Button>
+                  )}
                 </HStack>
               </HStack>
 

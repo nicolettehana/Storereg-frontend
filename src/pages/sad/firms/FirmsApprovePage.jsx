@@ -50,7 +50,7 @@ const FirmsApprovePage = ({ yearRangeId, yearRange, onClose }) => {
     searchValue,
     pageNumber,
     pageSize,
-    yearRangeId
+    yearRangeId,
   );
 
   return (
@@ -88,7 +88,7 @@ const FirmsApprovePage = ({ yearRangeId, yearRange, onClose }) => {
                 stockType="S"
               />
 
-              <Button
+              {/* <Button
                 variant="brand"
                 leftIcon={<FaEdit />}
                 onClick={() => {
@@ -96,7 +96,7 @@ const FirmsApprovePage = ({ yearRangeId, yearRange, onClose }) => {
                 }}
               >
                 Approve New Firm
-              </Button>
+              </Button> */}
             </HStack>
             {/* Filters */}
             <HStack justifyContent="space-between" spacing={4} pb={5}>

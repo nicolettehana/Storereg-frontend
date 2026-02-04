@@ -67,13 +67,15 @@ const UnitsPage = () => {
           <Stack spacing={8} p={6}>
             <VStack spacing={4}>
               <HStack w="100%" justify="flex-end">
-                {hasPermission(role, "canAddUnit") && (<Button
-                  variant="brand"
-                  leftIcon={<MdOutlineAddCircleOutline />}
-                  onClick={createYearRangeDisclosure.onOpen}
-                >
-                  Add New Unit
-                </Button>)}
+                {hasPermission(role, "canAddUnit") && (
+                  <Button
+                    variant="brand"
+                    leftIcon={<MdOutlineAddCircleOutline />}
+                    onClick={createYearRangeDisclosure.onOpen}
+                  >
+                    Add New Unit
+                  </Button>
+                )}
               </HStack>
 
               <TableContainer>
@@ -124,6 +126,21 @@ const UnitsPage = () => {
                         </Tr>
                       );
                     })}
+
+                    {!unitsQuery.isPending &&
+                      (!unitsQuery?.data?.data ||
+                        unitsQuery.data.data.length === 0) && (
+                        <Tr>
+                          <Td
+                            colSpan={5}
+                            textAlign="center"
+                            color="gray.500"
+                            fontSize="sm"
+                          >
+                            No data
+                          </Td>
+                        </Tr>
+                      )}
                   </Tbody>
                 </Table>
               </TableContainer>

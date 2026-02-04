@@ -41,7 +41,8 @@ const CreatePurchaseOrderNSForm = () => {
     (response) => {
       queryClient.invalidateQueries({ queryKey: ["purchasens"] });
       //navigate("/sad/purchase");
-      role === "SAD" ? navigate("/sad/purchase") : navigate("/purns/purchase");
+      //role === "SAD" ? navigate("/sad/purchase") : navigate("/purns/purchase");
+      navigate(-1);
       toast({
         isClosable: true,
         duration: 3000,

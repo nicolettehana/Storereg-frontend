@@ -161,7 +161,7 @@ const PurchaseNSTableWrapper = ({
           subtotal += subItem.amount || 0;
           gstTotal += calculateItemGST(
             subItem.amount || 0,
-            subItem.gstPercentage
+            subItem.gstPercentage,
           ).gst;
         });
       } else {
@@ -215,7 +215,7 @@ const PurchaseNSTableWrapper = ({
                   </Td>
                   <Td>
                     <SkeletonText
-                      w="8"
+                      //w="8"
                       noOfLines={1}
                       isLoaded={!query.isPending}
                       fadeDuration={index}
@@ -259,7 +259,7 @@ const PurchaseNSTableWrapper = ({
                             {isFirstOccurrence ? (
                               <Badge
                                 colorScheme={getCategoryColorScheme(
-                                  item.categoryCode
+                                  item.categoryCode,
                                 )}
                                 display="inline-block"
                               >

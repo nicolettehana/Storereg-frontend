@@ -266,3 +266,19 @@ export const useCreatePurchaseReceiptNS = (onSuccess, onError) => {
     onError,
   });
 };
+
+// DELETE Purchase Order
+const deletePurchaseOrder = (purchaseId) => {
+  return request({
+    url: `/purchase/${purchaseId}`,
+    method: "delete",
+  });
+};
+
+export const useDeletePurchaseOrder = (onSuccess, onError) => {
+  return useMutation({
+    mutationFn: deletePurchaseOrder,
+    onSuccess,
+    onError,
+  });
+};

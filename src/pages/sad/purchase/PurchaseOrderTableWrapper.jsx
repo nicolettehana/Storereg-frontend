@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   elementCounter,
   Pagination,
@@ -42,6 +42,10 @@ import { FaEdit } from "react-icons/fa";
 import { hasPermission } from "../../../components/auth/permissions";
 import { useAuth } from "../../../components/auth/useAuth";
 import CreatePurchaseOrderModal from "./CreatePurchaseOrderModal";
+import { MdMoveToInbox } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
+import DeletePurchaseOrderModal from "./DeletePurchaseOrderModal";
+import { useDeletePurchaseOrder } from "../../../hooks/purchaseQueries";
 
 const PurchaseOrderTableWrapper = ({
   isEstate = true,
@@ -60,9 +64,44 @@ const PurchaseOrderTableWrapper = ({
 
   // Queries
   const queryClient = useQueryClient();
+  const deletePurchaseOrder = useDeletePurchaseOrder(
+    (response) => {
+      queryClient.invalidateQueries({ queryKey: ["purchase"] });
+      navigate("/sad/purchase");
+      toast({
+        isClosable: true,
+        duration: 3000,
+        position: "top-right",
+        status: "success",
+        title: "Success",
+        description: response.data.detail || "Deleted",
+      });
+      // 👉 close modal if provided, otherwise navigate
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        navigate("/sad/purchase");
+      }
+      return response;
+    },
+    (error) => {
+      toast({
+        isClosable: true,
+        duration: 3000,
+        position: "top-right",
+        status: "error",
+        title: "Error",
+        description:
+          error.response.data.detail || "Unable to delete purchase order.",
+      });
+      return error;
+    },
+  );
 
   //Disclosures
   const createPurchaseOrderDisclosure = useDisclosure();
+  const deleteDisclosure = useDisclosure();
+  const cancelRef = useRef();
 
   if (query.isError) {
     return (
@@ -148,6 +187,12 @@ const PurchaseOrderTableWrapper = ({
     );
   }
 
+  const handleDelete = () => {
+    console.log("delete", rowState);
+    deletePurchaseOrder.mutate(rowState?.purchaseId);
+    deleteDisclosure.onClose();
+  };
+
   return (
     <Stack spacing={4}>
       {/* Modals */}
@@ -155,6 +200,12 @@ const PurchaseOrderTableWrapper = ({
         isOpen={createPurchaseOrderDisclosure.isOpen}
         onClose={createPurchaseOrderDisclosure.onClose}
         data={rowState}
+      />
+      <DeletePurchaseOrderModal
+        isOpen={deleteDisclosure.isOpen}
+        onClose={deleteDisclosure.onClose}
+        data={rowState}
+        onConfirm={handleDelete}
       />
       {/* Table */}
       <TableContainer overflowX={{ base: "auto", md: "visible" }}>
@@ -168,6 +219,7 @@ const PurchaseOrderTableWrapper = ({
               <Th>Particulars</Th>
               <Th>Quantity</Th>
               <Th>Status</Th>
+              <Th>Action</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -189,7 +241,7 @@ const PurchaseOrderTableWrapper = ({
                   </Td>
                   <Td>
                     <SkeletonText
-                      w="8"
+                      //w="8"
                       noOfLines={1}
                       isLoaded={!query.isPending}
                       fadeDuration={index}
@@ -224,7 +276,7 @@ const PurchaseOrderTableWrapper = ({
                         <Box key={i} mb={1}>
                           <Badge
                             colorScheme={getCategoryColorScheme(
-                              item?.categoryCode
+                              item?.categoryCode,
                             )}
                           >
                             {item.category}
@@ -293,7 +345,7 @@ const PurchaseOrderTableWrapper = ({
                                 <Box key={i} mb={1}>
                                   {subItem.quantity}
                                 </Box>
-                              )
+                              ),
                           )}
                         </Box>
                       ))}
@@ -305,19 +357,61 @@ const PurchaseOrderTableWrapper = ({
                     <br />
                     {hasPermission(role, "canCreatePurchase") &&
                       !row?.billNo && (
-                        <Button
-                          variant="outline"
-                          minW="auto"
-                          //lineHeight="1"
-                          bg="brand.50"
-                          size="xs"
-                          onClick={() => {
-                            setRowState(row);
-                            createPurchaseOrderDisclosure.onOpen();
-                          }}
-                        >
-                          <FaEdit />
-                        </Button>
+                        <Tooltip label="Receive items" placement="top">
+                          <Button
+                            variant="outline"
+                            minW="auto"
+                            //lineHeight="1"
+                            bg="brand.50"
+                            size="xs"
+                            onClick={() => {
+                              setRowState(row);
+                              createPurchaseOrderDisclosure.onOpen();
+                            }}
+                          >
+                            <MdMoveToInbox />
+                          </Button>
+                        </Tooltip>
+                      )}
+                  </Td>
+                  <Td>
+                    <br />
+                    {/* {hasPermission(role, "canCreatePurchase") &&
+                      !row?.billNo && (
+                        <Tooltip label="Edit purchase order" placement="top">
+                          <Button
+                            variant="outline"
+                            minW="auto"
+                            //lineHeight="1"
+                            bg="brand.50"
+                            size="xs"
+                            onClick={() => {
+                              setRowState(row);
+                              // createPurchaseOrderDisclosure.onOpen();
+                            }}
+                          >
+                            <FaEdit />
+                          </Button>
+                        </Tooltip>
+                      )} */}
+                    {hasPermission(role, "canCreatePurchase") &&
+                      !row?.billNo && (
+                        <Tooltip label="Delete purchase order" placement="top">
+                          <Button
+                            variant="outline"
+                            minW="auto"
+                            //lineHeight="1"
+                            bg="brand.50"
+                            size="xs"
+                            onClick={() => {
+                              setRowState(row);
+
+                              deleteDisclosure.onOpen();
+                            }}
+                          >
+                            <MdDelete />
+                          </Button>
+                        </Tooltip>
                       )}
                   </Td>
                 </Tr>

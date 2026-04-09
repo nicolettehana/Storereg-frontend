@@ -1,14 +1,101 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { request } from "../components/utils/request";
+// import { useMutation, useQuery } from "@tanstack/react-query";
+// import { request } from "../components/utils/request";
 
-// GET: Fetch Rates By Category/Year Range
-const fetchRates = (category, search = "", pageNumber, pageSize, yearRange) => {
-  return request({
-    url: `/rates${
-      category ? `/${category}` : ""
-    }?page=${pageNumber}&size=${pageSize}&search=${search}&yearRange=${yearRange}`,
-    method: "get",
-  });
+// // GET: Fetch Rates By Category/Year Range
+// const fetchRates = (category, search = "", pageNumber, pageSize, yearRange) => {
+//   return request({
+//     url: `/rates${
+//       category ? `/${category}` : ""
+//     }?page=${pageNumber}&size=${pageSize}&search=${search}&yearRange=${yearRange}`,
+//     method: "get",
+//   });
+// };
+
+// export const useFetchRates = (
+//   category,
+//   search,
+//   pageNumber,
+//   pageSize,
+//   yearRange
+// ) => {
+//   return useQuery({
+//     queryKey: ["rates", category, search, pageNumber, pageSize, yearRange],
+//     queryFn: () =>
+//       fetchRates(category, search, pageNumber, pageSize, yearRange),
+//   });
+// };
+
+// // POST: Create Rate
+// const createRate = (data) => {
+//   return request({
+//     url: "/rates",
+//     method: "post",
+//     data,
+//   });
+// };
+
+// export const useCreateRate = (onSuccess, onError) => {
+//   return useMutation({
+//     mutationFn: createRate,
+//     onSuccess,
+//     onError,
+//   });
+// };
+
+// // POST: Add Rate
+// const addRate = (data) => {
+//   return request({
+//     url: "/rates/add",
+//     method: "post",
+//     data,
+//   });
+// };
+
+// export const useAddRate = (onSuccess, onError) => {
+//   return useMutation({
+//     mutationFn: addRate,
+//     onSuccess,
+//     onError,
+//   });
+// };
+
+// // GET: Export Rates
+// const exportRates = (category, yearRange) => {
+//   return request({
+//     url: `/rates/export${
+//       category ? `/${category}` : ""
+//     }?yearRange=${yearRange}`,
+//     method: "get",
+//     responseType: "blob",
+//   });
+// };
+
+// export const useExportRates = () => {
+//   return useMutation({
+//     mutationFn: ({category, yearRange }) =>
+//       exportRates(category, yearRange),
+//   });
+// };
+
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useAuthContext } from "../components/auth/authContext";
+
+/**
+ * ----------------------------
+ * GET: Fetch Rates By Category / Year Range
+ * ----------------------------
+ */
+const fetchRates = (
+  axiosClient,
+  category,
+  search = "",
+  pageNumber,
+  pageSize,
+  yearRange,
+) => {
+  return axiosClient.get(
+    `/rates${category ? `/${category}` : ""}?page=${pageNumber}&size=${pageSize}&search=${search}&yearRange=${yearRange}`,
+  );
 };
 
 export const useFetchRates = (
@@ -16,64 +103,81 @@ export const useFetchRates = (
   search,
   pageNumber,
   pageSize,
-  yearRange
+  yearRange,
 ) => {
+  const { axiosClient } = useAuthContext();
+
   return useQuery({
     queryKey: ["rates", category, search, pageNumber, pageSize, yearRange],
     queryFn: () =>
-      fetchRates(category, search, pageNumber, pageSize, yearRange),
+      fetchRates(
+        axiosClient,
+        category,
+        search,
+        pageNumber,
+        pageSize,
+        yearRange,
+      ),
   });
 };
 
-// POST: Create Rate
-const createRate = (data) => {
-  return request({
-    url: "/rates",
-    method: "post",
-    data,
-  });
+/**
+ * ----------------------------
+ * POST: Create Rate
+ * ----------------------------
+ */
+const createRate = (axiosClient, data) => {
+  return axiosClient.post("/rates", data);
 };
 
 export const useCreateRate = (onSuccess, onError) => {
+  const { axiosClient } = useAuthContext();
+
   return useMutation({
-    mutationFn: createRate,
+    mutationFn: (data) => createRate(axiosClient, data),
     onSuccess,
     onError,
   });
 };
 
-
-// POST: Add Rate
-const addRate = (data) => {
-  return request({
-    url: "/rates/add",
-    method: "post",
-    data,
-  });
+/**
+ * ----------------------------
+ * POST: Add Rate
+ * ----------------------------
+ */
+const addRate = (axiosClient, data) => {
+  return axiosClient.post("/rates/add", data);
 };
 
 export const useAddRate = (onSuccess, onError) => {
+  const { axiosClient } = useAuthContext();
+
   return useMutation({
-    mutationFn: addRate,
+    mutationFn: (data) => addRate(axiosClient, data),
     onSuccess,
     onError,
   });
 };
 
-// GET: Export Rates
-const exportRates = (category, yearRange) => {
-  return request({
-    url: `/rates/export${
-      category ? `/${category}` : ""
-    }?yearRange=${yearRange}`,
-    method: "get",
-    responseType: "blob",
-  });
+/**
+ * ----------------------------
+ * GET: Export Rates
+ * ----------------------------
+ */
+const exportRates = (axiosClient, category, yearRange) => {
+  return axiosClient.get(
+    `/rates/export${category ? `/${category}` : ""}?yearRange=${yearRange}`,
+    {
+      responseType: "blob",
+    },
+  );
 };
 
 export const useExportRates = () => {
+  const { axiosClient } = useAuthContext();
+
   return useMutation({
-    mutationFn: ({category, yearRange }) =>
-      exportRates(category, yearRange),
+    mutationFn: ({ category, yearRange }) =>
+      exportRates(axiosClient, category, yearRange),
   });
 };

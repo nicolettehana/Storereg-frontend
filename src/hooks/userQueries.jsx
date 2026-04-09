@@ -1,51 +1,104 @@
+// import { useMutation, useQuery } from "@tanstack/react-query";
+// import { request } from "../components/utils/request";
+
+// // GET: Users Profile
+// const fetchUsersProfile = () => {
+//   return request({
+//     url: "/users/profile",
+//     method: "get",
+//   });
+// };
+
+// export const useFetchUsersProfile = () => {
+//   return useQuery({
+//     queryKey: ["fetch-users-profile"],
+//     queryFn: fetchUsersProfile,
+//     retry: 0,
+//   });
+// };
+
+// // POST: Update Mobile Number
+// const updateMobileNo = (data) => {
+//   return request({
+//     url: `/users/send-otp-update-mobile`,
+//     method: "post",
+//     data,
+//   });
+// };
+
+// export const useUpdateMobileNo = (onSuccess, onError) => {
+//   return useMutation({
+//     mutationFn: updateMobileNo,
+//     onSuccess,
+//     onError,
+//   });
+// };
+
+// // POST: Verify Change Mobile OTP
+// const verifyChangeMobileOTP = (data) => {
+//   return request({
+//     url: `/users/verify-otp-update-mobile`,
+//     method: "post",
+//     data,
+//   });
+// };
+
+// export const useVerifyChangeMobileOTP = (onSuccess, onError) => {
+//   return useMutation({
+//     mutationFn: verifyChangeMobileOTP,
+//     onSuccess,
+//     onError,
+//   });
+// };
+
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { request } from "../components/utils/request";
+import { useAuthContext } from "../components/auth/authContext";
 
-// GET: Users Profile
-const fetchUsersProfile = () => {
-  return request({
-    url: "/users/profile",
-    method: "get",
-  });
-};
+/**
+ * ----------------------------
+ * FETCH USERS PROFILE
+ * ----------------------------
+ */
+export const useFetchUsersProfile = ({ enabled = true } = {}) => {
+  const { axiosClient } = useAuthContext();
 
-export const useFetchUsersProfile = () => {
   return useQuery({
     queryKey: ["fetch-users-profile"],
-    queryFn: fetchUsersProfile,
-    retry: 0,
+    queryFn: async () => {
+      const response = await axiosClient.get("/users/profile");
+      return response.data;
+    },
+    enabled: !!axiosClient && enabled, // ✅ only when provider exists
   });
 };
 
-// POST: Update Mobile Number
-const updateMobileNo = (data) => {
-  return request({
-    url: `/users/send-otp-update-mobile`,
-    method: "post",
-    data,
-  });
-};
-
+/**
+ * ----------------------------
+ * SEND OTP TO UPDATE MOBILE
+ * ----------------------------
+ */
 export const useUpdateMobileNo = (onSuccess, onError) => {
+  const { axiosClient } = useAuthContext();
+
   return useMutation({
-    mutationFn: updateMobileNo,
+    mutationFn: (data) =>
+      axiosClient.post("/users/send-otp-update-mobile", data),
     onSuccess,
     onError,
   });
 };
 
-// POST: Verify Change Mobile OTP
-const verifyChangeMobileOTP = (data) => {
-  return request({
-    url: `/users/verify-otp-update-mobile`,
-    method: "post",
-    data,
-  });
-};
-
+/**
+ * ----------------------------
+ * VERIFY OTP FOR MOBILE CHANGE
+ * ----------------------------
+ */
 export const useVerifyChangeMobileOTP = (onSuccess, onError) => {
+  const { axiosClient } = useAuthContext();
+
   return useMutation({
-    mutationFn: verifyChangeMobileOTP,
+    mutationFn: (data) =>
+      axiosClient.post("/users/verify-otp-update-mobile", data),
     onSuccess,
     onError,
   });

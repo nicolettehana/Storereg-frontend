@@ -1,196 +1,426 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { request } from "../components/utils/request";
+// import { useMutation, useQuery } from "@tanstack/react-query";
+// import { request } from "../components/utils/request";
 
-// GET: Year Range
-const fetchYearRange = () => {
-  return request({
-    url: "/year-range",
-    method: "get",
-  });
+// // GET: Year Range
+// const fetchYearRange = () => {
+//   return request({
+//     url: "/year-range",
+//     method: "get",
+//   });
+// };
+
+// export const useFetchYearRange = () => {
+//   return useQuery({
+//     queryKey: ["fetch-year-range"],
+//     queryFn: fetchYearRange,
+//     retry: 0,
+//   });
+// };
+
+// // GET: Units
+// const fetchUnits = () => {
+//   return request({
+//     url: "/unit",
+//     method: "get",
+//   });
+// };
+
+// export const useFetchUnits = () => {
+//   return useQuery({
+//     queryKey: ["fetch-units"],
+//     queryFn: fetchUnits,
+//     retry: 0,
+//   });
+// };
+
+// // GET: Category List
+// const fetchCategories = () => {
+//   return request({
+//     url: "/category",
+//     method: "get",
+//   });
+// };
+
+// export const useFetchCategories = () => {
+//   return useQuery({
+//     queryKey: ["fetch-categories"],
+//     queryFn: fetchCategories,
+//     retry: 0,
+//   });
+// };
+
+// // GET: Category Statistics
+// const fetchCategoryStats = (yearRangeId) => {
+//   return request({
+//     url: `/category/stats?yearRangeId=${yearRangeId}`,
+//     method: "get",
+//   });
+// };
+
+// export const useFetchCategoryStats = (yearRangeId) => {
+//   return useQuery({
+//     queryKey: ["fetch-category-stats", yearRangeId],
+//     queryFn: () => fetchCategoryStats(yearRangeId),
+//     retry: 0,
+//   });
+// };
+
+// // GET: Item Category Statistics
+// const fetchItemCategoryStats = () => {
+//   return request({
+//     url: "/items/stats",
+//     method: "get",
+//   });
+// };
+
+// export const useFetchItemCategoryStats = () => {
+//   return useQuery({
+//     queryKey: ["fetch-item-category-stats"],
+//     queryFn: fetchItemCategoryStats,
+//     retry: 0,
+//   });
+// };
+
+// // GET: Fetch Unit-Rate List based on purchaseDate means year Range
+// const fetchUnitsRates = (purchaseDate) => {
+//   return request({
+//     url: `/unit/rates?purchaseDate=${purchaseDate}`,
+//     method: "get",
+//   });
+// };
+
+// export const useFetchUnitsRates = (purchaseDate) => {
+//   return useQuery({
+//     queryKey: ["fetchUnitsRates", purchaseDate],
+//     queryFn: () => fetchUnitsRates(purchaseDate),
+//     enabled: !!purchaseDate,
+//   });
+// };
+
+// // GET: Fetch Unit-Balance
+// const fetchUnitsBalance = () => {
+//   return request({
+//     url: `/unit/balance`,
+//     method: "get",
+//   });
+// };
+
+// export const useFetchUnitsBalance = () => {
+//   return useQuery({
+//     queryKey: ["fetchUnitsBalance"],
+//     queryFn: () => fetchUnitsBalance(),
+//   });
+// };
+
+// // POST: Create Year Range
+// const createYearRange = (data) => {
+//   return request({
+//     url: "/year-range",
+//     method: "post",
+//     data,
+//   });
+// };
+
+// export const useCreateYearRange = (onSuccess, onError) => {
+//   return useMutation({
+//     mutationFn: createYearRange,
+//     onSuccess,
+//     onError,
+//   });
+// };
+
+// // POST: Create Category
+// const createCategory = (data) => {
+//   return request({
+//     url: "/category",
+//     method: "post",
+//     data,
+//   });
+// };
+
+// export const useCreateCategory = (onSuccess, onError) => {
+//   return useMutation({
+//     mutationFn: createCategory,
+//     onSuccess,
+//     onError,
+//   });
+// };
+
+// // POST: Create Unit
+// const createUnit = (data) => {
+//   return request({
+//     url: "/unit",
+//     method: "post",
+//     data,
+//   });
+// };
+
+// export const useCreateUnit = (onSuccess, onError) => {
+//   return useMutation({
+//     mutationFn: createUnit,
+//     onSuccess,
+//     onError,
+//   });
+// };
+
+// // GET: Item In Stock Category Statistics
+// const fetchItemInStockCategoryStats = () => {
+//   return request({
+//     url: "/stock/stats",
+//     method: "get",
+//   });
+// };
+
+// export const useFetchItemInStockCategoryStats = () => {
+//   return useQuery({
+//     queryKey: ["fetch-item-in-stock-category-stats"],
+//     queryFn: fetchItemInStockCategoryStats,
+//     retry: 0,
+//   });
+// };
+
+// // POST: Update Category
+// const updateCategory = (data) => {
+//   return request({
+//     url: "/category/update",
+//     method: "post",
+//     data,
+//   });
+// };
+
+// export const useUpdateCategory = (onSuccess, onError) => {
+//   return useMutation({
+//     mutationFn: updateCategory,
+//     onSuccess,
+//     onError,
+//   });
+// };
+
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useAuthContext } from "../components/auth/authContext";
+
+/**
+ * ----------------------------
+ * GET: Year Range
+ * ----------------------------
+ */
+const fetchYearRange = (axiosClient) => {
+  return axiosClient.get("/year-range");
 };
 
 export const useFetchYearRange = () => {
+  const { axiosClient } = useAuthContext();
+
   return useQuery({
     queryKey: ["fetch-year-range"],
-    queryFn: fetchYearRange,
+    queryFn: () => fetchYearRange(axiosClient),
     retry: 0,
   });
 };
 
-// GET: Units
-const fetchUnits = () => {
-  return request({
-    url: "/unit",
-    method: "get",
-  });
+/**
+ * ----------------------------
+ * GET: Units
+ * ----------------------------
+ */
+const fetchUnits = (axiosClient) => {
+  return axiosClient.get("/unit");
 };
 
 export const useFetchUnits = () => {
+  const { axiosClient } = useAuthContext();
+
   return useQuery({
     queryKey: ["fetch-units"],
-    queryFn: fetchUnits,
+    queryFn: () => fetchUnits(axiosClient),
     retry: 0,
   });
 };
 
-// GET: Category List
-const fetchCategories = () => {
-  return request({
-    url: "/category",
-    method: "get",
-  });
+/**
+ * ----------------------------
+ * GET: Category List
+ * ----------------------------
+ */
+const fetchCategories = (axiosClient) => {
+  return axiosClient.get("/category");
 };
 
 export const useFetchCategories = () => {
+  const { axiosClient } = useAuthContext();
+
   return useQuery({
     queryKey: ["fetch-categories"],
-    queryFn: fetchCategories,
+    queryFn: () => fetchCategories(axiosClient),
     retry: 0,
   });
 };
 
-// GET: Category Statistics
-const fetchCategoryStats = (yearRangeId) => {
-  return request({
-    url: `/category/stats?yearRangeId=${yearRangeId}`,
-    method: "get",
-  });
+/**
+ * ----------------------------
+ * GET: Category Statistics
+ * ----------------------------
+ */
+const fetchCategoryStats = (axiosClient, yearRangeId) => {
+  return axiosClient.get(`/category/stats?yearRangeId=${yearRangeId}`);
 };
 
 export const useFetchCategoryStats = (yearRangeId) => {
+  const { axiosClient } = useAuthContext();
+
   return useQuery({
     queryKey: ["fetch-category-stats", yearRangeId],
-    queryFn: () => fetchCategoryStats(yearRangeId),
+    queryFn: () => fetchCategoryStats(axiosClient, yearRangeId),
     retry: 0,
   });
 };
 
-// GET: Item Category Statistics
-const fetchItemCategoryStats = () => {
-  return request({
-    url: "/items/stats",
-    method: "get",
-  });
+/**
+ * ----------------------------
+ * GET: Item Category Statistics
+ * ----------------------------
+ */
+const fetchItemCategoryStats = (axiosClient) => {
+  return axiosClient.get("/items/stats");
 };
 
 export const useFetchItemCategoryStats = () => {
+  const { axiosClient } = useAuthContext();
+
   return useQuery({
     queryKey: ["fetch-item-category-stats"],
-    queryFn: fetchItemCategoryStats,
+    queryFn: () => fetchItemCategoryStats(axiosClient),
     retry: 0,
   });
 };
 
-// GET: Fetch Unit-Rate List based on purchaseDate means year Range
-const fetchUnitsRates = (purchaseDate) => {
-  return request({
-    url: `/unit/rates?purchaseDate=${purchaseDate}`,
-    method: "get",
-  });
+/**
+ * ----------------------------
+ * GET: Unit Rates
+ * ----------------------------
+ */
+const fetchUnitsRates = (axiosClient, purchaseDate) => {
+  return axiosClient.get(`/unit/rates?purchaseDate=${purchaseDate}`);
 };
 
 export const useFetchUnitsRates = (purchaseDate) => {
+  const { axiosClient } = useAuthContext();
+
   return useQuery({
     queryKey: ["fetchUnitsRates", purchaseDate],
-    queryFn: () => fetchUnitsRates(purchaseDate),
+    queryFn: () => fetchUnitsRates(axiosClient, purchaseDate),
     enabled: !!purchaseDate,
   });
 };
 
-// GET: Fetch Unit-Balance
-const fetchUnitsBalance = () => {
-  return request({
-    url: `/unit/balance`,
-    method: "get",
-  });
+/**
+ * ----------------------------
+ * GET: Unit Balance
+ * ----------------------------
+ */
+const fetchUnitsBalance = (axiosClient) => {
+  return axiosClient.get("/unit/balance");
 };
 
 export const useFetchUnitsBalance = () => {
+  const { axiosClient } = useAuthContext();
+
   return useQuery({
     queryKey: ["fetchUnitsBalance"],
-    queryFn: () => fetchUnitsBalance(),
+    queryFn: () => fetchUnitsBalance(axiosClient),
   });
 };
 
-// POST: Create Year Range
-const createYearRange = (data) => {
-  return request({
-    url: "/year-range",
-    method: "post",
-    data,
-  });
+/**
+ * ----------------------------
+ * POST: Create Year Range
+ * ----------------------------
+ */
+const createYearRange = (axiosClient, data) => {
+  return axiosClient.post("/year-range", data);
 };
 
 export const useCreateYearRange = (onSuccess, onError) => {
+  const { axiosClient } = useAuthContext();
+
   return useMutation({
-    mutationFn: createYearRange,
+    mutationFn: (data) => createYearRange(axiosClient, data),
     onSuccess,
     onError,
   });
 };
 
-// POST: Create Category
-const createCategory = (data) => {
-  return request({
-    url: "/category",
-    method: "post",
-    data,
-  });
+/**
+ * ----------------------------
+ * POST: Create Category
+ * ----------------------------
+ */
+const createCategory = (axiosClient, data) => {
+  return axiosClient.post("/category", data);
 };
 
 export const useCreateCategory = (onSuccess, onError) => {
+  const { axiosClient } = useAuthContext();
+
   return useMutation({
-    mutationFn: createCategory,
+    mutationFn: (data) => createCategory(axiosClient, data),
     onSuccess,
     onError,
   });
 };
 
-// POST: Create Unit
-const createUnit = (data) => {
-  return request({
-    url: "/unit",
-    method: "post",
-    data,
-  });
+/**
+ * ----------------------------
+ * POST: Create Unit
+ * ----------------------------
+ */
+const createUnit = (axiosClient, data) => {
+  return axiosClient.post("/unit", data);
 };
 
 export const useCreateUnit = (onSuccess, onError) => {
+  const { axiosClient } = useAuthContext();
+
   return useMutation({
-    mutationFn: createUnit,
+    mutationFn: (data) => createUnit(axiosClient, data),
     onSuccess,
     onError,
   });
 };
 
-// GET: Item In Stock Category Statistics
-const fetchItemInStockCategoryStats = () => {
-  return request({
-    url: "/stock/stats",
-    method: "get",
-  });
+/**
+ * ----------------------------
+ * GET: Item In Stock Category Statistics
+ * ----------------------------
+ */
+const fetchItemInStockCategoryStats = (axiosClient) => {
+  return axiosClient.get("/stock/stats");
 };
 
 export const useFetchItemInStockCategoryStats = () => {
+  const { axiosClient } = useAuthContext();
+
   return useQuery({
     queryKey: ["fetch-item-in-stock-category-stats"],
-    queryFn: fetchItemInStockCategoryStats,
+    queryFn: () => fetchItemInStockCategoryStats(axiosClient),
     retry: 0,
   });
 };
 
-// POST: Update Category
-const updateCategory = (data) => {
-  return request({
-    url: "/category/update",
-    method: "post",
-    data,
-  });
+/**
+ * ----------------------------
+ * POST: Update Category
+ * ----------------------------
+ */
+const updateCategory = (axiosClient, data) => {
+  return axiosClient.post("/category/update", data);
 };
 
 export const useUpdateCategory = (onSuccess, onError) => {
+  const { axiosClient } = useAuthContext();
+
   return useMutation({
-    mutationFn: updateCategory,
+    mutationFn: (data) => updateCategory(axiosClient, data),
     onSuccess,
     onError,
   });

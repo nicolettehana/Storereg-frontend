@@ -16,7 +16,7 @@ import CreateItemForm from "../../../forms/items/CreateItemForm";
 
 const CreateYearRangeModal = ({ isOpen, onClose }) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered size="2xl">
+    <Modal isOpen={isOpen} onClose={onClose} isCentered size="4xl">
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />

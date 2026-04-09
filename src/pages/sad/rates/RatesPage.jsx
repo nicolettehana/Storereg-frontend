@@ -26,7 +26,6 @@ import { useAuth } from "../../../components/auth/useAuth";
 
 const RatesPage = () => {
   // States
-  const [quarterCode, setQuarterCode] = useState("");
   const [searchText, setSearchText] = useState("");
   const [pageNumber, setPageNumber] = useState(0);
   const [pageSize, setPageSize] = useState(10);

@@ -164,6 +164,7 @@ const RatesTableWrapper = ({
         subItemId={addRateState.subItemId}
         subItemName={addRateState.subItemName}
         yearRangeId={yearRangeId}
+        baseUnitId={addRateState.baseUnitId}
       />
 
       {/* Table */}
@@ -305,6 +306,7 @@ const RatesTableWrapper = ({
                                 subItemId: null,
                                 subItemName: "",
                                 yearRangeId: yearRangeId,
+                                baseUnitId: row.baseUnitId,
                               });
                               addRateDisclosure.onOpen();
                             }}
@@ -340,6 +342,7 @@ const RatesTableWrapper = ({
                                         subItemId: subItem?.id || null,
                                         subItemName: subItem?.name || "",
                                         yearRangeId: yearRangeId,
+                                        baseUnitId: subItem?.baseUnitId,
                                       });
                                       addRateDisclosure.onOpen();
                                     }}
@@ -365,6 +368,7 @@ const RatesTableWrapper = ({
                                       itemName: row.name,
                                       subItemId: subItem?.id || null,
                                       subItemName: subItem?.name || "",
+                                      baseUnitId: subItem?.baseUnitId,
                                     });
                                     addRateDisclosure.onOpen();
                                   }}

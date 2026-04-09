@@ -151,6 +151,7 @@ const ItemsTableWrapper = ({
               <Th>Sl. No.</Th>
               <Th>Item</Th>
               <Th>Category</Th>
+              <Th>Base Unit/Issue Unit</Th>
               <Th>Balance</Th>
               {/* <Th>Actions</Th> */}
             </Tr>
@@ -197,6 +198,23 @@ const ItemsTableWrapper = ({
                       >
                         {row?.category.name}
                       </Badge>
+                    </SkeletonText>
+                  </Td>
+                  <Td>
+                    <SkeletonText
+                      noOfLines={1}
+                      isLoaded={!query.isPending}
+                      fadeDuration={index}
+                    >
+                      {row?.subItems?.length == 0 &&
+                        (row?.baseUnit?.unit || "-")}
+                      {row?.subItems?.length > 0 && "\u00A0"}
+                      {row?.subItems.map((subItem, i) => (
+                        <Box key={i} mb={1}>
+                          {subItem?.baseUnit?.unit || "-"}
+                          {/* ({String.fromCharCode(97 + i)}) */}
+                        </Box>
+                      ))}
                     </SkeletonText>
                   </Td>
                   <Td>

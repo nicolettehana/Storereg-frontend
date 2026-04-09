@@ -65,7 +65,7 @@ const CreateRateForm = ({ onSuccess }) => {
         description: error.response.data.detail || "Unable to add rate.",
       });
       return error;
-    }
+    },
   );
 
   // Formik
@@ -110,12 +110,12 @@ const CreateRateForm = ({ onSuccess }) => {
       {(formik) => {
         const itemsQuery = useFetchItemsList(
           formik.values.categoryCode || "All",
-          formik.values.searchValue || ""
+          formik.values.searchValue || "",
         );
         const items = itemsQuery?.data?.data || [];
 
         const selectedItem = items.find(
-          (item) => item.id === Number(formik.values.itemId)
+          (item) => item.id === Number(formik.values.itemId),
         );
 
         return (
@@ -138,12 +138,14 @@ const CreateRateForm = ({ onSuccess }) => {
                 label="Item Category"
                 placeholder="Select category"
               >
-                {categoryQuery?.data?.data?.map((row) => (
-                  row?.stockType === 'S' &&
-                  <option key={row?.code} value={row?.code}>
-                    {row?.name}
-                  </option>
-                ))}
+                {categoryQuery?.data?.data?.map(
+                  (row) =>
+                    row?.stockType === "S" && (
+                      <option key={row?.code} value={row?.code}>
+                        {row?.name}
+                      </option>
+                    ),
+                )}
               </SelectField>
               <SelectField
                 name="itemId"
@@ -173,7 +175,7 @@ const CreateRateForm = ({ onSuccess }) => {
               )}
               <SelectFieldSearchable
                 name="unitId"
-                label="Unit"
+                label="Purchase Unit"
                 placeholder="Search unit"
                 options={
                   unitQuery?.data?.data?.map((row) => ({

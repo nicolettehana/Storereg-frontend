@@ -105,8 +105,8 @@ const AddRateModal = ({
 
   // Submit handler
   const onSubmit = (values) => {
-    console.log("Add Rate Values:", values);
-    //addRate.mutate(values);
+    //console.log("Add Rate Values:", values);
+    addRate.mutate(values);
   };
 
   return (
@@ -124,23 +124,31 @@ const AddRateModal = ({
           onSubmit={onSubmit}
           enableReinitialize
         >
-          {({ values }) => (
-            <Form>
-              <ModalBody as={Stack} spacing={4}>
-                {/* Item Name (Read Only) */}
-                <InputField name="itemName" label="Item Name" isReadOnly />
+          {({ values }) => {
+            const purchaseUnit = unitsQuery?.data?.data?.find(
+              (u) => String(u.id) === String(values.unitId),
+            );
 
-                {/* Sub Item Name (Read Only, conditional) */}
-                {subItemName && (
-                  <InputField
-                    name="subItemName"
-                    label="Sub Item Name"
-                    isReadOnly
-                  />
-                )}
+            const issueUnit = unitsQuery?.data?.data?.find(
+              (u) => String(u.id) === String(baseUnitId),
+            );
+            return (
+              <Form>
+                <ModalBody as={Stack} spacing={4}>
+                  {/* Item Name (Read Only) */}
+                  <InputField name="itemName" label="Item Name" isReadOnly />
 
-                {/* Units Select */}
-                {/* <SelectField
+                  {/* Sub Item Name (Read Only, conditional) */}
+                  {subItemName && (
+                    <InputField
+                      name="subItemName"
+                      label="Sub Item Name"
+                      isReadOnly
+                    />
+                  )}
+
+                  {/* Units Select */}
+                  {/* <SelectField
                   name="unitId"
                   label="Unit"
                   placeholder="Select unit"
@@ -152,83 +160,86 @@ const AddRateModal = ({
                     })) || []
                   }
                 /> */}
-                <SelectFieldSearchable
-                  name="unitId"
-                  label="Purchase Unit"
-                  placeholder="Search unit"
-                  options={
-                    unitsQuery?.data?.data?.map((row) => ({
-                      value: row.id,
-                      label: row.unit,
-                    })) || []
-                  }
-                />
+                  <SelectFieldSearchable
+                    name="unitId"
+                    label="Purchase Unit"
+                    placeholder="Search unit"
+                    options={
+                      unitsQuery?.data?.data?.map((row) => ({
+                        value: row.id,
+                        label: row.unit,
+                      })) || []
+                    }
+                  />
 
-                {/* Rate */}
-                <InputField
-                  name="rate"
-                  label="Rate"
-                  type="number"
-                  step="0.01"
-                  placeholder="Enter rate"
-                />
+                  {/* Rate */}
+                  <InputField
+                    name="rate"
+                    label="Rate"
+                    type="number"
+                    step="0.01"
+                    placeholder="Enter rate"
+                  />
 
-                {values?.unitId &&
-                  String(baseUnitId) !== String(values.unitId) && (
-                    <>
-                      {" "}
-                      <Box
-                        p={3}
-                        bg="gray.50"
-                        border="1px solid"
-                        borderColor="gray.200"
-                        borderRadius="md"
-                      >
-                        <Text fontSize="sm">
-                          Purchase Unit: {values.unitId}
-                        </Text>
+                  {values?.unitId &&
+                    String(baseUnitId) !== String(values.unitId) && (
+                      <>
+                        {" "}
+                        <Box
+                          p={3}
+                          bg="gray.50"
+                          border="1px solid"
+                          borderColor="gray.200"
+                          borderRadius="md"
+                        >
+                          <Text fontSize="sm">
+                            Purchase Unit: {purchaseUnit?.unit}
+                          </Text>
 
-                        <Text fontSize="sm">Issue Unit: {baseUnitId}</Text>
+                          <Text fontSize="sm">
+                            Issue Unit: {issueUnit?.unit}
+                          </Text>
 
-                        <Text fontSize="xs" color="gray.500" mt={2}>
-                          Example: 1 dozen = 12 each
-                        </Text>
-                      </Box>
-                      <HStack spacing={2}>
-                        <Text whiteSpace="nowrap">
-                          1 Dozen {values.unitId} =
-                        </Text>
+                          <Text fontSize="xs" color="gray.500" mt={2}>
+                            Example: 1 dozen = 12 each
+                          </Text>
+                        </Box>
+                        <HStack spacing={2}>
+                          <Text whiteSpace="nowrap">
+                            1 {purchaseUnit?.name} =
+                          </Text>
 
-                        <InputField
-                          name="rate"
-                          type="number"
-                          placeholder="Enter Quantity"
-                          label="Base Unit Quantity Conversion"
-                          textAlign="center"
-                        />
+                          <InputField
+                            name="baseUnitQuantity"
+                            type="number"
+                            placeholder="Enter Quantity"
+                            label="Issue Unit Quantity Conversion"
+                            textAlign="center"
+                          />
 
-                        <Text whiteSpace="nowrap">{baseUnitId}</Text>
-                      </HStack>
-                    </>
-                  )}
-              </ModalBody>
+                          <Text whiteSpace="nowrap">{issueUnit?.name}</Text>
+                        </HStack>
+                      </>
+                    )}
+                </ModalBody>
 
-              <ModalFooter as={HStack}>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={onClose}
-                  w="full"
-                >
-                  Cancel
-                </Button>
+                <ModalFooter as={HStack}>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={onClose}
+                    w="full"
+                  >
+                    Cancel
+                  </Button>
 
-                <Button type="submit" variant="brand" w="full">
-                  Submit
-                </Button>
-              </ModalFooter>
-            </Form>
-          )}
+                  <Button type="submit" variant="brand" w="full">
+                    Submit
+                  </Button>
+                </ModalFooter>
+              </Form>
+            );
+          }}
         </Formik>
       </ModalContent>
     </Modal>

@@ -78,7 +78,7 @@ const CreateIssueForm = () => {
         title: "Error",
         description: error.response.data.detail || "Unable to add rate.",
       });
-    }
+    },
   );
 
   const createIssue = useCreateIssue(
@@ -104,7 +104,7 @@ const CreateIssueForm = () => {
         title: "Error",
         description: error.response.data.detail || "Unable to save issue.",
       });
-    }
+    },
   );
 
   const initialValues = {
@@ -150,9 +150,9 @@ const CreateIssueForm = () => {
                 const { balance } = this.parent; // <-- get balance from row
                 if (!value || balance == null) return true;
                 return Number(value) <= Number(balance);
-              }
+              },
             ),
-        })
+        }),
       )
       .test(
         "unique-item-subitem-unit",
@@ -180,7 +180,7 @@ const CreateIssueForm = () => {
           }
 
           return true;
-        }
+        },
       ),
   });
 
@@ -203,7 +203,7 @@ const CreateIssueForm = () => {
 
           formik.values.items.forEach((row, index) => {
             const selectedItem = allItems.find(
-              (item) => item.id === Number(row.itemId)
+              (item) => item.id === Number(row.itemId),
             );
 
             const unitsBalanceFilteredList =
@@ -217,11 +217,11 @@ const CreateIssueForm = () => {
               });
 
             const selectedUnit = unitsBalanceFilteredList?.find(
-              (item) => item?.unitId === row?.unitId
+              (item) => item?.unitId === row?.unitId,
             );
             formik.setFieldValue(
               `items[${index}].balance`,
-              selectedUnit?.balance || 0
+              selectedUnit?.balance || 0,
             );
 
             if (selectedUnit && row.quantity) {
@@ -269,10 +269,10 @@ const CreateIssueForm = () => {
                   <Stack spacing={8}>
                     {formik.values.items.map((row, index) => {
                       const filteredItems = allItems.filter(
-                        (item) => item.category.code === row.categoryCode
+                        (item) => item.category.code === row.categoryCode,
                       );
                       const selectedItem = allItems.find(
-                        (item) => item.id === Number(row.itemId)
+                        (item) => item.id === Number(row.itemId),
                       );
 
                       const unitsBalanceFilteredList =
@@ -289,7 +289,7 @@ const CreateIssueForm = () => {
                         });
 
                       const selectedUnit = unitsBalanceFilteredList?.find(
-                        (item) => item?.unitId === row?.unitId
+                        (item) => item?.unitId === row?.unitId,
                       );
 
                       return (
@@ -315,21 +315,21 @@ const CreateIssueForm = () => {
                                   setSelectedCategoryCode(value);
                                   formik.setFieldValue(
                                     `items[${index}].itemId`,
-                                    ""
+                                    "",
                                   );
                                   formik.setFieldValue(
                                     `items[${index}].subItemId`,
-                                    ""
+                                    "",
                                   );
                                 }}
                               >
                                 {categoryQuery?.data?.data?.map(
-                                  (row, index) => (
-                                    row?.stockType === 'S' &&
-                                    <option key={row.code} value={row.code}>
-                                      {row.name}
-                                    </option>
-                                  )
+                                  (row, index) =>
+                                    row?.stockType === "S" && (
+                                      <option key={row.code} value={row.code}>
+                                        {row.name}
+                                      </option>
+                                    ),
                                 )}
                               </SelectField>
                             </Flex>
@@ -342,13 +342,13 @@ const CreateIssueForm = () => {
                               onValueChange={(value) => {
                                 formik.setFieldValue(
                                   `items[${index}].itemId`,
-                                  value
+                                  value,
                                 );
 
                                 // Reset subItem
                                 formik.setFieldValue(
                                   `items[${index}].subItemId`,
-                                  ""
+                                  "",
                                 );
                               }}
                               options={

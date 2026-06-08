@@ -215,7 +215,7 @@ const PurchaseTableWrapper = ({
                   </Td>
                   <Td>
                     <SkeletonText
-                      w="8"
+                      //w="8"
                       noOfLines={1}
                       isLoaded={!query.isPending}
                       fadeDuration={index}
